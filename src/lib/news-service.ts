@@ -1,5 +1,4 @@
 import { NewsResponse } from "@/types/article";
-import { parseLanguageCode } from "./Utils";
 import { ApiArticlesResponse } from "@/types/ApiResponse";
 import { parseToNewsResponse } from "./apiToApp";
 
@@ -33,7 +32,7 @@ export async function fetchNews({
   url.searchParams.set("country", country);
   // url.searchParams.set("region", region);
   // url.searchParams.set("city", city);
-  url.searchParams.set("language", parseLanguageCode(language));
+  url.searchParams.set("language", language);
   // url.searchParams.set("ip", ip);
   url.searchParams.set("size", limit.toString());
   url.searchParams.set("removeduplicate", "1");
@@ -57,8 +56,6 @@ export async function fetchNews({
 
   const response = await fetch(url.toString(), {
     next: { revalidate: 60 }, // Edge cache 60 seconds
-  }).catch((err) => {
-    console.error(err);
   });
 
   if (!response.ok) {
