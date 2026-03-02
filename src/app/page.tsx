@@ -31,11 +31,12 @@ export default async function HomePage({ searchParams }: Props) {
   return (
     <>
       <Header />
-
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className="max-w-full mx-auto px-0 py-0">
         {hero && <HeroArticle article={hero} />}
-        <NewsGrid articles={rest} />
-        <InfiniteScroll initialCursor={data.nextCursor} />
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <NewsGrid articles={rest} />
+          <InfiniteScroll initialCursor={data.nextCursor} />
+        </div>
       </main>
     </>
   );

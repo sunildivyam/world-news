@@ -12,6 +12,7 @@ export interface Article {
   publishedBy: string;
   slug: string;
   seo: ArticleSEO;
+  language: string;
 }
 
 export interface NewsResponse {
