@@ -16,7 +16,7 @@ export default function Header() {
       </div>
 
       <nav className="border-t">
-        <div className="max-w-7xl mx-auto px-4 flex gap-6 overflow-x-auto py-3">
+        <div className="max-w-7xl mx-auto px-4 flex flex-wrap gap-6 py-3">
           {categories.map((cat) => {
             const isActive = pathname === `/category/${cat.value}`;
 

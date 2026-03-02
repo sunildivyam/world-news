@@ -79,7 +79,7 @@ export default function InfiniteScroll({ initialCursor, category }: Props) {
         <div className="flex justify-center py-12">
           <button
             onClick={loadMore}
-            className="bg-brand text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand-dark transition"
+            className="bg-brand text-black px-6 py-3 rounded-lg font-semibold hover:bg-brand-dark transition"
           >
             Load More
           </button>

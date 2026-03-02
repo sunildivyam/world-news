@@ -1,5 +1,6 @@
 import { ApiArticle, ApiArticlesResponse } from "@/types/ApiResponse";
 import { Article, ArticleSEO, NewsResponse } from "@/types/article";
+import { defaultLanguage, shortLanguage } from "./languages";
 
 export const parseToNewsResponse = (
   json: ApiArticlesResponse,
@@ -22,6 +23,7 @@ export const parseToNewsResponse = (
             title: article.title,
             description: article.description,
           } as ArticleSEO,
+          language: shortLanguage(article.language) || defaultLanguage,
         }) as Article,
     ),
   } as NewsResponse;

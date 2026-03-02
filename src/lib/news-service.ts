@@ -6,6 +6,7 @@ const BASE_URL = process.env.THIRD_PARTY_NEWS_URL!;
 const API_KEY = process.env.THIRD_PARTY_NEWS_API_KEY!;
 
 interface FetchNewsParams {
+  slug?: string;
   cursor?: string;
   country: string;
   region: string;
@@ -17,6 +18,7 @@ interface FetchNewsParams {
 }
 
 export async function fetchNews({
+  slug,
   cursor,
   country,
   region,
@@ -29,33 +31,37 @@ export async function fetchNews({
   const url = new URL(BASE_URL);
 
   url.searchParams.set("apikey", API_KEY);
-  url.searchParams.set("country", country);
-  // url.searchParams.set("region", region);
-  // url.searchParams.set("city", city);
-  url.searchParams.set("language", language);
-  // url.searchParams.set("ip", ip);
-  url.searchParams.set("size", limit.toString());
-  url.searchParams.set("removeduplicate", "1");
-  url.searchParams.set(
-    "excludefield",
-    "ai_summary,ai_org,ai_region,sentiment_stats,ai_tag,sentiment,content,video_url,source_priority,source_icon,source_url,source_name,source_id",
-  );
 
-  url.searchParams.set("sort", "pubdateasc");
-  url.searchParams.set("image", "1");
+  if (slug) {
+    url.searchParams.set("id", slug);
+  } else {
+    url.searchParams.set("country", country);
+    // url.searchParams.set("region", region);
+    // url.searchParams.set("city", city);
+    url.searchParams.set("language", language);
+    // url.searchParams.set("ip", ip);
+    url.searchParams.set("size", limit.toString());
+    url.searchParams.set("removeduplicate", "1");
+    url.searchParams.set(
+      "excludefield",
+      "ai_summary,ai_org,ai_region,sentiment_stats,ai_tag,sentiment,content,video_url,source_priority,source_icon,source_url,source_name,source_id",
+    );
+    url.searchParams.set("sort", "pubdateasc");
+    url.searchParams.set("image", "1");
 
-  if (category) {
-    url.searchParams.set("category", category);
+    if (category) {
+      url.searchParams.set("category", category);
+    }
+
+    if (cursor) {
+      url.searchParams.set("page", cursor);
+    }
   }
 
-  if (cursor) {
-    url.searchParams.set("page", cursor);
-  }
-
-  console.log(url.toString());
+  console.log("API Url:", url.toString());
 
   const response = await fetch(url.toString(), {
-    next: { revalidate: 60 }, // Edge cache 60 seconds
+    // next: { revalidate: 60 }, // Edge cache 60 seconds
   });
 
   if (!response.ok) {

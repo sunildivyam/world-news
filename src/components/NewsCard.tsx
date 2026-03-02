@@ -12,8 +12,8 @@ interface Props {
 export default function NewsCard({ article }: Props) {
   return (
     <Link
-      href={`/article/${article.slug}`}
-      className="group block border-b pb-6"
+      href={`/article/${article.language}/${article.slug}`}
+      className="group block pb-6"
     >
       <div className="relative w-full h-56 overflow-hidden rounded-lg">
         <Image

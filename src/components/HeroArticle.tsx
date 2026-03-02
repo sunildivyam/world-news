@@ -10,10 +10,13 @@ interface Props {
 
 export default function HeroArticle({ article }: Props) {
   return (
-    <Link href={`/article/${article.slug}`} className="group block">
-      <div className="relative w-full h-[60vh] overflow-hidden rounded-xl">
+    <Link
+      href={`/article/${article.language}/${article.slug}`}
+      className="group block"
+    >
+      <div className="relative w-full h-[70vh] overflow-hidden">
         <Image
-          sizes="(max-width: 1200px) 100vw, 33vw"
+          sizes="(max-width: 1200px) 100vw, 50vw"
           src={article.imageUrl}
           alt={article.title}
           fill
@@ -22,19 +25,20 @@ export default function HeroArticle({ article }: Props) {
         />
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="absolute bottom-0 p-8 text-white max-w-4xl">
+            <p className="text-red-500 font-semibold uppercase tracking-wider">
+              Breaking News
+            </p>
 
-        <div className="absolute bottom-0 p-8 text-white max-w-4xl">
-          <p className="text-red-500 font-semibold uppercase tracking-wider">
-            Breaking News
-          </p>
+            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mt-3">
+              {article.title}
+            </h1>
 
-          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mt-3">
-            {article.title}
-          </h1>
-
-          <p className="mt-4 text-lg text-gray-200 line-clamp-3">
-            {article.description}
-          </p>
+            <p className="mt-4 text-lg text-gray-200 line-clamp-3">
+              {article.description}
+            </p>
+          </div>
         </div>
       </div>
     </Link>
