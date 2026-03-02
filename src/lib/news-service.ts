@@ -58,6 +58,8 @@ export async function fetchNews({
     }
   }
 
+  console.log("API Url:", url.toString());
+
   const response = await fetch(url.toString(), {
     // next: { revalidate: 60 }, // Edge cache 60 seconds
   });
