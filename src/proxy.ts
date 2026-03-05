@@ -1,35 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
+import { buildUserContext } from "./lib/news/context";
 
-const DEFAULT_LANGUAGE = "en";
-
-function extractLanguage(acceptLanguage: string | null) {
-  if (!acceptLanguage) return DEFAULT_LANGUAGE;
-
-  const primary = acceptLanguage.split(",")[0];
-  const lang = primary.split("-")[0];
-
-  return lang || DEFAULT_LANGUAGE;
-}
-
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const headers = request.headers;
-
-  // Extract from Vercel headers
-  const country = headers.get("x-vercel-ip-country") || "US";
-  const region = headers.get("x-vercel-ip-country-region") || "";
-  const city = headers.get("x-vercel-ip-city") || "";
-  const ip = headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "";
-
-  const acceptLanguage = headers.get("accept-language");
-  const language = extractLanguage(acceptLanguage);
+  const userContext = await buildUserContext();
 
   const requestHeaders = new Headers(headers);
-
-  requestHeaders.set("x-user-country", country);
-  requestHeaders.set("x-user-region", region);
-  requestHeaders.set("x-user-city", city);
-  requestHeaders.set("x-user-ip", ip);
-  requestHeaders.set("x-user-language", language);
+  console.log("PROXY Session ID: ", userContext.sessionId);
+  requestHeaders.set("x-session-id", userContext.sessionId);
+  requestHeaders.set("x-user-country", userContext.country || "us");
+  requestHeaders.set("x-user-region", userContext.region || "");
+  requestHeaders.set("x-user-city", userContext.city || "");
+  requestHeaders.set("x-user-ip", userContext.ip || "");
+  requestHeaders.set("x-user-language", userContext.language);
 
   return NextResponse.next({
     request: {
