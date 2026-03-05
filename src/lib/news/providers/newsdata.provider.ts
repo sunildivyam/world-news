@@ -37,7 +37,7 @@ export class NewsdataProvider implements NewsProvider {
       // Dynamic Params
       if (country) url.searchParams.set("country", country);
       if (region) url.searchParams.set("region", region);
-      if (city) url.searchParams.set("city", city);
+      // if (city) url.searchParams.set("city", city);
       if (language) url.searchParams.set("language", language);
       if (categories?.length)
         url.searchParams.set("category", categories.join(","));
