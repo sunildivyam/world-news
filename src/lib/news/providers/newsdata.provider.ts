@@ -41,7 +41,8 @@ export class NewsdataProvider implements NewsProvider {
       if (language) url.searchParams.set("language", language);
       if (categories?.length)
         url.searchParams.set("category", categories.join(","));
-      if (keywords?.length) url.searchParams.set("q", keywords.join(","));
+      if (keywords?.length)
+        url.searchParams.set("q", keywords.slice(0, 3).join(","));
       if (nextPage) url.searchParams.set("page", nextPage);
 
       // Query Params that are static and required
