@@ -1,40 +1,56 @@
-import { headers } from "next/headers";
-import { notFound } from "next/navigation";
-import { fetchNews } from "@/lib/news-service";
+import { fetchArticles } from "@/lib/news-service";
 import { categories } from "@/lib/categories";
 import Header from "@/components/Header";
 import HeroArticle from "@/components/HeroArticle";
 import NewsGrid from "@/components/NewsGrid";
 import InfiniteScroll from "@/components/InfiniteScroll";
+import { getUserContext } from "@/lib/news/context";
+import { FetchOptions } from "@/lib/news/provider.interface";
+import { SectionError } from "@/components/SectionError";
+import { AppError } from "@/types/AppError";
+import { ArticleResponse } from "@/types/article";
 
 export const runtime = "edge";
 
 interface Props {
-  params: { category: string };
+  params: Promise<{ category: string }>;
 }
 
 export default async function CategoryPage({ params }: Props) {
+  // 1. Await params (Required in Next.js 15)
   const { category } = await params;
 
+  // 2. Initial Setup
+  const userContext = await getUserContext();
   const validCategory = categories.find((c) => c.value === category);
 
+  // 3. Handle Invalid Category immediately
   if (!validCategory) {
-    return notFound();
+    const error = new AppError(
+      "Category Page",
+      "INVALID_CATEGORY",
+      `${category} is not valid`,
+      400,
+    );
+    return <SectionError error={error} />;
   }
 
-  const headerList = await headers();
+  // 4. Fetch Articles
+  const fetchOptions: FetchOptions = {
+    categories: [category],
+  };
 
-  const data = await fetchNews({
-    country: headerList.get("x-user-country") || "US",
-    region: headerList.get("x-user-region") || "",
-    city: headerList.get("x-user-city") || "",
-    ip: headerList.get("x-user-ip") || "",
-    language: headerList.get("x-user-language") || "en",
-    category,
-    limit: 10,
-  });
+  const articlesRes = await fetchArticles(userContext, fetchOptions);
 
-  const [hero, ...rest] = data.articles;
+  // 5. Check for Fetch Errors
+  if (AppError.isError(articlesRes)) {
+    return <SectionError error={articlesRes as AppError} />;
+  }
+
+  // 6. Type Cast and Destructure
+  const articleData = articlesRes as ArticleResponse;
+  const articles = articleData.articles || [];
+  const [hero, ...rest] = articles;
 
   return (
     <>
@@ -45,10 +61,16 @@ export default async function CategoryPage({ params }: Props) {
             {validCategory.label}
           </h2>
         </div>
+
         {hero && <HeroArticle article={hero} />}
+
         <div className="max-w-7xl mx-auto px-4 py-8">
-          <NewsGrid articles={rest} />
-          <InfiniteScroll initialCursor={data.nextCursor} category={category} />
+          {rest.length > 0 && <NewsGrid articles={rest} />}
+
+          <InfiniteScroll
+            initialCursor={articleData.nextPage}
+            category={category}
+          />
         </div>
       </main>
     </>

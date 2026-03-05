@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import NewsCard from "./NewsCard";
 import { Article } from "@/types/article";
+import { AppError } from "@/types/AppError";
+import { SectionError } from "./SectionError";
 
 interface Props {
   initialCursor: string | null;
@@ -15,6 +17,7 @@ export default function InfiniteScroll({ initialCursor, category }: Props) {
   const [loading, setLoading] = useState(false);
   const [autoLoadCount, setAutoLoadCount] = useState(0);
   const [hasMore, setHasMore] = useState(!!initialCursor);
+  const [loadError, setLoadError] = useState<AppError | null>(null);
 
   const observerRef = useRef<HTMLDivElement | null>(null);
 
@@ -29,14 +32,19 @@ export default function InfiniteScroll({ initialCursor, category }: Props) {
       url.searchParams.set("category", category);
     }
 
-    url.searchParams.set("cursor", cursor);
+    url.searchParams.set("nextPage", cursor);
 
     const res = await fetch(url.toString());
     const data = await res.json();
 
-    setArticles((prev) => [...prev, ...data.articles]);
-    setCursor(data.nextCursor);
-    setHasMore(!!data.nextCursor);
+    if (!AppError.isError(data)) {
+      setArticles((prev) => [...prev, ...data.articles]);
+      setCursor(data.nextPage);
+      setHasMore(!!data.nextPage);
+      setLoadError(null);
+    } else {
+      setLoadError(data);
+    }
 
     setLoading(false);
   }
@@ -74,6 +82,8 @@ export default function InfiniteScroll({ initialCursor, category }: Props) {
           Loading more news...
         </div>
       )}
+
+      {loadError && <SectionError error={loadError} />}
 
       {autoLoadCount >= 2 && hasMore && !loading && (
         <div className="flex justify-center py-12">

@@ -1,9 +1,10 @@
-import { headers } from "next/headers";
-import { notFound } from "next/navigation";
-import { fetchNews } from "@/lib/news-service";
-import { supportedLanguages } from "@/lib/languages";
+import { fetchArticle, fetchRelatedArticles } from "@/lib/news-service";
 import Header from "@/components/Header";
 import RelatedArticles from "@/components/RelatedArticles";
+import { getUserContext } from "@/lib/news/context";
+import { SectionError } from "@/components/SectionError";
+import { AppError } from "@/types/AppError";
+import { Article, ArticleResponse } from "@/types/article";
 
 export const runtime = "edge";
 
@@ -15,73 +16,73 @@ interface Props {
 }
 
 export default async function ArticlePage({ params }: Props) {
+  // 1. Resolve params (Next.js 15+ requires awaiting params)
   const { language, slug } = await params;
+  const userContext = await getUserContext();
 
-  if (!supportedLanguages.includes(language)) {
-    notFound();
+  // 2. Fetch primary article data
+  const articleRes = await fetchArticle(userContext, slug);
+
+  // Handle Article Errors
+  const isArticleError = AppError.isError(articleRes);
+  const article = isArticleError ? null : (articleRes as Article);
+  const articleError = isArticleError ? (articleRes as AppError) : null;
+
+  // 3. Conditional Fetch for Related Articles
+  let relatedArticles = null;
+  let relatedArticleError = null;
+
+  const relatedArticleRes = await fetchRelatedArticles(userContext, article);
+
+  if (AppError.isError(relatedArticleRes)) {
+    relatedArticleError = relatedArticleRes as AppError;
+  } else {
+    relatedArticles = relatedArticleRes as ArticleResponse;
   }
-
-  const headerList = await headers();
-  const country = headerList.get("x-user-country") || "US";
-  const region = headerList.get("x-user-region") || "";
-  const city = headerList.get("x-user-city") || "";
-  const ip = headerList.get("x-user-ip") || "";
-
-  const data = await fetchNews({
-    slug,
-    language,
-    country,
-    region,
-    city,
-    ip,
-  });
-
-  const article = data.articles[0];
-
-  if (!article) {
-    notFound();
-  }
-
-  const dataRelatedArticles = await fetchNews({
-    language,
-    country,
-    region,
-    city,
-    ip,
-  });
-
-  const relatedArticles = dataRelatedArticles.articles;
 
   return (
     <>
       <Header />
       <main className="max-w-full mx-auto px-0 py-10">
-        <h1 className="max-w-4xl mx-auto text-4xl md:text-5xl font-extrabold leading-tight">
-          {article.title}
-        </h1>
+        {/* Error Handling for Article */}
+        {articleError && <SectionError error={articleError} />}
 
-        <p className="max-w-4xl mx-auto mt-4 text-gray-500">
-          {new Date(article.publishedAt).toLocaleDateString()} •{" "}
-          {article.publishedBy}
-        </p>
+        {article && (
+          <>
+            <h1 className="max-w-4xl mx-auto text-4xl md:text-5xl font-extrabold leading-tight">
+              {article.title}
+            </h1>
 
-        <div className="max-w-full mt-8">
-          <img
-            src={article.imageUrl}
-            alt={article.title}
-            className="w-full rounded-xl"
-          />
-        </div>
+            <p className="max-w-4xl mx-auto mt-4 text-gray-500">
+              {new Date(article.publishedAt).toLocaleDateString()} •{" "}
+              {article.source}
+            </p>
 
-        <div className="max-w-4xl mx-auto prose prose-lg dark:prose-invert mt-10">
-          <p>{article.description}</p>
-        </div>
-        <div className="max-w-4xl mx-auto">
-          <RelatedArticles
-            initialCursor={dataRelatedArticles.nextCursor}
-            articles={relatedArticles}
-          />
-        </div>
+            <div className="max-w-full mt-8">
+              <img
+                src={article.imageUrl}
+                alt={article.title}
+                className="w-full rounded-xl"
+              />
+            </div>
+
+            <div className="max-w-4xl mx-auto prose prose-lg dark:prose-invert mt-10">
+              <p>{article.description}</p>
+            </div>
+          </>
+        )}
+
+        {/* Error Handling for Related Articles */}
+        {relatedArticleError && <SectionError error={relatedArticleError} />}
+
+        {relatedArticles && (
+          <div className="max-w-4xl mx-auto">
+            <RelatedArticles
+              initialCursor={relatedArticles.nextPage}
+              articles={relatedArticles.articles}
+            />
+          </div>
+        )}
       </main>
     </>
   );

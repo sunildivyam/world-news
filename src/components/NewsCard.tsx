@@ -34,7 +34,7 @@ export default function NewsCard({ article }: Props) {
       </p>
 
       <p className="mt-2 text-sm text-gray-500">
-        <ClientDate dateString={article.publishedAt} /> • {article.publishedBy}
+        <ClientDate dateString={article.publishedAt} /> • {article.source}
       </p>
     </Link>
   );

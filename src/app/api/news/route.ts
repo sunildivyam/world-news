@@ -1,33 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchNews } from "@/lib/news-service";
+import { fetchArticles } from "@/lib/news-service";
+import { getUserContext } from "@/lib/news/context";
+import { headers } from "next/headers";
 
 export const runtime = "edge";
 
 export async function GET(request: NextRequest) {
   try {
-    const cursor = request.nextUrl.searchParams.get("cursor") || undefined;
+    const h = await headers();
+
+    const userContext = await getUserContext();
+    const nextPage = request.nextUrl.searchParams.get("nextPage") || undefined;
     const category = request.nextUrl.searchParams.get("category") || undefined;
 
-    const country = request.headers.get("x-user-country") || "US";
-    const region = request.headers.get("x-user-region") || "";
-    const city = request.headers.get("x-user-city") || "";
-    const ip = request.headers.get("x-user-ip") || "";
-    const language = request.headers.get("x-user-language") || "en";
-
-    const data = await fetchNews({
-      cursor,
-      country,
-      region,
-      city,
-      language,
-      ip,
-      category,
+    const data = await fetchArticles(userContext, {
+      categories: category ? [category] : undefined,
+      nextPage,
     });
 
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
-      { message: "Failed to fetch news" },
+      { message: "Failed to fetch news", error: error },
       { status: 500 },
     );
   }

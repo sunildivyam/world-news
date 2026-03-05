@@ -1,74 +1,38 @@
-import { NewsResponse } from "@/types/article";
-import { ApiArticlesResponse } from "@/types/ApiResponse";
-import { parseToNewsResponse } from "./apiToApp";
+import { Article, ArticleResponse } from "@/types/article";
+import { FetchOptions } from "./news/provider.interface";
+import { UserContext } from "./news/types";
+import { executeWithFailover } from "./news/provider-manager";
+import { AppError } from "@/types/AppError";
 
-const BASE_URL = process.env.THIRD_PARTY_NEWS_URL!;
-const API_KEY = process.env.THIRD_PARTY_NEWS_API_KEY!;
-
-interface FetchNewsParams {
-  slug?: string;
-  cursor?: string;
-  country: string;
-  region: string;
-  city: string;
-  language: string;
-  ip: string;
-  limit?: number;
-  category?: string;
-}
-
-export async function fetchNews({
-  slug,
-  cursor,
-  country,
-  region,
-  city,
-  language,
-  ip,
-  limit = 10,
-  category = "",
-}: FetchNewsParams): Promise<NewsResponse> {
-  const url = new URL(BASE_URL);
-
-  url.searchParams.set("apikey", API_KEY);
-
-  if (slug) {
-    url.searchParams.set("id", slug);
-  } else {
-    url.searchParams.set("country", country);
-    // url.searchParams.set("region", region);
-    // url.searchParams.set("city", city);
-    url.searchParams.set("language", language);
-    // url.searchParams.set("ip", ip);
-    url.searchParams.set("size", limit.toString());
-    url.searchParams.set("removeduplicate", "1");
-    url.searchParams.set(
-      "excludefield",
-      "ai_summary,ai_org,ai_region,sentiment_stats,ai_tag,sentiment,content,video_url,source_priority,source_icon,source_url,source_name,source_id",
-    );
-    url.searchParams.set("sort", "pubdateasc");
-    url.searchParams.set("image", "1");
-
-    if (category) {
-      url.searchParams.set("category", category);
-    }
-
-    if (cursor) {
-      url.searchParams.set("page", cursor);
-    }
-  }
-
-  console.log("API Url:", url.toString());
-
-  const response = await fetch(url.toString(), {
-    // next: { revalidate: 60 }, // Edge cache 60 seconds
+export const fetchArticles = async (
+  context: UserContext,
+  options?: FetchOptions,
+): Promise<ArticleResponse | AppError> => {
+  const data = await executeWithFailover((provider) => {
+    return provider.fetchArticles(context, options);
   });
 
-  if (!response.ok) {
-    throw new Error(`News API error: ${response.status}`);
-  }
+  return data;
+};
 
-  const data = (await response.json()) as ApiArticlesResponse;
+export const fetchRelatedArticles = async (
+  context: UserContext,
+  article: Article | null,
+): Promise<ArticleResponse | AppError> => {
+  const data = await executeWithFailover((provider) => {
+    return provider.fetchRelated(context, article);
+  });
 
-  return parseToNewsResponse(data);
-}
+  return data;
+};
+
+export const fetchArticle = async (
+  context: UserContext,
+  slug: string,
+): Promise<Article | AppError> => {
+  const data = await executeWithFailover((provider) => {
+    return provider.fetchArticle(context, slug);
+  });
+
+  return data;
+};
