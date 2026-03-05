@@ -36,7 +36,7 @@ export class NewsdataProvider implements NewsProvider {
       // Fetch 1 page of articles (latest or by other search params)
       // Dynamic Params
       if (country) url.searchParams.set("country", country);
-      if (region) url.searchParams.set("region", region);
+      // if (region) url.searchParams.set("region", region);
       // if (city) url.searchParams.set("city", city);
       if (language) url.searchParams.set("language", language);
       if (categories?.length)
