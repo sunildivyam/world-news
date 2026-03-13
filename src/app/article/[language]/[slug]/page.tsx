@@ -1,10 +1,12 @@
 import { fetchArticle, fetchRelatedArticles } from "@/lib/news-service";
 import Header from "@/components/Header";
 import RelatedArticles from "@/components/RelatedArticles";
-import { getUserContext } from "@/lib/news/context";
 import { SectionError } from "@/components/SectionError";
-import { AppError } from "@/types/AppError";
-import { Article, ArticleResponse } from "@/types/article";
+import { getUserContext } from "@/lib/UserContext.service";
+import { AppError } from "@/types/AppError.class";
+import { Article } from "@/types/Article.interface";
+import { ArticleCollection } from "@/types/ArticleCollection.interface";
+import ClientDate from "@/components/ClientDate";
 
 export const runtime = "edge";
 
@@ -37,7 +39,7 @@ export default async function ArticlePage({ params }: Props) {
   if (AppError.isError(relatedArticleRes)) {
     relatedArticleError = relatedArticleRes as AppError;
   } else {
-    relatedArticles = relatedArticleRes as ArticleResponse;
+    relatedArticles = relatedArticleRes as ArticleCollection;
   }
 
   return (
@@ -45,17 +47,17 @@ export default async function ArticlePage({ params }: Props) {
       <Header />
       <main className="max-w-full mx-auto px-0 py-10">
         {/* Error Handling for Article */}
-        {articleError && <SectionError error={articleError} />}
+        {isArticleError && <SectionError error={articleError || undefined} />}
 
-        {article && (
+        {article && !isArticleError && (
           <>
             <h1 className="max-w-4xl mx-auto text-4xl md:text-5xl font-extrabold leading-tight">
               {article.title}
             </h1>
 
             <p className="max-w-4xl mx-auto mt-4 text-gray-500">
-              {new Date(article.publishedAt).toLocaleDateString()} •{" "}
-              {article.source}
+              <ClientDate dateString={article.publishDate.toString()} /> •{" "}
+              {article.source?.name}
             </p>
 
             <div className="max-w-full mt-8">
@@ -78,7 +80,7 @@ export default async function ArticlePage({ params }: Props) {
         {relatedArticles && (
           <div className="max-w-4xl mx-auto">
             <RelatedArticles
-              initialCursor={relatedArticles.nextPage}
+              initialCursor={relatedArticles.nextPage as string}
               articles={relatedArticles.articles}
             />
           </div>

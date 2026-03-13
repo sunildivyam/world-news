@@ -1,4 +1,4 @@
-import { AppError } from "@/types/AppError";
+import { AppError } from "@/types/AppError.class";
 import React from "react";
 
 interface SectionErrorProps {
@@ -20,9 +20,7 @@ export const SectionError: React.FC<SectionErrorProps> = ({
         <div className="text-left text-red-600">
           <h2 className="text-2xl font-bold">Error:</h2>
           <h3 className="text-2xl font-bold">{error.source}</h3>
-          <p>
-            {error.code} | {error.status}
-          </p>
+          <p>{error.status}</p>
           <p className="text-center">{error.message}</p>
           <h3 className="text-2xl font-bold">Additional Info</h3>
         </div>

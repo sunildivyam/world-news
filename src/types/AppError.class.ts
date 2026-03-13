@@ -1,25 +1,29 @@
 export class AppError {
   source: string;
-  code: string;
   message: string;
   status?: number;
   details?: Record<string, unknown>;
 
   constructor(
     source: string,
-    code: string,
     message: string,
     status?: number,
     details?: Record<string, unknown>,
   ) {
     this.source = source;
-    this.code = code;
     this.message = message;
     this.status = status;
     this.details = details;
   }
 
   static isError(value: unknown): boolean {
-    return !!(value instanceof AppError);
+    return (
+      typeof value === "object" &&
+      value !== null &&
+      "source" in value &&
+      typeof (value as any).source === "string" &&
+      "message" in value &&
+      typeof (value as any).message === "string"
+    );
   }
 }

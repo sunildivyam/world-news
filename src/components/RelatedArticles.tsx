@@ -1,8 +1,8 @@
 "use client";
 
 import NewsCard from "./NewsCard";
-import { Article } from "@/types/article";
 import InfiniteScroll from "./InfiniteScroll";
+import { Article } from "@/types/Article.interface";
 
 interface Props {
   initialCursor: string | null;

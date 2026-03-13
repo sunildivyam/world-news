@@ -1,14 +1,7 @@
 // lib/news/provider-manager.ts
-
-import { NewsProvider } from "./provider.interface";
-import { NewsdataProvider } from "./providers/newsdata.provider";
-import { NewsapiorgProvider } from "./providers/newsapiorg.provider";
-import { AppError } from "@/types/AppError";
-
-const providers: NewsProvider[] = [
-  new NewsdataProvider(),
-  new NewsapiorgProvider(),
-];
+import { articleProviders } from "@/app-constants/ArticleProviders.constants";
+import { AppError } from "@/types/AppError.class";
+import { ArticleProvider } from "@/types/ArticleProvider.interface";
 
 function hasRateLimitReached(res: any): boolean {
   if (AppError.isError(res) && res.status === 429) {
@@ -18,11 +11,11 @@ function hasRateLimitReached(res: any): boolean {
 }
 
 export async function executeWithFailover<T>(
-  operation: (provider: NewsProvider) => Promise<T>,
+  operation: (provider: ArticleProvider) => Promise<T>,
 ): Promise<T> {
-  let lastError: AppError = new AppError("", "", "");
+  let lastError: AppError = new AppError("", "");
 
-  for (const provider of providers) {
+  for (const provider of articleProviders) {
     try {
       console.log(`Trying provider: ${provider.name}`);
       const result = await operation(provider);
@@ -40,7 +33,6 @@ export async function executeWithFailover<T>(
       console.log(`Provider ${provider.name} failed. Moving to next.`, error);
       lastError = {
         source: "Provider Manager",
-        code: error.code,
         message: error.message,
         status: error.status,
       };

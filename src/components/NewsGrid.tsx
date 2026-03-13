@@ -1,4 +1,4 @@
-import { Article } from "@/types/article";
+import { Article } from "@/types/Article.interface";
 import NewsCard from "./NewsCard";
 
 interface Props {
