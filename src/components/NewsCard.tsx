@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Article } from "@/types/article";
 import ClientDate from "./ClientDate";
+import { Article } from "@/types/Article.interface";
 
 interface Props {
   article: Article;
@@ -18,7 +18,7 @@ export default function NewsCard({ article }: Props) {
       <div className="relative w-full h-56 overflow-hidden rounded-lg">
         <Image
           sizes="(max-width: 768px) 100vw, 33vw"
-          src={article.imageUrl}
+          src={article.imageUrl || ""}
           alt={article.title}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -34,7 +34,8 @@ export default function NewsCard({ article }: Props) {
       </p>
 
       <p className="mt-2 text-sm text-gray-500">
-        <ClientDate dateString={article.publishedAt} /> • {article.source}
+        <ClientDate dateString={article.publishDate.toString()} /> •{" "}
+        {article.source?.name}
       </p>
     </Link>
   );

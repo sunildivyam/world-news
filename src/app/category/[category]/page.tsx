@@ -1,14 +1,14 @@
 import { fetchArticles } from "@/lib/news-service";
-import { categories } from "@/lib/categories";
+import { categories } from "@/app-constants/categories";
 import Header from "@/components/Header";
 import HeroArticle from "@/components/HeroArticle";
 import NewsGrid from "@/components/NewsGrid";
 import InfiniteScroll from "@/components/InfiniteScroll";
-import { getUserContext } from "@/lib/news/context";
-import { FetchOptions } from "@/lib/news/provider.interface";
 import { SectionError } from "@/components/SectionError";
-import { AppError } from "@/types/AppError";
-import { ArticleResponse } from "@/types/article";
+import { getUserContext } from "@/lib/UserContext.service";
+import { AppError } from "@/types/AppError.class";
+import { ArticleQueryParams } from "@/types/ArticleQueryParams";
+import { ArticleCollection } from "@/types/ArticleCollection.interface";
 
 export const runtime = "edge";
 
@@ -28,7 +28,6 @@ export default async function CategoryPage({ params }: Props) {
   if (!validCategory) {
     const error = new AppError(
       "Category Page",
-      "INVALID_CATEGORY",
       `${category} is not valid`,
       400,
     );
@@ -36,8 +35,8 @@ export default async function CategoryPage({ params }: Props) {
   }
 
   // 4. Fetch Articles
-  const fetchOptions: FetchOptions = {
-    categories: [category],
+  const fetchOptions: ArticleQueryParams = {
+    category: [category],
   };
 
   const articlesRes = await fetchArticles(userContext, fetchOptions);
@@ -48,8 +47,8 @@ export default async function CategoryPage({ params }: Props) {
   }
 
   // 6. Type Cast and Destructure
-  const articleData = articlesRes as ArticleResponse;
-  const articles = articleData.articles || [];
+  const articleCollection = articlesRes as ArticleCollection;
+  const articles = articleCollection.articles || [];
   const [hero, ...rest] = articles;
 
   return (
@@ -57,9 +56,9 @@ export default async function CategoryPage({ params }: Props) {
       <Header />
       <main className="max-w-full mx-auto px-0 py-0">
         <div className="max-w-7xl mx-auto px-4 py-8">
-          <h2 className="text-3xl font-bold mb-6 capitalize text-brand">
-            {validCategory.label}
-          </h2>
+          <h1 className="text-3xl font-bold mb-6 capitalize text-brand">
+            {userContext.geo?.country?.toUpperCase()} {validCategory.label} News
+          </h1>
         </div>
 
         {hero && <HeroArticle article={hero} />}
@@ -67,10 +66,12 @@ export default async function CategoryPage({ params }: Props) {
         <div className="max-w-7xl mx-auto px-4 py-8">
           {rest.length > 0 && <NewsGrid articles={rest} />}
 
-          <InfiniteScroll
-            initialCursor={articleData.nextPage}
-            category={category}
-          />
+          {articleCollection.nextPage && (
+            <InfiniteScroll
+              initialCursor={articleCollection.nextPage as string}
+              category={category}
+            />
+          )}
         </div>
       </main>
     </>

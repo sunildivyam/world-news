@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchArticles } from "@/lib/news-service";
-import { getUserContext } from "@/lib/news/context";
 import { headers } from "next/headers";
+import { getUserContext } from "@/lib/UserContext.service";
 
 export const runtime = "edge";
 
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const category = request.nextUrl.searchParams.get("category") || undefined;
 
     const data = await fetchArticles(userContext, {
-      categories: category ? [category] : undefined,
+      category: category ? [category] : undefined,
       nextPage,
     });
 

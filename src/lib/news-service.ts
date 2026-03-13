@@ -1,13 +1,14 @@
-import { Article, ArticleResponse } from "@/types/article";
-import { FetchOptions } from "./news/provider.interface";
-import { UserContext } from "./news/types";
 import { executeWithFailover } from "./news/provider-manager";
-import { AppError } from "@/types/AppError";
+import { ArticleCollection } from "@/types/ArticleCollection.interface";
+import { Article } from "@/types/Article.interface";
+import { UserContext } from "@/types/UserContext.interface";
+import { ArticleQueryParams } from "@/types/ArticleQueryParams";
+import { AppError } from "@/types/AppError.class";
 
 export const fetchArticles = async (
   context: UserContext,
-  options?: FetchOptions,
-): Promise<ArticleResponse | AppError> => {
+  options?: ArticleQueryParams,
+): Promise<ArticleCollection | AppError> => {
   const data = await executeWithFailover((provider) => {
     return provider.fetchArticles(context, options);
   });
@@ -18,9 +19,9 @@ export const fetchArticles = async (
 export const fetchRelatedArticles = async (
   context: UserContext,
   article: Article | null,
-): Promise<ArticleResponse | AppError> => {
+): Promise<ArticleCollection | AppError> => {
   const data = await executeWithFailover((provider) => {
-    return provider.fetchRelated(context, article);
+    return provider.fetchRelatedArticles(context, article!);
   });
 
   return data;

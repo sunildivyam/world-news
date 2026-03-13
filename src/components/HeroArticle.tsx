@@ -1,7 +1,7 @@
 "use client";
 
+import { Article } from "@/types/Article.interface";
 import Image from "next/image";
-import { Article } from "@/types/article";
 import Link from "next/link";
 
 interface Props {
@@ -17,7 +17,7 @@ export default function HeroArticle({ article }: Props) {
       <div className="relative w-full h-[70vh] overflow-hidden">
         <Image
           sizes="(max-width: 1200px) 100vw, 50vw"
-          src={article.imageUrl}
+          src={article.imageUrl || ""}
           alt={article.title}
           fill
           priority

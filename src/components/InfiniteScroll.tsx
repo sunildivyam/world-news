@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import NewsCard from "./NewsCard";
-import { Article } from "@/types/article";
-import { AppError } from "@/types/AppError";
 import { SectionError } from "./SectionError";
+import { Article } from "@/types/Article.interface";
+import { AppError } from "@/types/AppError.class";
 
 interface Props {
   initialCursor: string | null;

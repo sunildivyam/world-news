@@ -3,10 +3,10 @@ import HeroArticle from "@/components/HeroArticle";
 import NewsGrid from "@/components/NewsGrid";
 import Header from "@/components/Header";
 import InfiniteScroll from "@/components/InfiniteScroll";
-import { getUserContext } from "@/lib/news/context";
 import { SectionError } from "@/components/SectionError";
-import { AppError } from "@/types/AppError";
-import { ArticleResponse } from "@/types/article";
+import { getUserContext } from "@/lib/UserContext.service";
+import { AppError } from "@/types/AppError.class";
+import { ArticleCollection } from "@/types/ArticleCollection.interface";
 
 export const runtime = "edge";
 
@@ -28,8 +28,8 @@ export default async function HomePage({ searchParams }: Props) {
   }
 
   // 4. Extract data (articlesRes is now guaranteed to be ArticleResponse)
-  const data = articlesRes as ArticleResponse;
-  const [hero, ...rest] = data.articles || [];
+  const articleCollection = articlesRes as ArticleCollection;
+  const [hero, ...rest] = articleCollection.articles || [];
 
   return (
     <>
@@ -41,7 +41,12 @@ export default async function HomePage({ searchParams }: Props) {
           {rest.length > 0 && <NewsGrid articles={rest} />}
 
           {/* Pass the server-fetched cursor to the client-side scroll component */}
-          <InfiniteScroll initialCursor={data.nextPage} category={category} />
+          {articleCollection.nextPage && (
+            <InfiniteScroll
+              initialCursor={articleCollection.nextPage as string}
+              category={category}
+            />
+          )}
         </div>
       </main>
     </>

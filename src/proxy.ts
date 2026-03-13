@@ -1,18 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { buildUserContext } from "./lib/news/context";
+import { buildUserContextFromVarcel } from "./lib/UserContext.service";
 
 export async function proxy(request: NextRequest) {
   const headers = request.headers;
-  const userContext = await buildUserContext();
+  const userContext = await buildUserContextFromVarcel();
+  const { geo } = userContext;
 
   const requestHeaders = new Headers(headers);
-  console.log("PROXY Session ID: ", userContext.sessionId);
-  requestHeaders.set("x-session-id", userContext.sessionId);
-  requestHeaders.set("x-user-country", userContext.country || "us");
-  requestHeaders.set("x-user-region", userContext.region || "");
-  requestHeaders.set("x-user-city", userContext.city || "");
-  requestHeaders.set("x-user-ip", userContext.ip || "");
-  requestHeaders.set("x-user-language", userContext.language);
+  requestHeaders.set("x-session-id", userContext.sessionId!);
+  requestHeaders.set("x-user-country", geo?.country!);
+  requestHeaders.set("x-user-region", geo?.region!);
+  requestHeaders.set("x-user-city", geo?.city!);
+  requestHeaders.set("x-user-ip", geo?.ip!);
+  requestHeaders.set("x-user-language", geo?.language!);
 
   return NextResponse.next({
     request: {
