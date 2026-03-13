@@ -7,12 +7,12 @@ export async function proxy(request: NextRequest) {
   const { geo } = userContext;
 
   const requestHeaders = new Headers(headers);
-  requestHeaders.set("x-session-id", userContext.sessionId!);
-  requestHeaders.set("x-user-country", geo?.country!);
-  requestHeaders.set("x-user-region", geo?.region!);
-  requestHeaders.set("x-user-city", geo?.city!);
-  requestHeaders.set("x-user-ip", geo?.ip!);
-  requestHeaders.set("x-user-language", geo?.language!);
+  requestHeaders.set("x-session-id", userContext.sessionId ?? "");
+  requestHeaders.set("x-user-country", geo?.country ?? "");
+  requestHeaders.set("x-user-region", geo?.region ?? "");
+  requestHeaders.set("x-user-city", geo?.city ?? "");
+  requestHeaders.set("x-user-ip", geo?.ip ?? "");
+  requestHeaders.set("x-user-language", geo?.language ?? "");
 
   return NextResponse.next({
     request: {
