@@ -1,5 +1,6 @@
 "use client";
 
+import { getArticleUrl } from "@/lib/news-service";
 import { Article } from "@/types/Article.interface";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,10 +11,7 @@ interface Props {
 
 export default function HeroArticle({ article }: Props) {
   return (
-    <Link
-      href={`/article/${article.language}/${article.slug}`}
-      className="group block"
-    >
+    <Link href={getArticleUrl(article)} className="group block">
       <div className="relative w-full h-[70vh] overflow-hidden">
         <Image
           sizes="(max-width: 1200px) 100vw, 50vw"

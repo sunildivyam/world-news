@@ -22,7 +22,12 @@ export const SectionError: React.FC<SectionErrorProps> = ({
           <h3 className="text-2xl font-bold">{error.source}</h3>
           <p>{error.status}</p>
           <p className="text-center">{error.message}</p>
-          <h3 className="text-2xl font-bold">Additional Info</h3>
+          {error.details && (
+            <>
+              <h3 className="text-2xl font-bold">Additional Info</h3>
+              <p>{JSON.stringify(error.details || {})}</p>
+            </>
+          )}
         </div>
         {onRetry && (
           <button onClick={onRetry} className="retry-button">

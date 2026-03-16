@@ -2,25 +2,20 @@ import { fetchArticle, fetchRelatedArticles } from "@/lib/news-service";
 import Header from "@/components/Header";
 import RelatedArticles from "@/components/RelatedArticles";
 import { SectionError } from "@/components/SectionError";
-import { getUserContext } from "@/lib/UserContext.service";
 import { AppError } from "@/types/AppError.class";
 import { Article } from "@/types/Article.interface";
 import { ArticleCollection } from "@/types/ArticleCollection.interface";
 import ClientDate from "@/components/ClientDate";
+import { UserContext } from "@/lib/contexts/user/UserContext.interface";
 
-export const runtime = "edge";
-
-interface Props {
-  params: {
-    language: string;
-    slug: string;
-  };
-}
-
-export default async function ArticlePage({ params }: Props) {
+export default async function ArticlePage({
+  userContext,
+  slug,
+}: {
+  userContext: UserContext;
+  slug: string;
+}) {
   // 1. Resolve params (Next.js 15+ requires awaiting params)
-  const { language, slug } = await params;
-  const userContext = await getUserContext();
 
   // 2. Fetch primary article data
   const articleRes = await fetchArticle(userContext, slug);
@@ -93,7 +88,6 @@ export default async function ArticlePage({ params }: Props) {
 // export async function generateMetadata({ params }: Props) {
 //   const { language, slug } = await params;
 
-//   console.log("META: ");
 //   const data = await fetchNews({
 //     slug,
 //     language,

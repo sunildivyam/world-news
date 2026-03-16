@@ -5,6 +5,14 @@ import NewsCard from "./NewsCard";
 import { SectionError } from "./SectionError";
 import { Article } from "@/types/Article.interface";
 import { AppError } from "@/types/AppError.class";
+import { resolveRouteSegmentsContext } from "@/lib/contexts/route-segments/RouteSegments.Resolver";
+import { findTenantFromSegments } from "@/lib/contexts/tenant/Tenant.helper";
+
+function getUrlSegments() {
+  const { pathname } = window.location;
+  // Remove leading/trailing slashes and split by "/"
+  return pathname.replace(/^\/|\/$/g, "").split("/");
+}
 
 interface Props {
   initialCursor: string | null;
@@ -25,16 +33,24 @@ export default function InfiniteScroll({ initialCursor, category }: Props) {
     if (!cursor || loading) return;
 
     setLoading(true);
-
+    const segments = getUrlSegments();
+    const tenantCtx = await findTenantFromSegments(segments);
+    const segmentsCtx = await resolveRouteSegmentsContext(segments);
     const url = new URL("/api/news", window.location.origin);
-
     if (category) {
       url.searchParams.set("category", category);
     }
-
     url.searchParams.set("nextPage", cursor);
 
-    const res = await fetch(url.toString());
+    const req = new Request(url);
+
+    req.headers.set("x-user-tenant-id", tenantCtx?.tenant?.id ?? "");
+    req.headers.set("x-user-country", segmentsCtx.country ?? "");
+    req.headers.set("x-user-region", segmentsCtx.region ?? "");
+    req.headers.set("x-user-city", segmentsCtx.city ?? "");
+    req.headers.set("x-user-language", segmentsCtx.language ?? "");
+
+    const res = await fetch(req);
     const data = await res.json();
 
     if (!AppError.isError(data)) {

@@ -1,33 +1,32 @@
+import { ArticleAnalytics } from "./ArticleAnalytics";
 import { ArticleContent } from "./ArticleContent.type";
+import { ArticleGeo } from "./ArticleGeo.interface";
 import { ArticleSource } from "./ArticleSource.interface";
 import { OriginalArticle } from "./OriginalArticle.interface";
-
-export type Sentiment = "positive" | "negative" | "neutral";
-
-export interface SentimentStats {
-  score?: number | string;
-  confidence?: number | string;
-}
+import { Tenant } from "./Tenant";
 
 export interface Article {
+  // metadata fields
   id: string;
-  slug?: string;
+  slug: string;
   title: string;
   description: string;
   author: string;
   category: string;
-  country: string;
+  geo: ArticleGeo;
   language: string;
   keywords: string[];
   tags: string[];
   publishTZ: string;
   publishDate: Date | string;
   updateDate: Date | string;
+  // optional fields
+  tenant?: Tenant; // TODO: later make this mandatory
   imageUrl?: string;
   videoUrl?: string;
   content?: ArticleContent;
-  sentiment?: Sentiment;
-  sentimentStats?: SentimentStats;
   source?: ArticleSource;
   orginal?: OriginalArticle;
+  // Analytical fields
+  analytics?: ArticleAnalytics;
 }

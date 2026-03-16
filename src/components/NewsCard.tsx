@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ClientDate from "./ClientDate";
 import { Article } from "@/types/Article.interface";
+import { getArticleUrl } from "@/lib/news-service";
 
 interface Props {
   article: Article;
@@ -11,10 +12,7 @@ interface Props {
 
 export default function NewsCard({ article }: Props) {
   return (
-    <Link
-      href={`/article/${article.language}/${article.slug}`}
-      className="group block pb-6"
-    >
+    <Link href={getArticleUrl(article)} className="group block pb-6">
       <div className="relative w-full h-56 overflow-hidden rounded-lg">
         <Image
           sizes="(max-width: 768px) 100vw, 33vw"

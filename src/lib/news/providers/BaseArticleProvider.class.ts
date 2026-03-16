@@ -3,7 +3,7 @@ import { Article } from "@/types/Article.interface";
 import { ArticleCollection } from "@/types/ArticleCollection.interface";
 import { ArticleProvider } from "@/types/ArticleProvider.interface";
 import { ArticleQueryParams } from "@/types/ArticleQueryParams";
-import { UserContext } from "@/types/UserContext.interface";
+import { UserContext } from "@/lib/contexts/user/UserContext.interface";
 
 export class BaseArticleProvider implements ArticleProvider {
   name: string = "BaseArticleProvider";
@@ -30,6 +30,7 @@ export class BaseArticleProvider implements ArticleProvider {
     const {
       id,
       slug,
+      tenant,
       title,
       description,
       author,
@@ -44,8 +45,7 @@ export class BaseArticleProvider implements ArticleProvider {
       imageUrl,
       videoUrl,
       content,
-      sentiment,
-      sentimentStats,
+      analytics,
       source,
       orginal,
     } = rawArticle;
@@ -53,6 +53,7 @@ export class BaseArticleProvider implements ArticleProvider {
     const article: Article = {
       id,
       slug,
+      tenant,
       title,
       description,
       author,
@@ -67,8 +68,7 @@ export class BaseArticleProvider implements ArticleProvider {
       imageUrl,
       videoUrl,
       content,
-      sentiment,
-      sentimentStats,
+      analytics,
       source,
       orginal,
     };

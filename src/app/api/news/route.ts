@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchArticles } from "@/lib/news-service";
 import { headers } from "next/headers";
-import { getUserContext } from "@/lib/UserContext.service";
-
-export const runtime = "edge";
+import { getUserContext } from "@/lib/contexts/user/UserContext.service";
 
 export async function GET(request: NextRequest) {
   try {

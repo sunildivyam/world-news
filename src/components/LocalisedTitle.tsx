@@ -1,4 +1,4 @@
-import { UserContext } from "@/types/UserContext.interface";
+import { UserContext } from "@/lib/contexts/user/UserContext.interface";
 
 interface LocalisedTitleProps {
   title: string;
@@ -13,7 +13,7 @@ export default function LocalisedTitle({
   prefix,
   postfix,
 }: LocalisedTitleProps) {
-  const { country, region, city, language, ip } = userContext?.geo!;
+  const { country, region, city, language, ip } = userContext?.geo ?? {};
 
   return (
     <>

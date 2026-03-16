@@ -1,19 +1,36 @@
 import { ArticleQueryParams } from "@/types/ArticleQueryParams";
-import { UserContext } from "@/types/UserContext.interface";
+import { UserContext } from "@/lib/contexts/user/UserContext.interface";
 import {
   BaseArticleProvider,
   setQueryParams,
 } from "../BaseArticleProvider.class";
-import { Article, Sentiment, SentimentStats } from "@/types/Article.interface";
+import { Article } from "@/types/Article.interface";
 import { ApiArticle, ApiArticlesResponse } from "./NewsData.interface";
 import { ArticleSource } from "@/types/ArticleSource.interface";
 import { OriginalArticle } from "@/types/OriginalArticle.interface";
 import { ArticleCollection } from "@/types/ArticleCollection.interface";
+import { SentimentEnum, SentimentMetrics } from "@/types/SentimentMetrics";
+import { getRandomIntInclusive } from "@/lib/Utils";
 
 export class NewsdataProvider extends BaseArticleProvider {
   name: string = "NewsData";
   baseUrl: string = process.env.NEWSDATA_API_URL ?? "";
   apiKey: string = process.env.NEWSDATA_API_KEY ?? "";
+
+  private parseSentimentMetric(rawArticle: ApiArticle) {
+    const label = Object.keys(SentimentEnum).includes(rawArticle.sentiment)
+      ? (rawArticle.sentiment as SentimentEnum)
+      : SentimentEnum.neutral;
+    let score = 0;
+
+    try {
+      score = parseFloat(rawArticle.sentiment_stats);
+    } catch (error) {}
+
+    const sentiment: SentimentMetrics = { label, score };
+
+    return sentiment;
+  }
 
   createRequest(
     userContext: UserContext,
@@ -53,11 +70,14 @@ export class NewsdataProvider extends BaseArticleProvider {
     const article: Article = {
       id: rawArticle.article_id,
       slug: rawArticle.article_id,
+      tenant: undefined,
       title: rawArticle.title,
       description: rawArticle.description,
       author: (rawArticle.creator?.length && rawArticle.creator[0]) || "",
       category: (rawArticle.category?.length && rawArticle.category[0]) || "",
-      country: (rawArticle.country?.length && rawArticle.country[0]) || "",
+      geo: {
+        country: (rawArticle.country?.length && rawArticle.country[0]) || "",
+      },
       language: rawArticle.language,
       keywords: rawArticle.keywords,
       tags: [],
@@ -67,11 +87,21 @@ export class NewsdataProvider extends BaseArticleProvider {
       imageUrl: rawArticle.image_url,
       videoUrl: rawArticle.video_url,
       content: undefined,
-      sentiment: rawArticle.sentiment as Sentiment,
-      sentimentStats: {
-        score: rawArticle.sentiment_stats ?? undefined,
-        confidence: undefined,
-      } as SentimentStats,
+      analytics: {
+        sentiment: this.parseSentimentMetric(rawArticle),
+        priority: 0,
+        popularity: getRandomIntInclusive(0, 100),
+        trend: {
+          velocity: getRandomIntInclusive(0, 100),
+          momentum: getRandomIntInclusive(0, 100),
+          isBreaking: false,
+        },
+        engagement: {
+          views: 0,
+          shares: 0,
+          comments: 0,
+        },
+      },
       source: {
         id: rawArticle.source_id,
         name: rawArticle.source_name,
