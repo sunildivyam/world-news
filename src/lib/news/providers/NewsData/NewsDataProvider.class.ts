@@ -54,7 +54,7 @@ export class NewsdataProvider extends BaseArticleProvider {
       sp.set("removeduplicate", "1");
       sp.set(
         "excludefield",
-        "ai_summary,ai_org,ai_region,sentiment_stats,ai_tag,sentiment,content,video_url,source_priority,source_icon,source_url,source_name,source_id",
+        "ai_summary,ai_org,ai_region,sentiment_stats,ai_tag,sentiment,content,video_url",
       );
       sp.set("sort", "pubdateasc");
       sp.set("image", "1");

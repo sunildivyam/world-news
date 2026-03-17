@@ -17,10 +17,11 @@ export default function LocalisedTitle({
 
   return (
     <>
-      {prefix ?? ""}
+      {title} Today
+      {/* {prefix ?? ""}
       {country ? `${country} ` : ""} {region ? `| ${region}` : ""}
       {city ? `| ${city}` : ""} {language ? `| ${language}` : ""} {title}{" "}
-      {postfix ?? ""} {ip ? `[${ip}]` : ""}
+      {postfix ?? ""} {ip ? `[${ip}]` : ""} */}
     </>
   );
 }

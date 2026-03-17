@@ -5,6 +5,7 @@ import Link from "next/link";
 import ClientDate from "./ClientDate";
 import { Article } from "@/types/Article.interface";
 import { resolveUrlFromArticle } from "@/lib/contexts/url/Url.Resolver";
+import ArticleSourceLink from "./ArticleSourceLink";
 
 interface Props {
   article: Article;
@@ -31,9 +32,9 @@ export default function NewsCard({ article }: Props) {
         {article.description}
       </p>
 
-      <p className="mt-2 text-sm text-gray-500">
+      <p className="mt-2 text-sm text-gray-500 flex gap-4">
         <ClientDate dateString={article.publishDate.toString()} /> •{" "}
-        {article.source?.name}
+        <ArticleSourceLink source={article.source} />
       </p>
     </Link>
   );

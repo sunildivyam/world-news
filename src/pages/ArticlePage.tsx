@@ -7,6 +7,7 @@ import { Article } from "@/types/Article.interface";
 import { ArticleCollection } from "@/types/ArticleCollection.interface";
 import ClientDate from "@/components/ClientDate";
 import { UserContext } from "@/lib/contexts/user/UserContext.interface";
+import ArticleSourceLink from "@/components/ArticleSourceLink";
 
 export default async function ArticlePage({
   userContext,
@@ -49,9 +50,9 @@ export default async function ArticlePage({
               {article.title}
             </h1>
 
-            <p className="max-w-4xl mx-auto mt-4 text-gray-500">
+            <p className="max-w-4xl mx-auto mt-4 text-gray-500 flex gap-4">
               <ClientDate dateString={article.publishDate.toString()} /> •{" "}
-              {article.source?.name}
+              <ArticleSourceLink source={article.source} />
             </p>
 
             <div className="max-w-full mt-8">

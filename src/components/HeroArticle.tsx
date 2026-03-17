@@ -4,6 +4,7 @@ import { resolveUrlFromArticle } from "@/lib/contexts/url/Url.Resolver";
 import { Article } from "@/types/Article.interface";
 import Image from "next/image";
 import Link from "next/link";
+import ArticleSourceLink from "./ArticleSourceLink";
 
 interface Props {
   article: Article;
@@ -25,8 +26,9 @@ export default function HeroArticle({ article }: Props) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="absolute bottom-0 p-8 text-white max-w-4xl">
-            <p className="text-red-500 font-semibold uppercase tracking-wider">
+            <p className="text-red-500 font-semibold uppercase tracking-wider flex gap-4">
               Breaking News
+              <ArticleSourceLink source={article.source} />
             </p>
 
             <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mt-3">
