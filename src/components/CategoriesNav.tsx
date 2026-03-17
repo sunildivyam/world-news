@@ -1,27 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { categories } from "@/app-constants/categories.constants";
-import { UserContext } from "@/lib/contexts/user/UserContext.interface";
-import { TenantConfig } from "@/types/TenantConfig.interface";
 import { resolveUrl } from "@/lib/contexts/url/Url.Resolver";
 import { PageTypeEnum } from "@/types/PageType.enum";
+import { AppContext } from "./AppContext.Provider";
+import { SectionError } from "./SectionError";
+import { AppError } from "@/types/AppError.class";
 
-export default function CategoryNav({
-  userCtx,
-  tenantConfig,
-}: {
-  userCtx: UserContext;
-  tenantConfig: TenantConfig;
-}) {
+export default function CategoryNav() {
+  const { userCtx, tenantConfig } = useContext(AppContext) || {};
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
   const isActive = (value: string) => {
     return pathname?.includes(value);
   };
+
+  if (!userCtx)
+    return (
+      <SectionError
+        error={new AppError("CategoryNav", "User Context missing", 400)}
+      />
+    );
 
   return (
     <nav className="w-full border-b sticky top-0 z-50">
@@ -61,13 +64,13 @@ export default function CategoryNav({
           >
             <div className="space-y-1">
               <span
-                className={`block w-6 h-0.5 ${tenantConfig.theme.mode === "dark" ? "bg-white" : "bg-black"}`}
+                className={`block w-6 h-0.5 ${tenantConfig?.theme.mode === "dark" ? "bg-white" : "bg-black"}`}
               ></span>
               <span
-                className={`block w-6 h-0.5 ${tenantConfig.theme.mode === "dark" ? "bg-white" : "bg-black"}`}
+                className={`block w-6 h-0.5 ${tenantConfig?.theme.mode === "dark" ? "bg-white" : "bg-black"}`}
               ></span>
               <span
-                className={`block w-6 h-0.5 ${tenantConfig.theme.mode === "dark" ? "bg-white" : "bg-black"}`}
+                className={`block w-6 h-0.5 ${tenantConfig?.theme.mode === "dark" ? "bg-white" : "bg-black"}`}
               ></span>
             </div>
           </button>

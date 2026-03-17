@@ -15,6 +15,17 @@ export async function proxy(request: NextRequest) {
 
   const canonical = buildCanonicalPath(userCtx);
 
+  console.log(
+    userCtx.domain,
+    " | ",
+    userCtx.tenantId,
+    " | ",
+    "Current: ",
+    current,
+    "Canonical",
+    canonical,
+  );
+
   if (current !== canonical) {
     const url = new URL(canonical, request.url);
 

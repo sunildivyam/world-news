@@ -1,15 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import NewsCard from "./NewsCard";
+import { useContext, useEffect, useRef, useState } from "react";
 import { SectionError } from "./SectionError";
 import { Article } from "@/types/Article.interface";
 import { AppError } from "@/types/AppError.class";
-import {
-  getUrlSegments,
-  resolveUserContextFromLocalstorage,
-  setUserContextToRequestHeaders,
-} from "@/lib/contexts/user/UserContextClient.Resolver";
+import { setUserContextToRequestHeaders } from "@/lib/contexts/user/UserContextClient.Resolver";
+import NewsGrid from "./NewsGrid";
+import { AppContext } from "./AppContext.Provider";
 
 interface Props {
   initialCursor: string | null;
@@ -17,6 +14,7 @@ interface Props {
 }
 
 export default function InfiniteScroll({ initialCursor, category }: Props) {
+  const { userCtx } = useContext(AppContext) || {};
   const [articles, setArticles] = useState<Article[]>([]);
   const [cursor, setCursor] = useState<string | null>(initialCursor);
   const [loading, setLoading] = useState(false);
@@ -28,11 +26,8 @@ export default function InfiniteScroll({ initialCursor, category }: Props) {
 
   async function loadMore() {
     if (!cursor || loading) return;
-
     setLoading(true);
-    const segments = getUrlSegments();
-    // const userCtx = await resolveUserContextClient(segments);
-    const userCtx = resolveUserContextFromLocalstorage();
+
     const url = new URL("/api/news", window.location.origin);
 
     if (category) {
@@ -81,11 +76,12 @@ export default function InfiniteScroll({ initialCursor, category }: Props) {
 
   return (
     <>
-      <div className="grid gap-8 mt-12 md:grid-cols-2 lg:grid-cols-3">
+      <NewsGrid articles={articles} />
+      {/* <div className="grid gap-8 mt-12 md:grid-cols-2 lg:grid-cols-3">
         {articles.map((article) => (
           <NewsCard key={article.id} article={article} />
         ))}
-      </div>
+      </div> */}
 
       {loading && (
         <div className="text-center py-8 text-gray-500">
