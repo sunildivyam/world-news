@@ -8,6 +8,7 @@ export const getUserContext = async (): Promise<UserContext> => {
   const h = await headers();
   return {
     tenantId: h.get("x-user-tenant-id") ?? undefined,
+    domain: h.get("x-user-domain") ?? undefined,
     sessionId: h.get("x-session-id") ?? undefined,
     language: h.get("x-user-language") ?? undefined,
     pageType: h.get("x-user-page-type") ?? undefined,
