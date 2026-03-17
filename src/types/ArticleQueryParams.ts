@@ -5,4 +5,5 @@ export interface ArticleQueryParams {
   keywords?: Array<string>;
   tags?: Array<string>;
   category?: Array<string>;
+  event?: string;
 }

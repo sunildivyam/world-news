@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ContextSync from "@/components/ContextSync";
+import { getUserContext } from "@/lib/contexts/user/UserContext.service";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,16 +19,19 @@ export const metadata: Metadata = {
   description: "Global Omni Channel News",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const userCtx = await getUserContext();
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <ContextSync context={userCtx} />
         {children}
       </body>
     </html>

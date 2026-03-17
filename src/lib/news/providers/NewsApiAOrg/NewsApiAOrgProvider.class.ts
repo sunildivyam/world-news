@@ -1,14 +1,15 @@
 import { ArticleQueryParams } from "@/types/ArticleQueryParams";
-import { UserContext } from "@/types/UserContext.interface";
+import { UserContext } from "@/lib/contexts/user/UserContext.interface";
 import {
   BaseArticleProvider,
   setQueryParams,
 } from "../BaseArticleProvider.class";
-import { Article, Sentiment, SentimentStats } from "@/types/Article.interface";
+import { Article } from "@/types/Article.interface";
 import { ApiArticle, ApiArticlesResponse } from "./NewsApiAOrg.interface";
 import { ArticleSource } from "@/types/ArticleSource.interface";
 import { OriginalArticle } from "@/types/OriginalArticle.interface";
 import { ArticleCollection } from "@/types/ArticleCollection.interface";
+import { DEFAULT_TENANT } from "@/app-constants/tenants.constant";
 
 export class NewsApiAOrgProvider extends BaseArticleProvider {
   name: string = "NewsApi.org";
@@ -20,8 +21,9 @@ export class NewsApiAOrgProvider extends BaseArticleProvider {
     articleQueryParams: ArticleQueryParams,
   ): Request {
     const url = new URL(this.baseUrl);
-    const { language } = userContext.geo!;
-    const { articleId, pageSize, nextPage, keywords } = articleQueryParams!;
+    const { language } = userContext?.geo || {};
+    const { articleId, pageSize, nextPage, keywords } =
+      articleQueryParams || {};
 
     // set only supported geo to query params
     const sp = setQueryParams(
@@ -50,11 +52,14 @@ export class NewsApiAOrgProvider extends BaseArticleProvider {
     const article: Article = {
       id: "",
       slug: "",
+      tenant: DEFAULT_TENANT,
       title: rawArticle.title,
       description: rawArticle.description,
       author: rawArticle.author,
       category: "",
-      country: "",
+      geo: {
+        country: "",
+      },
       language: "",
       keywords: [],
       tags: [],
@@ -64,8 +69,7 @@ export class NewsApiAOrgProvider extends BaseArticleProvider {
       imageUrl: rawArticle.urlToImage,
       videoUrl: "",
       content: undefined,
-      sentiment: undefined,
-      sentimentStats: undefined,
+      analytics: undefined,
       source: {
         id: rawArticle.source.id,
         name: rawArticle.source.name,

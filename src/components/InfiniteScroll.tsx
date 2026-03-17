@@ -5,6 +5,11 @@ import NewsCard from "./NewsCard";
 import { SectionError } from "./SectionError";
 import { Article } from "@/types/Article.interface";
 import { AppError } from "@/types/AppError.class";
+import {
+  getUrlSegments,
+  resolveUserContextFromLocalstorage,
+  setUserContextToRequestHeaders,
+} from "@/lib/contexts/user/UserContextClient.Resolver";
 
 interface Props {
   initialCursor: string | null;
@@ -25,7 +30,9 @@ export default function InfiniteScroll({ initialCursor, category }: Props) {
     if (!cursor || loading) return;
 
     setLoading(true);
-
+    const segments = getUrlSegments();
+    // const userCtx = await resolveUserContextClient(segments);
+    const userCtx = resolveUserContextFromLocalstorage();
     const url = new URL("/api/news", window.location.origin);
 
     if (category) {
@@ -34,7 +41,10 @@ export default function InfiniteScroll({ initialCursor, category }: Props) {
 
     url.searchParams.set("nextPage", cursor);
 
-    const res = await fetch(url.toString());
+    const req = new Request(url);
+    setUserContextToRequestHeaders(req, userCtx);
+
+    const res = await fetch(req);
     const data = await res.json();
 
     if (!AppError.isError(data)) {

@@ -1,43 +1,29 @@
 import { fetchArticles } from "@/lib/news-service";
-import { categories } from "@/app-constants/categories";
 import Header from "@/components/Header";
 import HeroArticle from "@/components/HeroArticle";
 import NewsGrid from "@/components/NewsGrid";
 import InfiniteScroll from "@/components/InfiniteScroll";
 import { SectionError } from "@/components/SectionError";
-import { getUserContext } from "@/lib/UserContext.service";
 import { AppError } from "@/types/AppError.class";
 import { ArticleQueryParams } from "@/types/ArticleQueryParams";
 import { ArticleCollection } from "@/types/ArticleCollection.interface";
 import LocalisedTitle from "@/components/LocalisedTitle";
+import { UserContext } from "@/lib/contexts/user/UserContext.interface";
 
-export const runtime = "edge";
 
-interface Props {
-  params: Promise<{ category: string }>;
-}
 
-export default async function CategoryPage({ params }: Props) {
+export default async function TagPage({
+  userContext,
+  slug,
+}: {
+  userContext: UserContext;
+  slug: string;
+}) {
   // 1. Await params (Required in Next.js 15)
-  const { category } = await params;
-
-  // 2. Initial Setup
-  const userContext = await getUserContext();
-  const validCategory = categories.find((c) => c.value === category);
-
-  // 3. Handle Invalid Category immediately
-  if (!validCategory) {
-    const error = new AppError(
-      "Category Page",
-      `${category} is not valid`,
-      400,
-    );
-    return <SectionError error={error} />;
-  }
 
   // 4. Fetch Articles
   const fetchOptions: ArticleQueryParams = {
-    category: [category],
+    tags: [slug],
   };
 
   const articlesRes = await fetchArticles(userContext, fetchOptions);
@@ -60,7 +46,7 @@ export default async function CategoryPage({ params }: Props) {
           <h1 className="text-3xl font-bold mb-6 capitalize text-brand">
             <LocalisedTitle
               userContext={userContext}
-              title={category}
+              title={slug}
               postfix="News"
             />
           </h1>
@@ -74,7 +60,7 @@ export default async function CategoryPage({ params }: Props) {
           {articleCollection.nextPage && (
             <InfiniteScroll
               initialCursor={articleCollection.nextPage as string}
-              category={category}
+              category={slug}
             />
           )}
         </div>

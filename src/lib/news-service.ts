@@ -1,7 +1,7 @@
 import { executeWithFailover } from "./news/provider-manager";
 import { ArticleCollection } from "@/types/ArticleCollection.interface";
 import { Article } from "@/types/Article.interface";
-import { UserContext } from "@/types/UserContext.interface";
+import { UserContext } from "@/lib/contexts/user/UserContext.interface";
 import { ArticleQueryParams } from "@/types/ArticleQueryParams";
 import { AppError } from "@/types/AppError.class";
 

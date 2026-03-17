@@ -1,26 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
-import { buildUserContextFromVarcel } from "./lib/UserContext.service";
+import { resolveUserContext } from "./lib/contexts/user/UserContext.Resolver";
+import { buildCanonicalPath } from "./lib/contexts/route-segments/RouteSegments.Service";
+import { setResponseHeadersWithUserContext } from "./lib/contexts/user/UserContext.service";
 
 export async function proxy(request: NextRequest) {
-  const headers = request.headers;
-  const userContext = await buildUserContextFromVarcel();
-  const { geo } = userContext;
+  const current = request.nextUrl.pathname;
+  const userCtx = await resolveUserContext(request);
 
-  const requestHeaders = new Headers(headers);
-  requestHeaders.set("x-session-id", userContext.sessionId ?? "");
-  requestHeaders.set("x-user-country", geo?.country ?? "");
-  requestHeaders.set("x-user-region", geo?.region ?? "");
-  requestHeaders.set("x-user-city", geo?.city ?? "");
-  requestHeaders.set("x-user-ip", geo?.ip ?? "");
-  requestHeaders.set("x-user-language", geo?.language ?? "");
+  // If tenantId is missing, redirect to global error page
+  if (!userCtx.tenantId) {
+    const url = new URL("/not-found", request.url);
+    return NextResponse.redirect(url);
+  }
 
-  return NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  });
+  const canonical = buildCanonicalPath(userCtx);
+
+  if (current !== canonical) {
+    const url = new URL(canonical, request.url);
+
+    return NextResponse.redirect(url);
+  }
+
+  const res = NextResponse.next();
+  setResponseHeadersWithUserContext(res, userCtx);
+
+  return res;
 }
 
 export const config = {
-  matcher: ["/((?!_next|api|favicon.ico).*)"],
+  matcher: ["/((?!_next|api|favicon.ico|not-found).*)"],
 };

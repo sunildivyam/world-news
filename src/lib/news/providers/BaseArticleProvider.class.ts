@@ -3,7 +3,7 @@ import { Article } from "@/types/Article.interface";
 import { ArticleCollection } from "@/types/ArticleCollection.interface";
 import { ArticleProvider } from "@/types/ArticleProvider.interface";
 import { ArticleQueryParams } from "@/types/ArticleQueryParams";
-import { UserContext } from "@/types/UserContext.interface";
+import { UserContext } from "@/lib/contexts/user/UserContext.interface";
 
 export class BaseArticleProvider implements ArticleProvider {
   name: string = "BaseArticleProvider";
@@ -30,11 +30,12 @@ export class BaseArticleProvider implements ArticleProvider {
     const {
       id,
       slug,
+      tenant,
       title,
       description,
       author,
       category,
-      country,
+      geo,
       language,
       keywords,
       tags,
@@ -44,8 +45,7 @@ export class BaseArticleProvider implements ArticleProvider {
       imageUrl,
       videoUrl,
       content,
-      sentiment,
-      sentimentStats,
+      analytics,
       source,
       orginal,
     } = rawArticle;
@@ -53,11 +53,12 @@ export class BaseArticleProvider implements ArticleProvider {
     const article: Article = {
       id,
       slug,
+      tenant,
       title,
       description,
       author,
       category,
-      country,
+      geo,
       language,
       keywords,
       tags,
@@ -67,8 +68,7 @@ export class BaseArticleProvider implements ArticleProvider {
       imageUrl,
       videoUrl,
       content,
-      sentiment,
-      sentimentStats,
+      analytics,
       source,
       orginal,
     };
@@ -197,8 +197,9 @@ export class BaseArticleProvider implements ArticleProvider {
     try {
       const req = this.createRequest(context, {
         category: article?.category ? [article.category] : undefined,
-        keywords: article?.keywords ?? undefined,
-        tags: article?.tags ?? undefined,
+        keywords: article?.keywords ? article?.keywords.slice(0, 1) : undefined,
+        // keywords: article?.keywords ?? undefined,        TODO: Later remove comments for full related search
+        // tags: article?.tags ?? undefined,
       });
 
       console.log(`${this.name} | fetchRelatedArticles()`, req.url);
