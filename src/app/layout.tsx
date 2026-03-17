@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ContextSync from "@/components/ContextSync";
+// import ContextSync from "@/components/_ContextSync";
 import { getUserContext } from "@/lib/contexts/user/UserContext.service";
 import { getTenantConfig } from "@/lib/contexts/tenant/Tenant.validators";
 import Header from "@/components/Header";
+import { AppContextProvider } from "@/components/AppContext.Provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +29,6 @@ export default async function RootLayout({
 }>) {
   const userCtx = await getUserContext();
   const tenantConfig = await getTenantConfig(userCtx.tenantId || "");
-  if (!userCtx || !tenantConfig) return null;
 
   return (
     <html lang={userCtx.language}>
@@ -39,9 +39,10 @@ export default async function RootLayout({
           color: tenantConfig?.theme.mode === "dark" ? "#fff" : "#000",
         }}
       >
-        <ContextSync context={userCtx} />
-        <Header userCtx={userCtx} tenantConfig={tenantConfig} />
-        {children}
+        <AppContextProvider value={{ userCtx, tenantConfig }}>
+          <Header />
+          {children}
+        </AppContextProvider>
       </body>
     </html>
   );

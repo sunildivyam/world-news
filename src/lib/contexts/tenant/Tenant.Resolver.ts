@@ -29,7 +29,10 @@ export async function resolveTenantContext(
   console.log("Domain: ", host);
   const domainTenant = await findTenantByDomain(host);
   console.log("Domain: ", domainTenant?.id, domainTenant?.domain);
-  if (domainTenant) return await populateContextFromTenant(domainTenant);
+  if (domainTenant) {
+    const tenantCtx = await populateContextFromTenant(domainTenant);
+    tenantCtx.domain = host;
+  }
 
   // 2️⃣ subdomain
   const parts = host.split(".");

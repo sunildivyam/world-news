@@ -3,6 +3,7 @@
 import NewsCard from "./NewsCard";
 import InfiniteScroll from "./InfiniteScroll";
 import { Article } from "@/types/Article.interface";
+import NewsGrid from "./NewsGrid";
 
 interface Props {
   initialCursor: string | null;
@@ -17,9 +18,10 @@ export default function RelatedArticles({ initialCursor, articles }: Props) {
       </h2>
 
       <div className="grid gap-8 md:grid-cols-2">
-        {articles.map((article) => (
+        <NewsGrid articles={articles} />
+        {/* {articles.map((article) => (
           <NewsCard key={article.id} article={article} />
-        ))}
+        ))} */}
       </div>
       <InfiniteScroll initialCursor={initialCursor} />
     </>

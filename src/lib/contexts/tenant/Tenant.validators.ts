@@ -9,7 +9,6 @@ export async function populateContextFromTenant(
   const ctx: TenantContext = {
     tenant: tenant,
     language: tenant?.primaryLanguage,
-    domain: tenant?.domain,
     geo: {
       country: tenant?.primaryCountry,
     },

@@ -24,7 +24,7 @@ export async function executeWithFailover<T>(
         return result;
       } else {
         lastError = { ...(result as AppError) };
-        console.error(
+        console.log(
           `Provider ${provider.name} failed. Moving to next.`,
           (result as AppError).message,
         );

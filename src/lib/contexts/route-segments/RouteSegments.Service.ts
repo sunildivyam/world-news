@@ -1,8 +1,8 @@
 import { UserContext } from "../user/UserContext.interface";
 
 export function buildCanonicalPath(ctx: UserContext) {
-  const parts = [ctx.tenantId];
-  
+  const parts = ctx.domain ? [] : [ctx.tenantId];
+
   if (ctx.geo?.country) parts.push(ctx.geo?.country);
 
   if (ctx.geo?.region) parts.push(ctx.geo?.region);

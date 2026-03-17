@@ -1,17 +1,13 @@
 "use client";
 import { resolveUrl } from "@/lib/contexts/url/Url.Resolver";
-import { UserContext } from "@/lib/contexts/user/UserContext.interface";
-import { TenantConfig } from "@/types/TenantConfig.interface";
 import Link from "next/link";
 import CategoryNav from "./CategoriesNav";
+import { AppContext } from "./AppContext.Provider";
+import { useContext } from "react";
 
-export default function Header({
-  userCtx,
-  tenantConfig,
-}: {
-  userCtx: UserContext;
-  tenantConfig: TenantConfig;
-}) {
+export default function Header() {
+  const { userCtx, tenantConfig } = useContext(AppContext) ?? {};
+
   if (!userCtx || !tenantConfig) return null;
 
   return (
@@ -32,7 +28,7 @@ export default function Header({
         </Link>
       </div>
 
-      <CategoryNav userCtx={userCtx} tenantConfig={tenantConfig} />
+      <CategoryNav />
     </header>
   );
 }

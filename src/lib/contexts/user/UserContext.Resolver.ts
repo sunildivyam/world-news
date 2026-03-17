@@ -23,6 +23,7 @@ export async function resolveUserContext(
   const userContext: UserContext = {
     sessionId: h.get("x-session-id") || c.get("x-session-id")?.value,
     tenantId: tenantCtx?.tenant?.id,
+    domain: tenantCtx?.domain,
     geo: {
       country:
         routeSegmentsCtx.country ?? geoCtx.country ?? tenantCtx?.geo.country,

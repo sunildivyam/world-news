@@ -9,7 +9,10 @@ export default function NewsGrid({ articles }: Props) {
   return (
     <div className="grid gap-8 mt-12 md:grid-cols-2 lg:grid-cols-3">
       {articles.map((article) => (
-        <NewsCard key={article.id} article={article} />
+        <NewsCard
+          key={article.id || article.slug || article.title}
+          article={article}
+        />
       ))}
     </div>
   );
