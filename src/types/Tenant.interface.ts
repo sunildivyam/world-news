@@ -1,4 +1,5 @@
-import { Address } from "./Address";
+import { Address } from "./Address.interface";
+import { TenantConfig } from "./TenantConfig.interface";
 
 export interface Tenant {
   // mendatory fields
@@ -17,7 +18,7 @@ export interface Tenant {
   contactEmail?: string;
   contactPhone?: string;
   address?: Address;
-  settings?: Record<string, any>; // Wep app theme, style, Display Name and other preferences
+  settings: TenantConfig;
   subscriptionPlan?: string;
   customFields?: Record<string, any>;
 }

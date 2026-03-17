@@ -1,9 +1,9 @@
-import { ArticleAnalytics } from "./ArticleAnalytics";
+import { ArticleAnalytics } from "./ArticleAnalytics.interface";
 import { ArticleContent } from "./ArticleContent.type";
 import { ArticleGeo } from "./ArticleGeo.interface";
 import { ArticleSource } from "./ArticleSource.interface";
 import { OriginalArticle } from "./OriginalArticle.interface";
-import { Tenant } from "./Tenant";
+import { Tenant } from "./Tenant.interface";
 
 export interface Article {
   // metadata fields

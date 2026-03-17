@@ -39,7 +39,6 @@ export default async function ArticlePage({
 
   return (
     <>
-      <Header />
       <main className="max-w-full mx-auto px-0 py-10">
         {/* Error Handling for Article */}
         {isArticleError && <SectionError error={articleError || undefined} />}

@@ -1,8 +1,4 @@
-export enum SentimentEnum {
-  positive = "positive",
-  neutral = "neutral",
-  negative = "negative",
-}
+import { SentimentEnum } from "./SentimentMetrics.enum";
 
 export interface SentimentMetrics {
   label: SentimentEnum;

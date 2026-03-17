@@ -1,4 +1,4 @@
-import { ArticleQueryParams } from "@/types/ArticleQueryParams";
+import { ArticleQueryParams } from "@/types/ArticleQueryParams.interface";
 import { UserContext } from "@/lib/contexts/user/UserContext.interface";
 import {
   BaseArticleProvider,

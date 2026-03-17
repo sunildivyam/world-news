@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ContextSync from "@/components/ContextSync";
 import { getUserContext } from "@/lib/contexts/user/UserContext.service";
+import { getTenantConfig } from "@/lib/contexts/tenant/Tenant.validators";
+import Header from "@/components/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,13 +27,19 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const userCtx = await getUserContext();
+  const tenantConfig = await getTenantConfig(userCtx.tenantId || "");
 
   return (
-    <html lang="en">
+    <html lang={userCtx.language}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={{
+          background: tenantConfig?.theme.mode === "dark" ? "#000" : "#fff",
+          color: tenantConfig?.theme.mode === "dark" ? "#fff" : "#000",
+        }}
       >
         <ContextSync context={userCtx} />
+        <Header userCtx={userCtx} tenantConfig={tenantConfig} />
         {children}
       </body>
     </html>

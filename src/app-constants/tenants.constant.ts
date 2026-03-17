@@ -1,4 +1,4 @@
-import { Tenant } from "@/types/Tenant";
+import { Tenant } from "@/types/Tenant.interface";
 
 export const tenants: Tenant[] = [
   {
@@ -10,6 +10,46 @@ export const tenants: Tenant[] = [
     updatedDate: new Date(),
     isActive: true,
     domain: "globalnews.com",
+    settings: {
+      branding: {
+        displayName: "Global News",
+        logoUrl:
+          "https://statics.moonshot.cn/kimi-web-seo/assets/kimi-logo-CegIMkbU.png",
+        faviconUrl: "",
+      },
+
+      theme: {
+        primaryColor: "#ff5511",
+        secondaryColor: "#1111ff",
+        fontFamily: "",
+        mode: "light",
+      },
+
+      layout: {
+        type: "standard", // | "magazine" | "minimal";
+        header: "default", // | "centered" | "compact";
+        footer: "default", // | "extended" | "minimal";
+      },
+
+      navigation: {
+        style: "standard",
+      },
+
+      homepage: {
+        sections: [
+          { type: "hero" },
+          { type: "trending" },
+          { type: "category", config: { category: "technology" } },
+          { type: "latest" },
+        ],
+      },
+
+      features: {
+        enableAds: true,
+        enablePersonalization: true,
+        enableComments: true,
+      },
+    },
   },
   {
     id: "globalnewsA",
@@ -20,6 +60,46 @@ export const tenants: Tenant[] = [
     updatedDate: new Date(),
     isActive: true,
     domain: "globalnewsA.com",
+    settings: {
+      branding: {
+        displayName: "Global News A",
+        logoUrl:
+          "https://rapidapi-prod-fe-static.s3.amazonaws.com/theming/Rapid_Logo_Primary.png",
+        faviconUrl: "",
+      },
+
+      theme: {
+        primaryColor: "#0066eb",
+        secondaryColor: "#00c60a",
+        fontFamily: "",
+        mode: "dark",
+      },
+
+      layout: {
+        type: "magazine", // | "magazine" | "minimal";
+        header: "centered", // | "centered" | "compact";
+        footer: "minimal", // | "extended" | "minimal";
+      },
+
+      navigation: {
+        style: "standard",
+      },
+
+      homepage: {
+        sections: [
+          { type: "trending" },
+          { type: "hero" },
+          { type: "category", config: { category: "politics" } },
+          { type: "latest" },
+        ],
+      },
+
+      features: {
+        enableAds: true,
+        enablePersonalization: true,
+        enableComments: true,
+      },
+    },
   },
 ];
 

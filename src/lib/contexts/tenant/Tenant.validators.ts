@@ -1,6 +1,7 @@
-import { tenants } from "@/app-constants/tenants.constant";
-import { Tenant } from "@/types/Tenant";
+import { DEFAULT_TENANT, tenants } from "@/app-constants/tenants.constant";
+import { Tenant } from "@/types/Tenant.interface";
 import { TenantContext } from "./TenantContext.interface";
+import { TenantConfig } from "@/types/TenantConfig.interface";
 
 export async function populateContextFromTenant(
   tenant?: Tenant,
@@ -36,4 +37,9 @@ export async function findTenantFromSegments(
   }
 
   return null;
+}
+
+export async function getTenantConfig(tenantId: string): Promise<TenantConfig> {
+  const tenant = (await findTenantById(tenantId)) || DEFAULT_TENANT;
+  return tenant.settings;
 }

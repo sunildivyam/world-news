@@ -1,7 +1,7 @@
 import { AppError } from "./AppError.class";
 import { Article } from "./Article.interface";
 import { ArticleCollection } from "./ArticleCollection.interface";
-import { ArticleQueryParams } from "./ArticleQueryParams";
+import { ArticleQueryParams } from "./ArticleQueryParams.interface";
 import { UserContext } from "../lib/contexts/user/UserContext.interface";
 
 export interface ArticleProvider {
