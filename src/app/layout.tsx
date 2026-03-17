@@ -28,6 +28,7 @@ export default async function RootLayout({
 }>) {
   const userCtx = await getUserContext();
   const tenantConfig = await getTenantConfig(userCtx.tenantId || "");
+  if (!userCtx || !tenantConfig) return null;
 
   return (
     <html lang={userCtx.language}>

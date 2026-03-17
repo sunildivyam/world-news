@@ -26,7 +26,9 @@ export async function resolveTenantContext(
   const segments = pathname.split("/").filter(Boolean);
 
   // 1️⃣ custom domain
+  console.log("Domain: ", host);
   const domainTenant = await findTenantByDomain(host);
+  console.log("Domain: ", domainTenant?.id, domainTenant?.domain);
   if (domainTenant) return await populateContextFromTenant(domainTenant);
 
   // 2️⃣ subdomain

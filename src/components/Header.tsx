@@ -1,14 +1,8 @@
 "use client";
-
-import { categories } from "@/app-constants/categories.constants";
 import { resolveUrl } from "@/lib/contexts/url/Url.Resolver";
 import { UserContext } from "@/lib/contexts/user/UserContext.interface";
-import { resolveUserContextFromLocalstorage } from "@/lib/contexts/user/UserContextClient.Resolver";
-import { PageTypeEnum } from "@/types/PageType.enum";
 import { TenantConfig } from "@/types/TenantConfig.interface";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import CategoryNav from "./CategoriesNav";
 
 export default function Header({
@@ -18,7 +12,7 @@ export default function Header({
   userCtx: UserContext;
   tenantConfig: TenantConfig;
 }) {
-  const pathname = usePathname();
+  if (!userCtx || !tenantConfig) return null;
 
   return (
     <header className="sticky top-0 z-50 border-b backdrop-blur-md">
