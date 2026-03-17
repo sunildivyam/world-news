@@ -12,6 +12,8 @@ export default async function RouterPage() {
   const ctx = await getUserContext();
   const tenantConfig = await getTenantConfig(ctx.tenantId || "");
 
+  if (!ctx || !tenantConfig) return null;
+
   if (!ctx.pageType) {
     if (ctx.pageId) {
       return <StaticPage userContext={ctx} slug={ctx.pageId} />;

@@ -109,7 +109,7 @@ export const tenants: Tenant[] = [
     createdDate: new Date(),
     updatedDate: new Date(),
     isActive: true,
-    domain: "annuadvent.com",
+    domain: "www.annuadvent.com",
     settings: {
       branding: {
         displayName: "AnnuAdvent",

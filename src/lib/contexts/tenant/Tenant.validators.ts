@@ -39,7 +39,9 @@ export async function findTenantFromSegments(
   return null;
 }
 
-export async function getTenantConfig(tenantId: string): Promise<TenantConfig> {
-  const tenant = (await findTenantById(tenantId)) || DEFAULT_TENANT;
-  return tenant.settings;
+export async function getTenantConfig(
+  tenantId: string,
+): Promise<TenantConfig | null> {
+  const tenant = await findTenantById(tenantId);
+  return tenant?.settings || null;
 }
