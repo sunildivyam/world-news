@@ -32,7 +32,7 @@ export function resolveUrlFromArticle(
   userCtx?: UserContext,
 ): string {
   const segments = [
-    article.tenant?.id || userCtx?.tenantId,
+    userCtx?.domain ? "" : article.tenant?.id || userCtx?.tenantId,
     article.geo?.country || userCtx?.geo?.country,
     article.geo?.region || userCtx?.geo?.region,
     article.geo?.city || userCtx?.geo?.city,
