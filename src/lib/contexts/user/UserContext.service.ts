@@ -22,6 +22,7 @@ export const setResponseHeadersWithUserContext = (
 ): void => {
   res.headers.set("x-session-id", userCtx.sessionId ?? "");
   res.headers.set("x-user-tenant-id", userCtx.tenantId ?? "");
+  res.headers.set("x-user-domain", userCtx.domain ?? "");
   res.headers.set("x-user-country", userCtx.geo?.country ?? "");
   res.headers.set("x-user-region", userCtx.geo?.region ?? "");
   res.headers.set("x-user-city", userCtx.geo?.city ?? "");
