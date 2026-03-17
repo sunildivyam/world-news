@@ -32,6 +32,7 @@ export async function resolveTenantContext(
   if (domainTenant) {
     const tenantCtx = await populateContextFromTenant(domainTenant);
     tenantCtx.domain = host;
+    return tenantCtx;
   }
 
   // 2️⃣ subdomain
