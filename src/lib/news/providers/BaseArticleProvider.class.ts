@@ -2,7 +2,7 @@ import { AppError } from "@/types/AppError.class";
 import { Article } from "@/types/Article.interface";
 import { ArticleCollection } from "@/types/ArticleCollection.interface";
 import { ArticleProvider } from "@/types/ArticleProvider.interface";
-import { ArticleQueryParams } from "@/types/ArticleQueryParams";
+import { ArticleQueryParams } from "@/types/ArticleQueryParams.interface";
 import { UserContext } from "@/lib/contexts/user/UserContext.interface";
 
 export class BaseArticleProvider implements ArticleProvider {

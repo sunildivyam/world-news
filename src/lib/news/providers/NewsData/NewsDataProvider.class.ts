@@ -1,4 +1,4 @@
-import { ArticleQueryParams } from "@/types/ArticleQueryParams";
+import { ArticleQueryParams } from "@/types/ArticleQueryParams.interface";
 import { UserContext } from "@/lib/contexts/user/UserContext.interface";
 import {
   BaseArticleProvider,
@@ -9,11 +9,12 @@ import { ApiArticle, ApiArticlesResponse } from "./NewsData.interface";
 import { ArticleSource } from "@/types/ArticleSource.interface";
 import { OriginalArticle } from "@/types/OriginalArticle.interface";
 import { ArticleCollection } from "@/types/ArticleCollection.interface";
-import { SentimentEnum, SentimentMetrics } from "@/types/SentimentMetrics";
+import { SentimentMetrics } from "@/types/SentimentMetrics.interface";
 import { getRandomIntInclusive } from "@/lib/Utils";
 import { getLanguageCode } from "@/lib/contexts/language/Language.validators";
 import { getCountryCode } from "@/lib/contexts/geo/Geo.validators";
 import { DEFAULT_TENANT } from "@/app-constants/tenants.constant";
+import { SentimentEnum } from "@/types/SentimentMetrics.enum";
 
 export class NewsdataProvider extends BaseArticleProvider {
   name: string = "NewsData";
@@ -53,7 +54,7 @@ export class NewsdataProvider extends BaseArticleProvider {
       sp.set("removeduplicate", "1");
       sp.set(
         "excludefield",
-        "ai_summary,ai_org,ai_region,sentiment_stats,ai_tag,sentiment,content,video_url,source_priority,source_icon,source_url,source_name,source_id",
+        "ai_summary,ai_org,ai_region,sentiment_stats,ai_tag,sentiment,content,video_url",
       );
       sp.set("sort", "pubdateasc");
       sp.set("image", "1");

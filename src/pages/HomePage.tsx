@@ -7,13 +7,14 @@ import { SectionError } from "@/components/SectionError";
 import { AppError } from "@/types/AppError.class";
 import { ArticleCollection } from "@/types/ArticleCollection.interface";
 import { UserContext } from "@/lib/contexts/user/UserContext.interface";
-
-
+import { TenantConfig } from "@/types/TenantConfig.interface";
 
 export default async function HomePage({
   userContext,
+  tenantConfig,
 }: {
   userContext: UserContext;
+  tenantConfig: TenantConfig;
 }) {
   // 2. Perform the fetch directly
   const articlesRes = await fetchArticles(userContext, {});
@@ -29,8 +30,28 @@ export default async function HomePage({
 
   return (
     <>
-      <Header />
       <main className="max-w-full mx-auto px-0 py-0">
+        {/* {tenantConfig.homepage.sections.map((section, i) => {
+          switch (section.type) {
+            case "hero":
+              return <HeroSection key={i} />;
+
+            case "trending":
+              return <TrendingSection key={i} />;
+
+            case "latest":
+              return <LatestSection key={i} />;
+
+            case "category":
+              return (
+                <CategorySection key={i} category={section.config.category} />
+              );
+
+            default:
+              return null;
+          }
+        })} */}
+
         {hero && <HeroArticle article={hero} />}
 
         <div className="max-w-7xl mx-auto px-4 py-8">

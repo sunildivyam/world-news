@@ -1,4 +1,4 @@
-import { Tenant } from "@/types/Tenant";
+import { Tenant } from "@/types/Tenant.interface";
 
 const tenantCache = new Map<string, Tenant>();
 

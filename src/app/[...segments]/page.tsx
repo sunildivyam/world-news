@@ -6,16 +6,18 @@ import StaticPage from "@/pages/StaticPage";
 import EventPage from "@/pages/EventPage";
 import TagPage from "@/pages/TagPage";
 import ArticlePage from "@/pages/ArticlePage";
+import { getTenantConfig } from "@/lib/contexts/tenant/Tenant.validators";
 
 export default async function RouterPage() {
   const ctx = await getUserContext();
+  const tenantConfig = await getTenantConfig(ctx.tenantId || "");
 
   if (!ctx.pageType) {
     if (ctx.pageId) {
       return <StaticPage userContext={ctx} slug={ctx.pageId} />;
     }
 
-    return <HomePage userContext={ctx} />;
+    return <HomePage userContext={ctx} tenantConfig={tenantConfig} />;
   }
 
   switch (ctx.pageType) {
@@ -32,6 +34,6 @@ export default async function RouterPage() {
       return <TagPage userContext={ctx} slug={ctx.pageId!} />;
 
     default:
-      return <HomePage userContext={ctx} />;
+      return <HomePage userContext={ctx} tenantConfig={tenantConfig} />;
   }
 }

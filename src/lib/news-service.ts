@@ -2,7 +2,7 @@ import { executeWithFailover } from "./news/provider-manager";
 import { ArticleCollection } from "@/types/ArticleCollection.interface";
 import { Article } from "@/types/Article.interface";
 import { UserContext } from "@/lib/contexts/user/UserContext.interface";
-import { ArticleQueryParams } from "@/types/ArticleQueryParams";
+import { ArticleQueryParams } from "@/types/ArticleQueryParams.interface";
 import { AppError } from "@/types/AppError.class";
 
 export const fetchArticles = async (

@@ -5,13 +5,11 @@ import NewsGrid from "@/components/NewsGrid";
 import InfiniteScroll from "@/components/InfiniteScroll";
 import { SectionError } from "@/components/SectionError";
 import { AppError } from "@/types/AppError.class";
-import { ArticleQueryParams } from "@/types/ArticleQueryParams";
+import { ArticleQueryParams } from "@/types/ArticleQueryParams.interface";
 import { ArticleCollection } from "@/types/ArticleCollection.interface";
 import LocalisedTitle from "@/components/LocalisedTitle";
 import { categories } from "@/app-constants/categories.constants";
 import { UserContext } from "@/lib/contexts/user/UserContext.interface";
-
-
 
 export default async function CategoryPage({
   userContext,
@@ -50,7 +48,6 @@ export default async function CategoryPage({
 
   return (
     <>
-      <Header />
       <main className="max-w-full mx-auto px-0 py-0">
         <div className="max-w-7xl mx-auto px-4 py-8">
           <h1 className="text-3xl font-bold mb-6 capitalize text-brand">

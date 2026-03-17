@@ -1,4 +1,4 @@
-import { Tenant } from "../../../types/Tenant";
+import { Tenant } from "../../../types/Tenant.interface";
 
 export interface TenantContext {
   tenant?: Tenant;
