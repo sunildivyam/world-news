@@ -2,10 +2,10 @@ import { NextRequest } from "next/server";
 import {
   findTenantByDomain,
   findTenantById,
+  findTenantFromSegments,
   populateContextFromTenant,
-} from "./Tenant.Service";
+} from "./Tenant.validators";
 import { TenantContext } from "./TenantContext.interface";
-import { findTenantFromSegments } from "./Tenant.helper";
 
 /**
  * Resove Tenant with following Priority order:

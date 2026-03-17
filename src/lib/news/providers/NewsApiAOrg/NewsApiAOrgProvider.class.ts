@@ -9,6 +9,7 @@ import { ApiArticle, ApiArticlesResponse } from "./NewsApiAOrg.interface";
 import { ArticleSource } from "@/types/ArticleSource.interface";
 import { OriginalArticle } from "@/types/OriginalArticle.interface";
 import { ArticleCollection } from "@/types/ArticleCollection.interface";
+import { DEFAULT_TENANT } from "@/app-constants/tenants.constant";
 
 export class NewsApiAOrgProvider extends BaseArticleProvider {
   name: string = "NewsApi.org";
@@ -20,8 +21,9 @@ export class NewsApiAOrgProvider extends BaseArticleProvider {
     articleQueryParams: ArticleQueryParams,
   ): Request {
     const url = new URL(this.baseUrl);
-    const { language } = userContext.geo!;
-    const { articleId, pageSize, nextPage, keywords } = articleQueryParams!;
+    const { language } = userContext?.geo || {};
+    const { articleId, pageSize, nextPage, keywords } =
+      articleQueryParams || {};
 
     // set only supported geo to query params
     const sp = setQueryParams(
@@ -50,7 +52,7 @@ export class NewsApiAOrgProvider extends BaseArticleProvider {
     const article: Article = {
       id: "",
       slug: "",
-      tenant: undefined,
+      tenant: DEFAULT_TENANT,
       title: rawArticle.title,
       description: rawArticle.description,
       author: rawArticle.author,

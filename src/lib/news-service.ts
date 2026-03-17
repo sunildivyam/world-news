@@ -37,16 +37,3 @@ export const fetchArticle = async (
 
   return data;
 };
-
-export function getArticleUrl(article: Article): string {
-  const segments = [
-    article.tenant?.id,
-    article.geo?.country,
-    article.geo?.region,
-    article.geo?.city,
-    article.language,
-    "article",
-    article.slug,
-  ].filter(Boolean);
-  return `/${segments.join("/")}`;
-}

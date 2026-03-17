@@ -22,3 +22,5 @@ export const tenants: Tenant[] = [
     domain: "globalnewsA.com",
   },
 ];
+
+export const DEFAULT_TENANT = tenants[0];

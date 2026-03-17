@@ -30,3 +30,13 @@ export const isCity = (
 
   return !!city;
 };
+
+export function getCountryCode(country: string): string {
+  if (countryList.some((c) => c.code === country)) {
+    return country;
+  }
+  const found = countryList.find(
+    (c) => c.name.toLowerCase() === country.toLowerCase(),
+  );
+  return found ? found.code.toLowerCase() : "";
+}

@@ -1,7 +1,7 @@
 import { PageTypeEnum } from "@/types/PageType.enum";
 import { RouteSegmentContext } from "./RouteSegmentsContext.interface";
-import { isLanguage } from "../language/Language.Service";
-import { isCity, isCountry, isRegion } from "../geo/Geo.helper";
+import { isLanguage } from "../language/Language.validators";
+import { isCity, isCountry, isRegion } from "../geo/Geo.validators";
 import { NextRequest } from "next/server";
 import { staticPages } from "@/app-constants/staticPages.constant";
 

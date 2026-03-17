@@ -1,4 +1,5 @@
 import { countryList } from "@/app-constants/countries.constant";
+import { languageList } from "@/app-constants/languages.constants";
 import { City, Country, Region } from "@/types/CountryList.interface";
 
 type MapEntity = Country | Region | City;
@@ -42,3 +43,13 @@ export const isLanguage = (
 ): boolean => {
   return languages(countryCode).has(languageCode);
 };
+
+export function getLanguageCode(lan: string): string {
+  if (languageList.some((l) => l.code === lan)) {
+    return lan;
+  }
+  const found = languageList.find(
+    (l) => l.name.toLowerCase() === lan.toLowerCase(),
+  );
+  return found ? found.code.toLowerCase() : "";
+}

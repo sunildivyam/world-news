@@ -11,6 +11,9 @@ import { OriginalArticle } from "@/types/OriginalArticle.interface";
 import { ArticleCollection } from "@/types/ArticleCollection.interface";
 import { SentimentEnum, SentimentMetrics } from "@/types/SentimentMetrics";
 import { getRandomIntInclusive } from "@/lib/Utils";
+import { getLanguageCode } from "@/lib/contexts/language/Language.validators";
+import { getCountryCode } from "@/lib/contexts/geo/Geo.validators";
+import { DEFAULT_TENANT } from "@/app-constants/tenants.constant";
 
 export class NewsdataProvider extends BaseArticleProvider {
   name: string = "NewsData";
@@ -37,7 +40,7 @@ export class NewsdataProvider extends BaseArticleProvider {
     articleQueryParams: ArticleQueryParams,
   ): Request {
     const url = new URL(this.baseUrl);
-    const { country, language } = userContext.geo!;
+    const { country, language } = userContext?.geo || {};
 
     // set only supported geo to query params
     const sp = setQueryParams(
@@ -70,15 +73,17 @@ export class NewsdataProvider extends BaseArticleProvider {
     const article: Article = {
       id: rawArticle.article_id,
       slug: rawArticle.article_id,
-      tenant: undefined,
+      tenant: DEFAULT_TENANT,
       title: rawArticle.title,
       description: rawArticle.description,
       author: (rawArticle.creator?.length && rawArticle.creator[0]) || "",
       category: (rawArticle.category?.length && rawArticle.category[0]) || "",
       geo: {
-        country: (rawArticle.country?.length && rawArticle.country[0]) || "",
+        country: getCountryCode(
+          (rawArticle.country?.length && rawArticle.country[0]) || "",
+        ),
       },
-      language: rawArticle.language,
+      language: getLanguageCode(rawArticle.language),
       keywords: rawArticle.keywords,
       tags: [],
       publishTZ: rawArticle.pubDateTZ,

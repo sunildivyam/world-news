@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resolveUserContext } from "./lib/contexts/user/UserContext.Resolver";
 import { buildCanonicalPath } from "./lib/contexts/route-segments/RouteSegments.Service";
+import { setResponseHeadersWithUserContext } from "./lib/contexts/user/UserContext.service";
 
 export async function proxy(request: NextRequest) {
   const current = request.nextUrl.pathname;
@@ -21,16 +22,7 @@ export async function proxy(request: NextRequest) {
   }
 
   const res = NextResponse.next();
-
-  res.headers.set("x-session-id", userCtx.sessionId ?? "");
-  res.headers.set("x-user-tenant-id", userCtx.tenantId ?? "");
-  res.headers.set("x-user-country", userCtx.geo?.country ?? "");
-  res.headers.set("x-user-region", userCtx.geo?.region ?? "");
-  res.headers.set("x-user-city", userCtx.geo?.city ?? "");
-  res.headers.set("x-user-ip", userCtx.geo?.ip ?? "");
-  res.headers.set("x-user-language", userCtx.language ?? "");
-  res.headers.set("x-user-page-type", userCtx.pageType ?? "");
-  res.headers.set("x-user-page-id", userCtx.pageId ?? "");
+  setResponseHeadersWithUserContext(res, userCtx);
 
   return res;
 }

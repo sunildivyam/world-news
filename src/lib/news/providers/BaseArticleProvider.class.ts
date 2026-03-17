@@ -197,8 +197,9 @@ export class BaseArticleProvider implements ArticleProvider {
     try {
       const req = this.createRequest(context, {
         category: article?.category ? [article.category] : undefined,
-        keywords: article?.keywords ?? undefined,
-        tags: article?.tags ?? undefined,
+        keywords: article?.keywords ? article?.keywords.slice(0, 1) : undefined,
+        // keywords: article?.keywords ?? undefined,        TODO: Later remove comments for full related search
+        // tags: article?.tags ?? undefined,
       });
 
       console.log(`${this.name} | fetchRelatedArticles()`, req.url);
