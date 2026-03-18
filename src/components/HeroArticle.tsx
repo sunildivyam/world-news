@@ -3,7 +3,7 @@
 import { resolveUrlFromArticle } from "@/lib/contexts/url/Url.Resolver";
 import { Article } from "@/types/Article.interface";
 import Image from "next/image";
-import Link from "next/link";
+import NoPrefetchLink from "@/components/NoPrefetchLink";
 import ArticleSourceLink from "./ArticleSourceLink";
 
 interface Props {
@@ -15,7 +15,7 @@ export default function HeroArticle({ article }: Props) {
 
   return (
     <div className="block">
-      <Link href={url} className="group block">
+      <NoPrefetchLink href={url} className="group block">
         <div className="relative w-full h-[70vh] overflow-hidden">
           <Image
             sizes="(max-width: 1200px) 100vw, 50vw"
@@ -43,7 +43,7 @@ export default function HeroArticle({ article }: Props) {
             </div>
           </div>
         </div>
-      </Link>
+      </NoPrefetchLink>
       <div
         className="block absolute pr-4"
         style={{ bottom: "1.5em", right: "0" }}

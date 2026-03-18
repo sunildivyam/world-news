@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import NoPrefetchLink from "@/components/NoPrefetchLink";
 import ClientDate from "./ClientDate";
 import { Article } from "@/types/Article.interface";
 import { resolveUrlFromArticle } from "@/lib/contexts/url/Url.Resolver";
@@ -19,7 +19,7 @@ export default function NewsCard({ article }: Props) {
 
   return (
     <div className="relative">
-      <Link href={articleUrl} className="group block pb-6">
+      <NoPrefetchLink href={articleUrl} className="group block pb-6">
         <div className="relative w-full h-56 overflow-hidden rounded-lg">
           <Image
             sizes="(max-width: 768px) 100vw, 33vw"
@@ -41,7 +41,7 @@ export default function NewsCard({ article }: Props) {
         <p className="mt-2 text-sm text-gray-500 flex gap-4">
           <ClientDate dateString={article.publishDate.toString()} /> •{" "}
         </p>
-      </Link>
+      </NoPrefetchLink>
       <div
         className="block absolute pr-4"
         style={{ bottom: "1.5em", right: "0" }}

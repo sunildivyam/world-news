@@ -2,7 +2,7 @@
 
 import { ArticleSource } from "@/types/ArticleSource.interface";
 import Image from "next/image";
-import Link from "next/link";
+import NoPrefetchLink from "@/components/NoPrefetchLink";
 
 interface ArticleSourceLinkProps {
   source?: ArticleSource;
@@ -19,7 +19,7 @@ export default function ArticleSourceLink({ source }: ArticleSourceLinkProps) {
   };
 
   return (
-    <Link
+    <NoPrefetchLink
       onClick={handleClick}
       href={source.url || ""}
       target="_blank"
@@ -36,6 +36,6 @@ export default function ArticleSourceLink({ source }: ArticleSourceLinkProps) {
         />
       )}
       <span>{source.name}</span>
-    </Link>
+    </NoPrefetchLink>
   );
 }
