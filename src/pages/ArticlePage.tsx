@@ -73,7 +73,7 @@ export default async function ArticlePage({
         {relatedArticleError && <SectionError error={relatedArticleError} />}
 
         {relatedArticles && (
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-7xl mx-auto px-4 py-8">
             <RelatedArticles
               initialCursor={relatedArticles.nextPage as string}
               articles={relatedArticles.articles}

@@ -158,10 +158,13 @@ export class BaseArticleProvider implements ArticleProvider {
         );
         return error;
       }
+      const articleCollection = this.parseArticleCollection(json);
 
-      const article = this.parseArticle(
-        (json.results?.length && json.results[0]) || null,
-      );
+      const article =
+        (articleCollection &&
+          articleCollection.articles?.length &&
+          articleCollection.articles[0]) ||
+        null;
 
       if (!article || !article.title) {
         const error = new AppError(
@@ -272,7 +275,8 @@ export function setQueryParams(
     if (nextPage) searchParams.set("page", nextPage as string);
 
     // Query Params that are static and required
-    searchParams.set("size", pageSize ? pageSize.toString() : "" + 10);
+    if (pageSize)
+      searchParams.set("size", pageSize ? pageSize.toString() : "" + 10);
   }
 
   return searchParams;

@@ -62,7 +62,9 @@ export default async function CategoryPage({
         {hero && <HeroArticle article={hero} />}
 
         <div className="max-w-7xl mx-auto px-4 py-8">
-          {rest.length > 0 && <NewsGrid articles={rest} />}
+          {rest.length > 0 && (
+            <NewsGrid articles={rest} mdCols={2} lgCols={3} />
+          )}
 
           {articleCollection.nextPage && (
             <InfiniteScroll
