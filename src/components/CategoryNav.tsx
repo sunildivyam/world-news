@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useState } from "react";
-import Link from "next/link";
+import NoPrefetchLink from "@/components/NoPrefetchLink";
 import { usePathname } from "next/navigation";
 import { categories } from "@/app-constants/categories.constants";
 import { resolveUrl } from "@/lib/contexts/url/Url.Resolver";
@@ -42,7 +42,7 @@ export default function CategoryNav() {
                 cat.value,
               );
               return (
-                <Link
+                <NoPrefetchLink
                   key={cat.value}
                   href={catUrl}
                   className={`text-sm font-medium transition ${
@@ -52,7 +52,7 @@ export default function CategoryNav() {
                   }`}
                 >
                   {cat.label}
-                </Link>
+                </NoPrefetchLink>
               );
             })}
           </div>
@@ -87,7 +87,7 @@ export default function CategoryNav() {
                 cat.value,
               );
               return (
-                <Link
+                <NoPrefetchLink
                   key={cat.value}
                   href={catUrl}
                   onClick={() => setIsOpen(false)}
@@ -96,7 +96,7 @@ export default function CategoryNav() {
                   }`}
                 >
                   {cat.label}
-                </Link>
+                </NoPrefetchLink>
               );
             })}
           </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import NoPrefetchLink from "@/components/NoPrefetchLink";
 import { usePathname } from "next/navigation";
 import { AppContext } from "./AppContext.Provider";
 import { SectionError } from "./SectionError";
@@ -80,7 +80,7 @@ export default function CategoryNavSmart() {
                 cat.value,
               );
               return (
-                <Link
+                <NoPrefetchLink
                   key={cat.value}
                   href={catUrl}
                   className={`text-sm font-medium transition ${
@@ -90,7 +90,7 @@ export default function CategoryNavSmart() {
                   }`}
                 >
                   {cat.label}
-                </Link>
+                </NoPrefetchLink>
               );
             })}
           </div>
@@ -106,7 +106,7 @@ export default function CategoryNavSmart() {
                 cat.value,
               );
               return (
-                <Link
+                <NoPrefetchLink
                   key={cat.value}
                   href={catUrl}
                   className={`text-sm whitespace-nowrap ${
@@ -116,7 +116,7 @@ export default function CategoryNavSmart() {
                   }`}
                 >
                   {cat.label}
-                </Link>
+                </NoPrefetchLink>
               );
             })}
           </div>
