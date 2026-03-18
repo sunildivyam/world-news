@@ -76,7 +76,7 @@ export default function InfiniteScroll({ initialCursor, category }: Props) {
 
   return (
     <>
-      <NewsGrid articles={articles} />
+      <NewsGrid articles={articles} mdCols={2} lgCols={3} />
       {/* <div className="grid gap-8 mt-12 md:grid-cols-2 lg:grid-cols-3">
         {articles.map((article) => (
           <NewsCard key={article.id} article={article} />

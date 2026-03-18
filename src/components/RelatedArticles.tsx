@@ -17,8 +17,8 @@ export default function RelatedArticles({ initialCursor, articles }: Props) {
         Related Articles
       </h2>
 
-      <div className="grid gap-8 md:grid-cols-2">
-        <NewsGrid articles={articles} />
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <NewsGrid articles={articles} mdCols={2} lgCols={3} />
         {/* {articles.map((article) => (
           <NewsCard key={article.id} article={article} />
         ))} */}

@@ -22,7 +22,6 @@ export const resolveUrl = (
 ): string => {
   if (!userCtx) return "";
   const homeUrl = resolveHomeUrl(userCtx);
-  console.log("URL: ", homeUrl, " | ", userCtx.domain);
   const segments = [pageType, pageId].filter(Boolean);
   return `${homeUrl}/${segments.join("/")}`;
 };
