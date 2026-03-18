@@ -32,8 +32,9 @@ export default async function RootLayout({
 
   return (
     <html lang={userCtx.language}>
+      <head></head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased mt-30-md`}
         style={{
           background: tenantConfig?.theme.mode === "dark" ? "#000" : "#fff",
           color: tenantConfig?.theme.mode === "dark" ? "#fff" : "#000",
@@ -41,7 +42,11 @@ export default async function RootLayout({
       >
         <AppContextProvider value={{ userCtx, tenantConfig }}>
           <Header />
-          {children}
+          <div
+            className={`max-w-full mx-auto px-0 ${tenantConfig?.navigation.style === "smart" ? "md:py-22 px-0 py-14" : ""}`}
+          >
+            {children}
+          </div>
         </AppContextProvider>
       </body>
     </html>
