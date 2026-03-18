@@ -132,7 +132,7 @@ export const tenants: Tenant[] = [
       },
 
       navigation: {
-        style: "standard",
+        style: "smart", // "standard"
       },
 
       homepage: {

@@ -1,34 +1,16 @@
 "use client";
-import { resolveUrl } from "@/lib/contexts/url/Url.Resolver";
-import Link from "next/link";
-import CategoryNav from "./CategoriesNav";
+
 import { AppContext } from "./AppContext.Provider";
 import { useContext } from "react";
+import CategoryNavSmart from "./CategoryNavSmart";
+import CategoryNav from "./CategoryNav";
 
 export default function Header() {
-  const { userCtx, tenantConfig } = useContext(AppContext) ?? {};
-
-  if (!userCtx || !tenantConfig) return null;
-
+  const { userCtx, tenantConfig } = useContext(AppContext) || {};
   return (
-    <header className="sticky top-0 z-50 border-b backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-        <Link
-          href={resolveUrl(userCtx)}
-          className="text-2xl font-extrabold text-brand"
-        >
-          <div className="flex items-center justify-between">
-            <img
-              src={tenantConfig.branding.logoUrl}
-              alt="Logo"
-              className="h-8 w-8 mr-2"
-            />
-            <span>{tenantConfig.branding.displayName}</span>
-          </div>
-        </Link>
-      </div>
-
-      <CategoryNav />
+    <header className="sticky top-0 z-50 border-b border-gray-300 backdrop-blur-md">
+      {tenantConfig?.navigation.style === "smart" && <CategoryNavSmart />}
+      {tenantConfig?.navigation.style !== "smart" && <CategoryNav />}
     </header>
   );
 }

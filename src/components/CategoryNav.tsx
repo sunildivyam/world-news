@@ -9,6 +9,7 @@ import { PageTypeEnum } from "@/types/PageType.enum";
 import { AppContext } from "./AppContext.Provider";
 import { SectionError } from "./SectionError";
 import { AppError } from "@/types/AppError.class";
+import TenantLogo from "./TenantLogo";
 
 export default function CategoryNav() {
   const { userCtx, tenantConfig } = useContext(AppContext) || {};
@@ -31,7 +32,7 @@ export default function CategoryNav() {
       <div className="max-w-7xl mx-auto px-4 py-4">
         {/* Top Bar */}
         <div className="flex items-center justify-between">
-          {/* Logo */}
+          <TenantLogo />
           {/* Desktop Menu */}
           <div className="hidden md:flex gap-6 flex-wrap">
             {categories.map((cat) => {

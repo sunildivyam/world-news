@@ -96,7 +96,7 @@ export class BaseArticleProvider implements ArticleProvider {
 
     try {
       const res = await fetch(req, {
-        next: { revalidate: 60 },
+        next: { revalidate: 600 },
       });
 
       const json = await res.json();
@@ -145,7 +145,7 @@ export class BaseArticleProvider implements ArticleProvider {
     try {
       console.log(`${this.name} | fetchArticle()`, req.url);
       const res = await fetch(req, {
-        next: { revalidate: 300 },
+        next: { revalidate: 600 },
       });
 
       const json = await res.json();
@@ -204,7 +204,7 @@ export class BaseArticleProvider implements ArticleProvider {
 
       console.log(`${this.name} | fetchRelatedArticles()`, req.url);
       const res = await fetch(req, {
-        next: { revalidate: 120 },
+        next: { revalidate: 600 },
       });
 
       const json = await res.json();
