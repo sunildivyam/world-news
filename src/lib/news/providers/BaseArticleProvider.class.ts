@@ -10,12 +10,62 @@ export class BaseArticleProvider implements ArticleProvider {
   apiKey: string = process.env.DEFAULT_ARTICLE_PROVIDER_API_KEY ?? "";
   baseUrl: string = process.env.DEFAULT_ARTICLE_PROVIDER_API_URL ?? "";
 
-  createRequest(
+  protected catchError(err: any, fnName: string) {
+    const error = new AppError(
+      `${this.name} | ${fnName}`,
+      err.message,
+      err.status,
+    );
+    return error;
+  }
+
+  protected checkArticleCollection(
+    articleCollection: ArticleCollection,
+    sourceFnName: string,
+  ): AppError | null {
+    if (!articleCollection?.articles?.length) {
+      const error = new AppError(
+        `${this.name} | ${sourceFnName} Post parsing`,
+        "No Articles found.",
+        404,
+      );
+      return error;
+    }
+
+    return null;
+  }
+
+  protected checkError(
+    res: Response,
+    json: any,
+    sourceFnName: string,
+  ): AppError | null {
+    if (!res.ok || json?.status === "error" || json.error || json.errors) {
+      const error = new AppError(
+        `${this.name} | ${sourceFnName}`,
+        json?.error ||
+          (json?.errors?.length && json.errors.join("\n")) ||
+          json?.error?.message ||
+          json?.results?.message ||
+          res.statusText,
+        json?.results?.code || json?.error?.code || res.status,
+      );
+      return error;
+    }
+
+    return null;
+  }
+
+  public createRequest(
     userContext: UserContext,
     articleQueryParams: ArticleQueryParams,
   ): Request {
     const url = new URL(this.baseUrl);
-    const sp = setQueryParams(this.apiKey, userContext, articleQueryParams);
+    const sp = this.setQueryParams(
+      this.apiKey,
+      userContext,
+      articleQueryParams,
+    );
     // Merge sp into url.searchParams
     sp.forEach((value, key) => {
       url.searchParams.set(key, value);
@@ -25,7 +75,7 @@ export class BaseArticleProvider implements ArticleProvider {
     return req;
   }
 
-  parseArticle(rawArticle: any): Article | null {
+  public parseArticle(rawArticle: any): Article | null {
     if (!rawArticle) return null;
     const {
       id,
@@ -76,7 +126,7 @@ export class BaseArticleProvider implements ArticleProvider {
     return article;
   }
 
-  parseArticleCollection(rawArticleCollection: any): ArticleCollection {
+  public parseArticleCollection(rawArticleCollection: any): ArticleCollection {
     const { totalResults, articles, nextPage } = rawArticleCollection;
     const articleCollection: ArticleCollection = {
       articles: articles.map((a: any) => this.parseArticle(a)),
@@ -91,8 +141,9 @@ export class BaseArticleProvider implements ArticleProvider {
     context: UserContext,
     options?: ArticleQueryParams,
   ): Promise<ArticleCollection | AppError> {
+    const fnName = "fetchArticles()";
     const req = this.createRequest(context, options || {});
-    console.log(`${this.name} | fetchArticles()`, req.url);
+    console.log(`${this.name} | ${fnName}}`, req.url);
 
     try {
       const res = await fetch(req, {
@@ -101,36 +152,17 @@ export class BaseArticleProvider implements ArticleProvider {
 
       const json = await res.json();
 
-      if (!res.ok || json?.status === "error") {
-        const error = new AppError(
-          `${this.name} | fetchRelatedArticles()`,
-          res.statusText || json?.results?.message,
-          res.status || json?.results?.code,
-        );
-        return error;
-      }
+      const error = this.checkError(res, json, fnName);
+      if (error) return error;
 
       const articleCollection = this.parseArticleCollection(json);
-      if (
-        !articleCollection.totalResults ||
-        !articleCollection.articles?.length
-      ) {
-        const error = new AppError(
-          `${this.name} | fetchArticles() post parsing`,
-          "No Articles found",
-          404,
-        );
-        return error;
-      }
+
+      const errorC = this.checkArticleCollection(articleCollection, fnName);
+      if (errorC) return errorC;
 
       return articleCollection;
     } catch (err: any) {
-      const error = new AppError(
-        `${this.name} | fetchArticles()`,
-        err.message,
-        err.status,
-      );
-      return error;
+      return this.catchError(err, fnName);
     }
   }
 
@@ -138,51 +170,31 @@ export class BaseArticleProvider implements ArticleProvider {
     context: UserContext,
     slug: string,
   ): Promise<Article | AppError> {
+    const fnName = "fetchArticle()";
     const req = this.createRequest(context, {
       articleId: slug,
     });
 
     try {
-      console.log(`${this.name} | fetchArticle()`, req.url);
+      console.log(`${this.name} | ${fnName}`, req.url);
       const res = await fetch(req, {
         next: { revalidate: 600 },
       });
 
       const json = await res.json();
 
-      if (!res.ok || json?.status === "error") {
-        const error = new AppError(
-          `${this.name} | fetchArticle()`,
-          res.statusText || json?.results?.message,
-          res.status || json?.results?.code,
-        );
-        return error;
-      }
+      const error = this.checkError(res, json, fnName);
+      if (error) return error;
+
       const articleCollection = this.parseArticleCollection(json);
 
-      const article =
-        (articleCollection &&
-          articleCollection.articles?.length &&
-          articleCollection.articles[0]) ||
-        null;
+      const errorC = this.checkArticleCollection(articleCollection, fnName);
+      if (errorC) return errorC;
 
-      if (!article || !article.title) {
-        const error = new AppError(
-          `${this.name} | fetchArticle() | Post Parsing`,
-          "Article is empty",
-          404,
-        );
-        return error;
-      }
-
+      const article = articleCollection.articles[0];
       return article;
     } catch (err: any) {
-      const error = new AppError(
-        `${this.name} | fetchArticle()`,
-        err.message,
-        err.status,
-      );
-      return error;
+      return this.catchError(err, fnName);
     }
   }
 
@@ -190,9 +202,11 @@ export class BaseArticleProvider implements ArticleProvider {
     context: UserContext,
     article: Article,
   ): Promise<ArticleCollection | AppError> {
+    const fnName = "fetchRelatedArticles()";
+
     if (!article)
       return new AppError(
-        `${this.name} | fetchRelatedArticles()`,
+        `${this.name} | ${fnName}`,
         "Expected article for related articles",
         400,
       );
@@ -205,79 +219,59 @@ export class BaseArticleProvider implements ArticleProvider {
         // tags: article?.tags ?? undefined,
       });
 
-      console.log(`${this.name} | fetchRelatedArticles()`, req.url);
+      console.log(`${this.name} | ${fnName}`, req.url);
       const res = await fetch(req, {
         next: { revalidate: 600 },
       });
 
       const json = await res.json();
 
-      if (!res.ok || json?.status === "error") {
-        const error = new AppError(
-          `${this.name} | fetchRelatedArticles()`,
-          res.statusText || json?.results?.message,
-          res.status || json?.results?.code,
-        );
-        return error;
-      }
+      const error = this.checkError(res, json, fnName);
+      if (error) return error;
 
       const articleCollection = this.parseArticleCollection(json);
-      if (
-        !articleCollection.totalResults ||
-        !articleCollection.articles?.length
-      ) {
-        const error = new AppError(
-          `${this.name} | fetchRelatedArticles() Post parsing`,
-          "Related Articles is empty",
-          404,
-        );
-        return error;
-      }
+
+      const errorC = this.checkArticleCollection(articleCollection, fnName);
+      if (errorC) return errorC;
 
       return articleCollection;
     } catch (err: any) {
-      const error = new AppError(
-        `${this.name} | fetchRelatedArticles()`,
-        err.message,
-        err.status,
-      );
-      return error;
+      return this.catchError(err, fnName);
     }
   }
-}
 
-export function setQueryParams(
-  apiKey: string,
-  userContext: UserContext,
-  articleQueryParams: ArticleQueryParams,
-): URLSearchParams {
-  const { sessionId, geo } = userContext;
-  const { country, language, region, city, ip } = geo!;
-  const { articleId, pageSize, nextPage, keywords, category } =
-    articleQueryParams;
+  public setQueryParams(
+    apiKey: string,
+    userContext: UserContext,
+    articleQueryParams: ArticleQueryParams,
+  ): URLSearchParams {
+    const { sessionId, geo } = userContext;
+    const { country, language, region, city, ip } = geo!;
+    const { articleId, pageSize, nextPage, keywords, category } =
+      articleQueryParams;
 
-  const searchParams = new URLSearchParams();
+    const sp = new URLSearchParams();
 
-  searchParams.set("apikey", apiKey);
+    sp.set("apikey", apiKey);
 
-  if (articleId) {
-    // Fetches Single article By Id
-    searchParams.set("id", articleId);
-  } else {
-    // Fetch 1 page of articles (latest or by other search params)
-    // Dynamic Params
-    if (country) searchParams.set("country", country);
-    if (region) searchParams.set("region", region);
-    if (city) searchParams.set("city", city);
-    if (language) searchParams.set("language", language);
-    if (category?.length) searchParams.set("category", category.join(","));
-    if (keywords?.length) searchParams.set("q", keywords.join(","));
-    if (nextPage) searchParams.set("page", nextPage as string);
+    if (articleId) {
+      // Fetches Single article By Id
+      sp.set("id", articleId);
+    } else {
+      // Fetch 1 page of articles (latest or by other search params)
+      // Dynamic Params
+      if (country) sp.set("country", country);
+      if (region) sp.set("region", region);
+      if (city) sp.set("city", city);
+      if (language) sp.set("language", language);
+      if (category?.length) sp.set("category", category.join(","));
+      if (keywords?.length) sp.set("q", keywords.join(","));
+      if (nextPage) sp.set("page", nextPage as string);
 
-    // Query Params that are static and required
-    if (pageSize)
-      searchParams.set("size", pageSize ? pageSize.toString() : "" + 10);
+      // Query Params that are static and required
+      if (pageSize) sp.set("size", pageSize ? pageSize.toString() : "" + 10);
+    }
+
+    return sp;
   }
-
-  return searchParams;
 }

@@ -1,9 +1,6 @@
 import { ArticleQueryParams } from "@/types/ArticleQueryParams.interface";
 import { UserContext } from "@/lib/contexts/user/UserContext.interface";
-import {
-  BaseArticleProvider,
-  setQueryParams,
-} from "../BaseArticleProvider.class";
+import { BaseArticleProvider } from "../BaseArticleProvider.class";
 import { Article } from "@/types/Article.interface";
 import { ApiArticle, ApiArticlesResponse } from "./NewsData.interface";
 import { ArticleSource } from "@/types/ArticleSource.interface";
@@ -13,7 +10,6 @@ import { SentimentMetrics } from "@/types/SentimentMetrics.interface";
 import { getRandomIntInclusive } from "@/lib/Utils";
 import { getLanguageCode } from "@/lib/contexts/language/Language.validators";
 import { getCountryCode } from "@/lib/contexts/geo/Geo.validators";
-import { DEFAULT_TENANT } from "@/app-constants/tenants.constant";
 import { SentimentEnum } from "@/types/SentimentMetrics.enum";
 
 export class NewsdataProvider extends BaseArticleProvider {
@@ -36,21 +32,31 @@ export class NewsdataProvider extends BaseArticleProvider {
     return sentiment;
   }
 
-  createRequest(
+  public setQueryParams(
+    apiKey: string,
     userContext: UserContext,
     articleQueryParams: ArticleQueryParams,
-  ): Request {
-    const url = new URL(this.baseUrl);
-    const { country, language } = userContext?.geo || {};
+  ): URLSearchParams {
+    const { geo } = userContext;
+    const { country, language } = geo!;
+    const { articleId, pageSize, nextPage, keywords, category } =
+      articleQueryParams;
 
-    // set only supported geo to query params
-    const sp = setQueryParams(
-      this.apiKey,
-      { geo: { country, language } },
-      { ...articleQueryParams },
-    );
+    const sp = new URLSearchParams();
+    sp.set("apikey", apiKey);
 
-    if (!articleQueryParams.articleId) {
+    if (articleId) {
+      // Fetches Single article By Id
+      sp.set("id", articleId);
+    } else {
+      // Fetch 1 page of articles (latest or by other search params)
+      // Dynamic Params
+      if (country) sp.set("country", country);
+      if (language) sp.set("language", language);
+      if (category?.length) sp.set("category", category.join(","));
+      if (keywords?.length) sp.set("q", keywords.join(","));
+      if (nextPage) sp.set("page", nextPage as string);
+      if (pageSize) sp.set("size", pageSize ? pageSize.toString() : "" + 10);
       sp.set("removeduplicate", "1");
       sp.set(
         "excludefield",
@@ -60,13 +66,7 @@ export class NewsdataProvider extends BaseArticleProvider {
       sp.set("image", "1");
     }
 
-    // Merge sp into url.searchParams
-    sp.forEach((value, key) => {
-      url.searchParams.set(key, value);
-    });
-
-    const req = new Request(url);
-    return req;
+    return sp;
   }
 
   parseArticle(rawArticle: ApiArticle): Article | null {

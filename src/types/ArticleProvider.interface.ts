@@ -57,4 +57,10 @@ export interface ArticleProvider {
     context: UserContext,
     article?: Article,
   ): Promise<ArticleCollection | AppError>;
+
+  setQueryParams(
+    apiKey: string,
+    userContext: UserContext,
+    articleQueryParams: ArticleQueryParams,
+  ): URLSearchParams;
 }
