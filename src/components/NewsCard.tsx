@@ -21,13 +21,15 @@ export default function NewsCard({ article }: Props) {
     <div className="relative">
       <NoPrefetchLink href={articleUrl} className="group block pb-6">
         <div className="relative w-full h-56 overflow-hidden rounded-lg">
-          <Image
-            sizes="(max-width: 768px) 100vw, 33vw"
-            src={article.imageUrl || ""}
-            alt={article.title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-          />
+          {article.imageUrl && (
+            <Image
+              sizes="(max-width: 768px) 100vw, 33vw"
+              src={article.imageUrl}
+              alt={article.title}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          )}
         </div>
 
         <h3 className="mt-4 text-xl font-bold group-hover:text-red-600 transition-colors">

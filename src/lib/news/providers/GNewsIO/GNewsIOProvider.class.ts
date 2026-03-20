@@ -1,9 +1,6 @@
 import { ArticleQueryParams } from "@/types/ArticleQueryParams.interface";
 import { UserContext } from "@/lib/contexts/user/UserContext.interface";
-import {
-  BaseArticleProvider,
-  setQueryParams,
-} from "../BaseArticleProvider.class";
+import { BaseArticleProvider } from "../BaseArticleProvider.class";
 import { Article } from "@/types/Article.interface";
 import { ApiArticle, ApiArticlesResponse } from "./GNewsIO.interface";
 import { ArticleSource } from "@/types/ArticleSource.interface";
@@ -17,35 +14,33 @@ export class GNewsIOProvider extends BaseArticleProvider {
   baseUrl: string = process.env.GNEWSIO_API_URL ?? "";
   apiKey: string = process.env.GNEWSIO_API_KEY ?? "";
 
-  createRequest(
+  public setQueryParams(
+    apiKey: string,
     userContext: UserContext,
     articleQueryParams: ArticleQueryParams,
-  ): Request {
-    const url = new URL(this.baseUrl);
-    const { language, country } = userContext?.geo || {};
-    const { articleId, pageSize, keywords, nextPage } =
-      articleQueryParams || {};
+  ): URLSearchParams {
+    const { geo } = userContext;
+    const { language } = geo!;
+    const { articleId, pageSize, nextPage, keywords, category } =
+      articleQueryParams;
 
-    // set only supported geo to query params
-    const sp = setQueryParams(
-      this.apiKey,
-      { geo: { country } },
-      { articleId, nextPage, keywords },
-    );
+    const sp = new URLSearchParams();
+    sp.set("apikey", apiKey);
 
-    if (!articleId) {
-      // Query Params that are static and required
-      sp.set("lang", language ?? "en");
-      sp.set("max", (pageSize || "10").toString());
+    if (articleId) {
+      // Fetches Single article By Id
+      sp.set("id", articleId);
+    } else {
+      // Fetch 1 page of articles (latest or by other search params)
+      // Dynamic Params
+      if (language) sp.set("lang", language);
+      if (category?.length) sp.set("category", category.join(","));
+      if (keywords?.length) sp.set("q", keywords.join(","));
+      if (nextPage) sp.set("page", nextPage as string);
+      if (pageSize) sp.set("max", pageSize ? pageSize.toString() : "" + 10);
     }
 
-    // Merge sp into url.searchParams
-    sp.forEach((value, key) => {
-      url.searchParams.set(key, value);
-    });
-
-    const req = new Request(url);
-    return req;
+    return sp;
   }
 
   parseArticle(rawArticle: ApiArticle): Article | null {
@@ -110,7 +105,7 @@ export class GNewsIOProvider extends BaseArticleProvider {
         .map((a: any) => this.parseArticle(a))
         .filter((a) => a !== null),
       totalResults: totalArticles,
-      nextPage: getRandomIntInclusive(1, 10),
+      nextPage: getRandomIntInclusive(1, Math.max(1, totalArticles / 10)),
     };
 
     return articleCollection;

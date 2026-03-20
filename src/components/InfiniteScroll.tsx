@@ -77,11 +77,6 @@ export default function InfiniteScroll({ initialCursor, category }: Props) {
   return (
     <>
       <NewsGrid articles={articles} mdCols={2} lgCols={3} />
-      {/* <div className="grid gap-8 mt-12 md:grid-cols-2 lg:grid-cols-3">
-        {articles.map((article) => (
-          <NewsCard key={article.id} article={article} />
-        ))}
-      </div> */}
 
       {loading && (
         <div className="text-center py-8 text-gray-500">
@@ -95,7 +90,7 @@ export default function InfiniteScroll({ initialCursor, category }: Props) {
         <div className="flex justify-center py-12">
           <button
             onClick={loadMore}
-            className="bg-brand text-black px-6 py-3 rounded-lg font-semibold hover:bg-brand-dark transition"
+            className="bg-brand px-6 py-3 rounded-lg font-semibold hover:text-red-500 transition"
           >
             Load More
           </button>

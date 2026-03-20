@@ -5,13 +5,16 @@ import { Article } from "@/types/Article.interface";
 import Image from "next/image";
 import NoPrefetchLink from "@/components/NoPrefetchLink";
 import ArticleSourceLink from "./ArticleSourceLink";
+import { AppContext } from "./AppContext.Provider";
+import { useContext } from "react";
 
 interface Props {
   article: Article;
 }
 
 export default function HeroArticle({ article }: Props) {
-  const url = resolveUrlFromArticle(article);
+  const { userCtx } = useContext(AppContext) || {};
+  const url = resolveUrlFromArticle(article, userCtx);
 
   return (
     <div className="block">
