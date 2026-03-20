@@ -1,0 +1,53 @@
+name: Publish package to npm on main push
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org/
+
+      - name: Enable Corepack and install pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build package
+        run: pnpm build
+
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          # 1. Get current version from package.json using node
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+
+          echo "Checking if $PACKAGE_NAME@$PACKAGE_VERSION exists on registry..."
+
+          # 2. Use 'pnpm view' to check the registry.
+          # If the version exists, it returns 0 (true); if not, it returns an error code.
+          if pnpm view "$PACKAGE_NAME@$PACKAGE_VERSION" version > /dev/null 2>&1; then
+            echo "⚠️ Version $PACKAGE_VERSION is already live. Skipping publish to avoid 403 error."
+          else
+            echo "🚀 Version $PACKAGE_VERSION not found. Publishing..."
+            # 3. Publish using pnpm.
+            # --no-git-checks is usually required in CI to prevent pnpm from complaining
+            # about uncommitted files or tags.
+            pnpm publish --access public --no-git-checks --ignore-scripts
+          fi
