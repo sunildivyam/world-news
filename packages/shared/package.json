@@ -1,40 +1,27 @@
 {
   "name": "@worldnews/shared",
-  "private": false,
-  "version": "0.1.17",
-  "type": "module",
-  "main": "dist/index.js",
-  "license": "MIT",
-  "repository": {
-    "url": "git+https://github.com/sunildivyam/world-news-shared.git"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./types/*": {
-      "import": "./dist/types/*.js",
-      "types": "./dist/types/*.d.ts"
-    }
-  },
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.ts",
   "scripts": {
-    "dev": "vite",
-    "build:types": "tsc -p tsconfig.build.json",
-    "build": "npm run build:types",
-    "build:app": "vite build",
-    "preview": "vite preview",
-    "publish": "npm publish --access public"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "next": "16.2.1",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "typescript": "~5.9.3",
-    "vite": "^8.0.1"
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.1",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }
