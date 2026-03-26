@@ -23,13 +23,13 @@ export interface ArticleProvider {
    * Parses the raw article from API response to Article
    * @param rawArticle
    */
-  parseArticle(rawArticle: any): Article | null;
+  parseArticle(rawArticle: any): Promise<Article | null>;
 
   /**
    * Parses the raw article's collection from API response to ArticleCollection
    * @param rawArticle
    */
-  parseArticleCollection(rawArticleCollection: any): ArticleCollection;
+  parseArticleCollection(rawArticleCollection: any): Promise<ArticleCollection>;
 
   /**
    * Fetch Articles based on query params

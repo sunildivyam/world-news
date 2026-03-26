@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Address } from "./Address.interface";
 import type { TenantConfig } from "./TenantConfig.interface";
 
 export interface Tenant {
   // mendatory fields
-  id: string;
+  id?: string;
+  tenantId: string;
   name: string;
   primaryLanguage: string;
   primaryCountry: string;
