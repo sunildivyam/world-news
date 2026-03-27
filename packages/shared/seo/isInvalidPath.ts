@@ -1,6 +1,6 @@
 export function isInvalidPath(
   pathname: string,
-  allowedExtensions: string[] = [".xml"],
+  allowedExtensions: string[] = [],
 ): boolean {
   const fileExtensionMatch = pathname.match(/\.[a-zA-Z0-9]+$/);
 

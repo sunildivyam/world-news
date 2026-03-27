@@ -1,11 +1,10 @@
-import { UserContext } from "../types";
-
 export const isSitemapRequested = (
-  ctx: UserContext,
+  tenantId: string,
+  domain: string,
   pathName: string,
   host: string,
 ): string => {
-  if (!pathName || !ctx || !ctx.tenantId) return "";
+  if (!pathName || !tenantId) return "";
   pathName = pathName.toLowerCase();
 
   const sitemap = pathName.endsWith("sitemap.xml") ? "sitemap.xml" : "";
@@ -15,12 +14,11 @@ export const isSitemapRequested = (
   if (segments.length > 3) return "";
 
   const isRoot =
-    (host === ctx.domain && segments[1] === "sitemap.xml") ||
-    (segments[1] === ctx.tenantId && segments[2] === "sitemap.xml");
+    (host === domain && segments[1] === "sitemap.xml") ||
+    (segments[1] === tenantId && segments[2] === "sitemap.xml");
 
-  console.log(segments, " | ", isRoot, " | ", host, " | ", ctx);
   if (isRoot) {
-    const parts = ["sitemaps", ctx.tenantId, sitemap];
+    const parts = ["sitemaps", tenantId, sitemap];
     return "/" + parts.join("/");
   }
 

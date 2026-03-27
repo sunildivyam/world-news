@@ -17,7 +17,7 @@ export async function resolveUserContext(
   geoService
     .addGeotoDB(geoCtx)
     .then(() => console.log("Geo Saved To DB"))
-    .catch((err) => console.log("Error Saving Geo: ", err));
+    .catch((err) => console.log("Error Saving Geo: ", err.message));
 
   const tenantCtx = await resolveTenantContext(request);
   routeSegmentsCtx.tenantId = tenantCtx?.tenant?.tenantId;
