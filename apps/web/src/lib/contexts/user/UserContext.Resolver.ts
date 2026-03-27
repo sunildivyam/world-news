@@ -15,13 +15,20 @@ export async function resolveUserContext(
   const geoCtx = await resolveGeoContext(request);
   // Add Geo to countries DB, if not already there, this should not wait
   geoService
-    .addGeotoDB(geoCtx)
+    .addGeotoDB({ ...geoCtx })
     .then(() => console.log("Geo Saved To DB"))
     .catch((err) => console.log("Error Saving Geo: ", err.message));
 
   const tenantCtx = await resolveTenantContext(request);
   routeSegmentsCtx.tenantId = tenantCtx?.tenant?.tenantId;
   const langCtx = await resolveLanguageContext(
+    routeSegmentsCtx.language,
+    geoCtx.language || "",
+    tenantCtx?.language || "",
+  );
+
+  console.log(
+    "In UserCTX: ",
     routeSegmentsCtx.language,
     geoCtx.language || "",
     tenantCtx?.language || "",
