@@ -3,6 +3,7 @@ import { UserContext } from "../types";
 export const isSitemapRequested = (
   ctx: UserContext,
   pathName: string,
+  host: string,
 ): string => {
   if (!pathName || !ctx || !ctx.tenantId) return "";
   pathName = pathName.toLowerCase();
@@ -13,7 +14,9 @@ export const isSitemapRequested = (
   const segments = pathName.split("/");
   if (segments.length > 3) return "";
 
-  const isRoot = segments[1] === ctx.tenantId && segments[2] === "sitemap.xml";
+  const isRoot =
+    (host === ctx.domain && segments[1] === "sitemap.xml") ||
+    (segments[1] === ctx.tenantId && segments[2] === "sitemap.xml");
 
   if (isRoot) {
     const parts = ["sitemaps", ctx.tenantId, sitemap];
