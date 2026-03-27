@@ -71,6 +71,7 @@ export async function resolveRouteSegmentsContext(
         regionExist || undefined,
         cityExist || undefined,
       );
+      
       if (languageExist) {
         ctx.language = seg;
         i++;

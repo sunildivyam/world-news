@@ -31,13 +31,14 @@ export class GeoService {
   ): string | "" {
     if (!language) return "";
     // check if language exist in any of the country, region or city.
-    return city?.languages?.includes(language)
+    const l = city?.languages?.includes(language)
       ? language
       : region?.languages?.includes(language)
         ? language
         : country?.languages?.includes(language)
           ? language
           : "";
+    return l;
   }
 
   async addGeotoDB(geoContext: GeoContext): Promise<void> {
@@ -47,7 +48,7 @@ export class GeoService {
   async isCountryExist(code: string): Promise<Country | null> {
     if (!code?.length) return null;
     // get countries from class cachedCountries
-    if (this.cachedCountries?.length) {
+    if (!this.cachedCountries?.length) {
       this.cachedCountries = (await fetchCountries()) || [];
     }
     // if country exists in cache then fetch whole country tree. to avoid api calls on invalid country codes
@@ -63,7 +64,7 @@ export class GeoService {
 
   async getCountryCode(name: string): Promise<string> {
     if (!name?.length) return "";
-    if (this.cachedCountries?.length) {
+    if (!this.cachedCountries?.length) {
       this.cachedCountries = (await fetchCountries()) || [];
     }
 
