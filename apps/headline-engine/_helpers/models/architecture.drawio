@@ -1,0 +1,66 @@
+<mxfile host="65bd71144e">
+    <diagram id="P6jXDrdzP1Y1JX9ntvla" name="Page-1">
+        <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="6" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;Free News APIs&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;dashed=1;" vertex="1" parent="1">
+                    <mxGeometry x="340" y="30" width="170" height="290" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="Newsdata.io" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="365" y="140" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="NewsApi.org" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="365" y="200" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="GNews.io" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="365" y="260" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="9" target="6">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="NewsService" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="140" y="155" width="110" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="fetch()" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="260" y="150" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="&lt;ul&gt;&lt;li&gt;India&lt;/li&gt;&lt;ul&gt;&lt;li&gt;Uttar Praddesh&lt;/li&gt;&lt;ul&gt;&lt;li&gt;Lukhnow&lt;/li&gt;&lt;li&gt;Agra&lt;/li&gt;&lt;li&gt;Mathura&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Uttrakhand&lt;/li&gt;&lt;ul&gt;&lt;li&gt;Dehradun&lt;/li&gt;&lt;li&gt;Haldwani&lt;/li&gt;&lt;li&gt;Pithauragarh&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Delhi NCR&lt;/li&gt;&lt;ul&gt;&lt;li&gt;New Delhi&lt;/li&gt;&lt;li&gt;Noida&lt;/li&gt;&lt;li&gt;Gurugram&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Karnataka&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;United States of America&lt;/li&gt;&lt;ul&gt;&lt;li&gt;&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/ul&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;glass=1;fillColor=#fff2cc;strokeColor=default;shadow=0;perimeterSpacing=1;" vertex="1" parent="1">
+                    <mxGeometry x="-310" y="60" width="380" height="430" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="6SNxfv3U9yW1LV8kRE1L" name="Page Flow GEO">
+        <mxGraphModel dx="799" dy="497" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="6wnHXt-qbE6p2xxxEPvX-3" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="6wnHXt-qbE6p2xxxEPvX-1" target="6wnHXt-qbE6p2xxxEPvX-2">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="6wnHXt-qbE6p2xxxEPvX-1" value="Request" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="460" y="40" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="6wnHXt-qbE6p2xxxEPvX-6" value="" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="6wnHXt-qbE6p2xxxEPvX-2" target="6wnHXt-qbE6p2xxxEPvX-5">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="6wnHXt-qbE6p2xxxEPvX-2" value="&lt;div&gt;Varcel Headers&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;Geo Location &amp;amp; Language&lt;div&gt;geoCtx&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="360" y="110" width="300" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="6wnHXt-qbE6p2xxxEPvX-12" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="6wnHXt-qbE6p2xxxEPvX-5" target="6wnHXt-qbE6p2xxxEPvX-11">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="6wnHXt-qbE6p2xxxEPvX-5" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;GeoService&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;.&lt;/span&gt;findGeo(geoCtx)&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="430" y="210" width="160" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="6wnHXt-qbE6p2xxxEPvX-7" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Build Country Database&lt;/h1&gt;&lt;p&gt;GeoService should verify country DB, the country, region, city and language. If they exist populate the context and if not then Add them to Country DB&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="10" width="280" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="6wnHXt-qbE6p2xxxEPvX-11" value="GeoService.addGeo()" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="405" y="340" width="210" height="40" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
