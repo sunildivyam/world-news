@@ -5,9 +5,8 @@ import { NextRequest } from "next/server";
 export async function resolveGeoContext(
   request: NextRequest,
 ): Promise<GeoContext> {
-  const language = await geoService.getLanguageCode(
-    (request.headers.get("accept-language") || "").toLowerCase(),
-  );
+  const l = (request.headers.get("accept-language") || "").toLowerCase();
+  const language = await geoService.getLanguageCode(l);
   const country = (
     request.headers.get("x-vercel-ip-country") || ""
   ).toLowerCase();

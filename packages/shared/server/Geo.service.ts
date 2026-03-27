@@ -94,14 +94,17 @@ export class GeoService {
     // 4. Validate length (ISO 639-1 codes are 2 characters)
     // This prevents mapping "enterprise" to "en" accidentally
     let found;
-    if (!this.cachedLanguages) this.cachedLanguages = await fetchLanguages();
+    if (!this.cachedLanguages?.length)
+      this.cachedLanguages = await fetchLanguages();
 
     if (isoMatch.length === 2) {
       found = this.cachedLanguages.find((l) => l.code2 === isoMatch);
     } else if (isoMatch.length === 3) {
       found = this.cachedLanguages.find((l) => l.code === isoMatch);
     } else {
-      found = this.cachedLanguages.find((l) => l.name === cleanInput);
+      found = this.cachedLanguages.find(
+        (l) => l.name.toLowerCase() === cleanInput.toLowerCase(),
+      );
     }
 
     return found?.code2 || "";
