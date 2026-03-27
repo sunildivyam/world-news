@@ -5,7 +5,7 @@ import {
 } from "@worldnews/shared/news-engine-apis";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 3600; // Cache for 1 hour to protect DB
+export const revalidate = 3600; // Cache for 1 hour to protect Db
 
 export async function GET(
   request: Request,

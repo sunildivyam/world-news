@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Country } from "@worldnews/shared";
+import type { Country } from "@worldnews/shared";
 import {
   createCountry,
   findCountry,
