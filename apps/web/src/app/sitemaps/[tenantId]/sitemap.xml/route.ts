@@ -1,4 +1,5 @@
 // Global Home - sitemap.xml
+import { categories } from "@/app-constants/categories.constants";
 import {
   fetchCountries,
   fetchTenant,
@@ -15,22 +16,34 @@ export async function GET(
   const tenant = await fetchTenant(tenantId);
   const domain = tenant?.domain;
   const countries = await fetchCountries();
-
-  console.log(tenantId);
+  const cats = [...categories];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     ${countries
-      .map(
-        (c) => `
+      .map((c) => {
+        let cSet = `
       <url>
         <loc>https://${domain}/${c.code}/${c.languages[0]}</loc>
         <lastmod>${new Date().toISOString()}</lastmod>
         <changefreq>daily</changefreq>
         <priority>1</priority>
       </url>
+    `;
+        cSet += cats
+          .map(
+            (cat) => `
+      <url>
+        <loc>https://${domain}/${c.code}/${c.languages[0]}/category/${cat.value}</loc>
+        <lastmod>${new Date().toISOString()}</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+      </url>
     `,
-      )
+          )
+          .join("");
+        return cSet;
+      })
       .join("")}
  </urlset>`;
 

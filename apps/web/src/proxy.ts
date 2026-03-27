@@ -6,7 +6,7 @@ import { isInvalidPath, isSitemapRequested } from "@worldnews/shared/seo";
 
 export async function proxy(request: NextRequest) {
   const current = request.nextUrl.pathname;
-  const host = request.nextUrl.host;
+  const host = (request.nextUrl.host || "").toLowerCase();
   console.log("Cur:", current);
   // if a file with extension is requested, it should be rejected
   if (isInvalidPath(current, [".xml"])) {
@@ -23,10 +23,15 @@ export async function proxy(request: NextRequest) {
   }
 
   // If sitemap.xml is requested
-  const sitemapUrl = isSitemapRequested(userCtx, current, host);
+  const sitemapUrl = isSitemapRequested(
+    userCtx.tenantId,
+    userCtx.domain || "",
+    current,
+    host,
+  );
+
   if (sitemapUrl) {
     const url = new URL(sitemapUrl, request.url);
-    console.log(url);
     return NextResponse.rewrite(url);
   }
 
