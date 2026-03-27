@@ -27,13 +27,6 @@ export async function resolveUserContext(
     tenantCtx?.language || "",
   );
 
-  console.log(
-    "In UserCTX: ",
-    routeSegmentsCtx.language,
-    geoCtx.language || "",
-    tenantCtx?.language || "",
-  );
-
   const userContext: UserContext = {
     sessionId: h.get("x-session-id") || c.get("x-session-id")?.value,
     tenantId: tenantCtx?.tenant?.tenantId,
