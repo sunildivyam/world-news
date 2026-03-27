@@ -1,0 +1,30 @@
+{
+  "name": "@worldnews/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "@worldnews/shared": "workspace:*",
+    "next": "16.1.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/node": "^20.19.37",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "16.1.6",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^5.9.3"
+  },
+  "packageManager": "pnpm@9.12.2+sha256.2ef6e547b0b07d841d605240dce4d635677831148cd30f6d564b8f4f928f73d2"
+}
