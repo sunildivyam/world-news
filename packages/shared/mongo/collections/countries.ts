@@ -146,7 +146,7 @@ export async function updateCountryByGeo(
     }
 
     if (languageCode) {
-      const langExists = country.languages?.some(
+      const langExists = country.languages?.find(
         (l: string) => l === languageCode,
       );
       if (!langExists) {
@@ -155,6 +155,7 @@ export async function updateCountryByGeo(
     }
 
     if (Object.keys(updateData).length === 0) {
+      console.log("Nothing to update in geo.");
       return error("Nothing to update in country.");
     }
 
@@ -180,7 +181,6 @@ export async function deleteCountry(code: string) {
 }
 
 export async function findCountry(code: string, name?: string) {
-
   try {
     const { countries } = await getCollections();
 
@@ -206,7 +206,6 @@ export async function findCountry(code: string, name?: string) {
 }
 
 export async function findCountryByName(name: string) {
-
   try {
     const { countries } = await getCollections();
     const country = await countries.findOne({

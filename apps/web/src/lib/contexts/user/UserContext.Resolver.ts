@@ -23,8 +23,8 @@ export async function resolveUserContext(
   routeSegmentsCtx.tenantId = tenantCtx?.tenant?.tenantId;
   const langCtx = await resolveLanguageContext(
     routeSegmentsCtx.language,
-    tenantCtx?.language || "",
     geoCtx.language || "",
+    tenantCtx?.language || "",
   );
 
   const userContext: UserContext = {
