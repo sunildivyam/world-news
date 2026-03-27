@@ -75,7 +75,7 @@ export class NewsdataProvider extends BaseArticleProvider {
     const article: Article = {
       id: rawArticle.article_id,
       slug: rawArticle.article_id,
-      tenant: undefined, //DEFAULT_TENANT,
+      tenant: undefined, 
       title: rawArticle.title,
       description: rawArticle.description,
       author: (rawArticle.creator?.length && rawArticle.creator[0]) || "",
