@@ -43,7 +43,7 @@ export async function fetchCountries(): Promise<Country[]> {
 
   try {
     const response = await fetch(url, {
-      next: { revalidate: 120 },
+      next: { revalidate: 3600 },
     });
 
     if (!response.ok) {

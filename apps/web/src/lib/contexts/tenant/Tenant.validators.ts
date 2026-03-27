@@ -1,4 +1,4 @@
-import { DEFAULT_TENANT, tenants } from "@/app-constants/tenants.constant";
+import { fetchTenant } from "@worldnews/shared/news-engine-apis";
 import type { Tenant } from "@worldnews/shared/types";
 import type { TenantContext } from "@worldnews/shared/types";
 import type { TenantConfig } from "@worldnews/shared/types";
@@ -16,22 +16,13 @@ export async function populateContextFromTenant(
 
   return ctx;
 }
-export async function findTenantByDomain(
-  domain: string,
-): Promise<Tenant | undefined> {
-  return tenants.find((t) => t.domain === domain);
-}
-
-export async function findTenantById(id: string): Promise<Tenant | undefined> {
-  return tenants.find((t) => t.tenantId === id);
-}
 
 export async function findTenantFromSegments(
   segments: Array<string>,
 ): Promise<TenantContext | null> {
   // 3️⃣ path-based tenant
   if (segments.length > 0) {
-    const tenant = await findTenantById(segments[0]);
+    const tenant = await fetchTenant(segments[0]);
     if (tenant) return await populateContextFromTenant(tenant);
   }
 
@@ -41,6 +32,6 @@ export async function findTenantFromSegments(
 export async function getTenantConfig(
   tenantId: string,
 ): Promise<TenantConfig | null> {
-  const tenant = await findTenantById(tenantId);
+  const tenant = await fetchTenant(tenantId);
   return tenant?.settings || null;
 }

@@ -1,8 +1,14 @@
 import { Country, GeoContext, Region, City } from "../types";
 
-import { fetchAddGeo, fetchCountry, fetchLanguage } from "../news-engine-apis";
+import {
+  fetchAddGeo,
+  fetchCountries,
+  fetchCountry,
+  fetchLanguage,
+} from "../news-engine-apis";
 
 export class GeoService {
+  countries: Country[] = [];
   constructor() {}
 
   private buildLanguages(languages: string[], language?: string) {
@@ -87,8 +93,13 @@ export class GeoService {
 
   async isCountryExist(code: string): Promise<Country | null> {
     if (!code?.length) return null;
-    const foundCountry = await fetchCountry(code);
-    if (foundCountry) return foundCountry;
+    this.countries = this.countries?.length
+      ? this.countries
+      : (await fetchCountries()) || [];
+    if (!this.countries.find((c) => c.code === code)) {
+      const foundCountry = await fetchCountry(code);
+      if (foundCountry) return foundCountry;
+    }
 
     return null;
   }
