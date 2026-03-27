@@ -1,0 +1,47 @@
+{
+  "in": {
+    "capital": "New Delhi",
+    "name": "India",
+    "languages": [
+      "hi",
+      "en",
+      "bn",
+      "te",
+      "mr",
+      "ta",
+      "ur",
+      "gu",
+      "kn",
+      "ml",
+      "or",
+      "pa",
+      "as",
+      "ma",
+      "bh",
+      "sa",
+      "ks",
+      "sd",
+      "ne",
+      "kok",
+      "mni",
+      "brx",
+      "sat",
+      "doi"
+    ],
+    "regions": {
+      "up": {
+        "name": "Uttar Pradesh",
+        "languages": [
+          "hi",
+          "en"
+        ],
+        "cities": {
+          "agra": {
+            "name": "Agra",
+            "languages": ["hi"]
+          }
+        }
+      }
+    }
+  }
+}
