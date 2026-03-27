@@ -4,8 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "pnpm --filter @worldnews/shared build && pnpm --filter @worldnews/web build",
-    "dev:web": "pnpm --filter @worldnews/web dev"
+    "build": "pnpm build:shared && pnpm build:web && pnpm build:news-engine && pnpm build:headline-engine && pnpm build:content-engine",
+    "dev:web": "pnpm --filter @worldnews/web dev -p 3000",
+    "dev:news-engine": "pnpm --filter @worldnews/news-engine dev -p 3001",
+    "dev:headline-engine": "pnpm --filter @worldnews/headline-engine dev -p 3002",
+    "dev:content-engine": "pnpm --filter @worldnews/content-engine dev -p 3003",
+    "build:shared": "pnpm --filter @worldnews/shared build",
+    "build:web": "pnpm --filter @worldnews/web build",
+    "build:news-engine": "pnpm --filter @worldnews/news-engine build",
+    "build:headline-engine": "pnpm --filter @worldnews/headline-engine build",
+    "build:content-engine": "pnpm --filter @worldnews/content-engine build",
+    "start:web": "pnpm --filter @worldnews/web start -p 3000",
+    "start:news-engine": "pnpm --filter @worldnews/news-engine start -p 3001",
+    "start:headline-engine": "pnpm --filter @worldnews/headline-engine start -p 3002",
+    "start:content-engine": "pnpm --filter @worldnews/content-engine start -p 3003"
   },
   "keywords": [],
   "author": "",

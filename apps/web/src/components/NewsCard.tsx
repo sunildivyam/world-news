@@ -3,7 +3,7 @@
 import Image from "next/image";
 import NoPrefetchLink from "@/components/NoPrefetchLink";
 import ClientDate from "./ClientDate";
-import { Article } from "@worldnews/shared";
+import { Article } from "@worldnews/shared/types";
 import { resolveUrlFromArticle } from "@/lib/contexts/url/Url.Resolver";
 import ArticleSourceLink from "./ArticleSourceLink";
 import { AppContext } from "./AppContext.Provider";

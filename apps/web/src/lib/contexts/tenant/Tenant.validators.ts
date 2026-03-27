@@ -1,7 +1,7 @@
 import { DEFAULT_TENANT, tenants } from "@/app-constants/tenants.constant";
-import type { Tenant } from "@worldnews/shared";
-import type { TenantContext } from "@worldnews/shared";
-import type { TenantConfig } from "@worldnews/shared";
+import type { Tenant } from "@worldnews/shared/types";
+import type { TenantContext } from "@worldnews/shared/types";
+import type { TenantConfig } from "@worldnews/shared/types";
 
 export async function populateContextFromTenant(
   tenant?: Tenant,
@@ -23,7 +23,7 @@ export async function findTenantByDomain(
 }
 
 export async function findTenantById(id: string): Promise<Tenant | undefined> {
-  return tenants.find((t) => t.id === id);
+  return tenants.find((t) => t.tenantId === id);
 }
 
 export async function findTenantFromSegments(

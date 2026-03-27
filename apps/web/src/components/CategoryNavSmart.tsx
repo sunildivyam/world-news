@@ -5,10 +5,10 @@ import NoPrefetchLink from "@/components/NoPrefetchLink";
 import { usePathname } from "next/navigation";
 import { AppContext } from "./AppContext.Provider";
 import { SectionError } from "./SectionError";
-import { AppError } from "@worldnews/shared";
+import { AppError } from "@worldnews/shared/types";
 import { categories } from "@/app-constants/categories.constants";
 import { resolveUrl } from "@/lib/contexts/url/Url.Resolver";
-import { PageTypeEnum } from "@worldnews/shared";
+import { PageTypeEnum } from "@worldnews/shared/types";
 import TenantLogo from "./TenantLogo";
 
 export default function CategoryNavSmart() {

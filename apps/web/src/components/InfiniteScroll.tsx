@@ -2,8 +2,8 @@
 
 import { useContext, useEffect, useRef, useState } from "react";
 import { SectionError } from "./SectionError";
-import { Article } from "@worldnews/shared";
-import { AppError } from "@worldnews/shared";
+import { Article } from "@worldnews/shared/types";
+import { AppError } from "@worldnews/shared/types";
 import { setUserContextToRequestHeaders } from "@/lib/contexts/user/UserContextClient.Resolver";
 import NewsGrid from "./NewsGrid";
 import { AppContext } from "./AppContext.Provider";
@@ -76,7 +76,7 @@ export default function InfiniteScroll({ initialCursor, category }: Props) {
 
   return (
     <>
-      <NewsGrid articles={articles} mdCols={2} lgCols={3} />
+      <NewsGrid articles={articles} className="md:grid-cols-2 lg:grid-cols-2" />
 
       {loading && (
         <div className="text-center py-8 text-gray-500">

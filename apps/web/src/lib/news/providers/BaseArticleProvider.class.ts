@@ -1,9 +1,9 @@
-import { AppError } from "@worldnews/shared";
-import { Article } from "@worldnews/shared";
-import { ArticleCollection } from "@worldnews/shared";
-import { ArticleProvider } from "@worldnews/shared";
-import { ArticleQueryParams } from "@worldnews/shared";
-import { UserContext } from "@worldnews/shared";
+import { AppError } from "@worldnews/shared/types";
+import { Article } from "@worldnews/shared/types";
+import { ArticleCollection } from "@worldnews/shared/types";
+import { ArticleProvider } from "@worldnews/shared/types";
+import { ArticleQueryParams } from "@worldnews/shared/types";
+import { UserContext } from "@worldnews/shared/types";
 
 export class BaseArticleProvider implements ArticleProvider {
   name: string = "BaseArticleProvider";
@@ -75,7 +75,7 @@ export class BaseArticleProvider implements ArticleProvider {
     return req;
   }
 
-  public parseArticle(rawArticle: any): Article | null {
+  public async parseArticle(rawArticle: any): Promise<Article | null> {
     if (!rawArticle) return null;
     const {
       id,
@@ -126,10 +126,18 @@ export class BaseArticleProvider implements ArticleProvider {
     return article;
   }
 
-  public parseArticleCollection(rawArticleCollection: any): ArticleCollection {
+  public async parseArticleCollection(
+    rawArticleCollection: any,
+  ): Promise<ArticleCollection> {
     const { totalResults, articles, nextPage } = rawArticleCollection;
+    const articlesP = (
+      await Promise.all(
+        articles.map(async (a: any) => await this.parseArticle(a)),
+      )
+    ).filter((a) => a !== null);
+
     const articleCollection: ArticleCollection = {
-      articles: articles.map((a: any) => this.parseArticle(a)),
+      articles: articlesP,
       totalResults,
       nextPage,
     };
@@ -155,7 +163,7 @@ export class BaseArticleProvider implements ArticleProvider {
       const error = this.checkError(res, json, fnName);
       if (error) return error;
 
-      const articleCollection = this.parseArticleCollection(json);
+      const articleCollection = await this.parseArticleCollection(json);
 
       const errorC = this.checkArticleCollection(articleCollection, fnName);
       if (errorC) return errorC;
@@ -186,7 +194,7 @@ export class BaseArticleProvider implements ArticleProvider {
       const error = this.checkError(res, json, fnName);
       if (error) return error;
 
-      const articleCollection = this.parseArticleCollection(json);
+      const articleCollection = await this.parseArticleCollection(json);
 
       const errorC = this.checkArticleCollection(articleCollection, fnName);
       if (errorC) return errorC;
@@ -229,7 +237,7 @@ export class BaseArticleProvider implements ArticleProvider {
       const error = this.checkError(res, json, fnName);
       if (error) return error;
 
-      const articleCollection = this.parseArticleCollection(json);
+      const articleCollection = await this.parseArticleCollection(json);
 
       const errorC = this.checkArticleCollection(articleCollection, fnName);
       if (errorC) return errorC;

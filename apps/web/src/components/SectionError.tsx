@@ -1,4 +1,4 @@
-import { AppError } from "@worldnews/shared";
+import { AppError } from "@worldnews/shared/types";
 import React from "react";
 
 interface SectionErrorProps {

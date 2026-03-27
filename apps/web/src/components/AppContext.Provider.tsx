@@ -1,5 +1,5 @@
 "use client";
-import { AppContextValue } from "@worldnews/shared";
+import { AppContextValue } from "@worldnews/shared/types";
 import { createContext, ReactNode } from "react";
 
 export const AppContext = createContext<AppContextValue | null>(null);

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArticleSource } from "@worldnews/shared";
+import { ArticleSource } from "@worldnews/shared/types";
 import Image from "next/image";
 import NoPrefetchLink from "@/components/NoPrefetchLink";
 

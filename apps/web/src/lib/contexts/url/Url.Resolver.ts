@@ -1,6 +1,6 @@
-import { PageTypeEnum } from "@worldnews/shared";
-import { UserContext } from "@worldnews/shared";
-import { Article } from "@worldnews/shared";
+import { PageTypeEnum } from "@worldnews/shared/types";
+import { UserContext } from "@worldnews/shared/types";
+import { Article } from "@worldnews/shared/types";
 
 export const resolveHomeUrl = (userCtx: UserContext | null): string => {
   if (!userCtx) return "";
@@ -31,7 +31,7 @@ export function resolveUrlFromArticle(
   userCtx?: UserContext,
 ): string {
   const segments = [
-    userCtx?.domain ? "" : article.tenant?.id || userCtx?.tenantId,
+    userCtx?.domain ? "" : article.tenant?.tenantId || userCtx?.tenantId,
     article.geo?.country || userCtx?.geo?.country,
     article.geo?.region || userCtx?.geo?.region,
     article.geo?.city || userCtx?.geo?.city,

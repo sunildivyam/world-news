@@ -1,4 +1,4 @@
-import type { Tenant } from "@worldnews/shared";
+import type { Tenant } from "@worldnews/shared/types";
 
 const tenantCache = new Map<string, Tenant>();
 

@@ -2,7 +2,6 @@ import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-// import ContextSync from "@/components/_ContextSync";
 import { getUserContext } from "@/lib/contexts/user/UserContext.service";
 import { getTenantConfig } from "@/lib/contexts/tenant/Tenant.validators";
 import Header from "@/components/Header";

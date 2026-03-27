@@ -2,7 +2,7 @@
 
 import NewsCard from "./NewsCard";
 import InfiniteScroll from "./InfiniteScroll";
-import { Article } from "@worldnews/shared";
+import { Article } from "@worldnews/shared/types";
 import NewsGrid from "./NewsGrid";
 
 interface Props {
@@ -18,7 +18,10 @@ export default function RelatedArticles({ initialCursor, articles }: Props) {
       </h2>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <NewsGrid articles={articles} mdCols={3} lgCols={3} />
+        <NewsGrid
+          articles={articles}
+          className="md:grid-cols-2 lg:grid-cols-3"
+        />
         {/* {articles.map((article) => (
           <NewsCard key={article.id} article={article} />
         ))} */}

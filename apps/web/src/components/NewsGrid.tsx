@@ -1,20 +1,18 @@
-import { Article } from "@worldnews/shared";
+import { Article } from "@worldnews/shared/types";
 import NewsCard from "./NewsCard";
 
 interface Props {
   articles: Article[];
-  mdCols?: number;
-  lgCols?: number;
+  className?: string;
 }
 
-export default function NewsGrid({ articles, mdCols, lgCols }: Props) {
+export default function NewsGrid({ articles, className }: Props) {
+  const cNames = `grid gap-8 mt-12${className ? " " + className : ""}`;
   return (
-    <div
-      className={`grid gap-8 mt-12 md:grid-cols-${mdCols || "2"} lg:grid-cols-${lgCols || "3"}`}
-    >
-      {articles.map((article) => (
+    <div className={cNames}>
+      {articles.map((article, index) => (
         <NewsCard
-          key={article.id || article.slug || article.title}
+          key={article.id || article.slug || article.title + index}
           article={article}
         />
       ))}

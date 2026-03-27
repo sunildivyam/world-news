@@ -1,8 +1,8 @@
-import type { Tenant } from "@worldnews/shared";
+import type { Tenant } from "@worldnews/shared/types";
 
 export const tenants: Tenant[] = [
   {
-    id: "globalnews",
+    tenantId: "globalnews",
     name: "Global News",
     primaryLanguage: "en",
     primaryCountry: "us",
@@ -52,7 +52,7 @@ export const tenants: Tenant[] = [
     },
   },
   {
-    id: "globalnewsA",
+    tenantId: "globalnewsA",
     name: "Global News A",
     primaryLanguage: "hi",
     primaryCountry: "in",
@@ -102,7 +102,7 @@ export const tenants: Tenant[] = [
     },
   },
   {
-    id: "annuadvent",
+    tenantId: "annuadvent",
     name: "AnnuAdvent",
     primaryLanguage: "hi",
     primaryCountry: "in",

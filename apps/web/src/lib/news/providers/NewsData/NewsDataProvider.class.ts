@@ -1,16 +1,17 @@
-import { ArticleQueryParams } from "@worldnews/shared";
-import { UserContext } from "@worldnews/shared";
+import {
+  ArticleQueryParams,
+  UserContext,
+  Article,
+  ArticleSource,
+  OriginalArticle,
+  ArticleCollection,
+  SentimentMetrics,
+  SentimentEnum,
+} from "@worldnews/shared/types";
 import { BaseArticleProvider } from "../BaseArticleProvider.class";
-import { Article } from "@worldnews/shared";
 import { ApiArticle, ApiArticlesResponse } from "./NewsData.interface";
-import { ArticleSource } from "@worldnews/shared";
-import { OriginalArticle } from "@worldnews/shared";
-import { ArticleCollection } from "@worldnews/shared";
-import { SentimentMetrics } from "@worldnews/shared";
 import { getRandomIntInclusive } from "@/lib/Utils";
-import { getLanguageCode } from "@/lib/contexts/language/Language.validators";
-import { getCountryCode } from "@/lib/contexts/geo/Geo.validators";
-import { SentimentEnum } from "@worldnews/shared";
+import { geoService } from "@worldnews/shared/server";
 
 export class NewsdataProvider extends BaseArticleProvider {
   name: string = "NewsData";
@@ -37,8 +38,8 @@ export class NewsdataProvider extends BaseArticleProvider {
     userContext: UserContext,
     articleQueryParams: ArticleQueryParams,
   ): URLSearchParams {
-    const { geo } = userContext;
-    const { country, language } = geo!;
+    const { geo } = userContext || {};
+    const { country, language } = geo || {};
     const { articleId, pageSize, nextPage, keywords, category } =
       articleQueryParams;
 
@@ -69,7 +70,7 @@ export class NewsdataProvider extends BaseArticleProvider {
     return sp;
   }
 
-  parseArticle(rawArticle: ApiArticle): Article | null {
+  async parseArticle(rawArticle: ApiArticle): Promise<Article | null> {
     if (!rawArticle) return null;
     const article: Article = {
       id: rawArticle.article_id,
@@ -80,11 +81,11 @@ export class NewsdataProvider extends BaseArticleProvider {
       author: (rawArticle.creator?.length && rawArticle.creator[0]) || "",
       category: (rawArticle.category?.length && rawArticle.category[0]) || "",
       geo: {
-        country: getCountryCode(
+        country: await geoService.getCountryCode(
           (rawArticle.country?.length && rawArticle.country[0]) || "",
         ),
       },
-      language: getLanguageCode(rawArticle.language),
+      language: await geoService.getLanguageCode(rawArticle.language),
       keywords: rawArticle.keywords,
       tags: [],
       publishTZ: rawArticle.pubDateTZ,
@@ -138,14 +139,19 @@ export class NewsdataProvider extends BaseArticleProvider {
     return article;
   }
 
-  parseArticleCollection(
+  async parseArticleCollection(
     rawArticleCollection: ApiArticlesResponse,
-  ): ArticleCollection {
+  ): Promise<ArticleCollection> {
     const { totalResults, results, nextPage } = rawArticleCollection;
+
+    const articles = (
+      await Promise.all(
+        results.map(async (a: any) => await this.parseArticle(a)),
+      )
+    ).filter((a) => a !== null);
+
     const articleCollection: ArticleCollection = {
-      articles: results
-        .map((a: any) => this.parseArticle(a))
-        .filter((a) => a !== null),
+      articles,
       totalResults,
       nextPage: nextPage!,
     };
