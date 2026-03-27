@@ -9,7 +9,7 @@ export async function proxy(request: NextRequest) {
   const host = request.nextUrl.host;
   console.log("Cur:", current);
   // if a file with extension is requested, it should be rejected
-  if (isInvalidPath(current)) {
+  if (isInvalidPath(current, [".xml"])) {
     const url = new URL("/not-found", request.url);
     return NextResponse.redirect(url);
   }
