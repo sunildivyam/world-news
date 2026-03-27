@@ -58,7 +58,5 @@ export const config = {
   // matcher: [
   //   "/((?!_next|api|sitemaps|sitemap.xml|favicon.ico|not-found|robots.txt|.*\\..*).*)",
   // ],
-  matcher: [
-    "/((?!_next|api|sitemaps|sitemap.xml|favicon.ico|not-found|robots.txt).*)",
-  ],
+  matcher: ["/((?!_next|api|sitemaps|favicon.ico|not-found|robots.txt).*)"],
 };
