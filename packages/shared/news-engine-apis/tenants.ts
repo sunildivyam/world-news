@@ -21,7 +21,7 @@ export async function fetchTenant(
   console.log(url);
   try {
     const response = await fetch(url, {
-      next: { revalidate: 120 },
+      next: { revalidate: 3600 },
     });
 
     if (!response.ok) {
@@ -43,7 +43,7 @@ export async function fetchTenants(): Promise<Tenant[]> {
 
   try {
     const response = await fetch(url, {
-      next: { revalidate: 120 },
+      next: { revalidate: 3600 },
     });
 
     if (!response.ok) {
