@@ -1,14 +1,15 @@
-import type { Country, GeoContext, Region, City } from "../types";
+import type { Country, GeoContext, Region, City, Language } from "../types";
 
 import {
   fetchAddGeo,
   fetchCountries,
   fetchCountry,
-  fetchLanguage,
+  fetchLanguages,
 } from "../news-engine-apis";
 
 export class GeoService {
-  cache: Country[] = [];
+  cachedCountries: Country[] = [];
+  cachedLanguages: Language[] = [];
 
   constructor() {}
 
@@ -45,12 +46,14 @@ export class GeoService {
 
   async isCountryExist(code: string): Promise<Country | null> {
     if (!code?.length) return null;
-    // get countries from class cache
-    if (this.cache?.length) {
-      this.cache = (await fetchCountries()) || [];
+    // get countries from class cachedCountries
+    if (this.cachedCountries?.length) {
+      this.cachedCountries = (await fetchCountries()) || [];
     }
+    // if country exists in cache then fetch whole country tree. to avoid api calls on invalid country codes
+    const matched = this.cachedCountries.find((c) => c.code === code); // verifies the code validity
 
-    if (!this.cache.find((c) => c.code === code)) {
+    if (matched) {
       const foundCountry = await fetchCountry(code);
       if (foundCountry) return foundCountry;
     }
@@ -60,8 +63,19 @@ export class GeoService {
 
   async getCountryCode(name: string): Promise<string> {
     if (!name?.length) return "";
-    const foundCountry = await fetchCountry(undefined, name);
-    if (foundCountry) return foundCountry.code;
+    if (this.cachedCountries?.length) {
+      this.cachedCountries = (await fetchCountries()) || [];
+    }
+
+    // verify if name exists in cache
+    const matched = this.cachedCountries.find(
+      (c) => (c.name || "").toLowerCase() === (name || "").toLowerCase(),
+    );
+
+    // if not in cache fetch from
+    if (matched) {
+      return matched.code;
+    }
 
     return "";
   }
@@ -79,12 +93,14 @@ export class GeoService {
     // 4. Validate length (ISO 639-1 codes are 2 characters)
     // This prevents mapping "enterprise" to "en" accidentally
     let found;
+    if (!this.cachedLanguages) this.cachedLanguages = await fetchLanguages();
+
     if (isoMatch.length === 2) {
-      found = await fetchLanguage(isoMatch);
+      found = this.cachedLanguages.find((l) => l.code2 === isoMatch);
     } else if (isoMatch.length === 3) {
-      found = await fetchLanguage(undefined, isoMatch);
+      found = this.cachedLanguages.find((l) => l.code === isoMatch);
     } else {
-      found = await fetchLanguage(undefined, undefined, cleanInput);
+      found = this.cachedLanguages.find((l) => l.name === cleanInput);
     }
 
     return found?.code2 || "";
