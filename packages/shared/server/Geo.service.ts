@@ -45,7 +45,7 @@ export class GeoService {
 
   async isCountryExist(code: string): Promise<Country | null> {
     if (!code?.length) return null;
-    // get countries from cache
+    // get countries from class cache
     if (this.cache?.length) {
       this.cache = (await fetchCountries()) || [];
     }
