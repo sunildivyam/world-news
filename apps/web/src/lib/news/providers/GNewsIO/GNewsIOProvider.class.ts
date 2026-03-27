@@ -50,7 +50,7 @@ export class GNewsIOProvider extends BaseArticleProvider {
     const article: Article = {
       id: rawArticle?.id ?? "",
       slug: rawArticle?.id ?? "",
-      tenant: undefined, // DEFAULT_TENANT,
+      tenant: undefined, 
       title: rawArticle.title ?? "",
       description: rawArticle.description ?? "",
       author: "",

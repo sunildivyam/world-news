@@ -49,7 +49,7 @@ export class NewsApiAOrgProvider extends BaseArticleProvider {
     const article: Article = {
       id: "",
       slug: "",
-      tenant: undefined, // DEFAULT_TENANT,
+      tenant: undefined, 
       title: rawArticle.title,
       description: rawArticle.description,
       author: rawArticle.author,

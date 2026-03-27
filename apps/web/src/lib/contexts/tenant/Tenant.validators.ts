@@ -1,4 +1,4 @@
-import { DEFAULT_TENANT, tenants } from "@/app-constants/tenants.constant";
+import { fetchTenant } from "@worldnews/shared/news-engine-apis";
 import type { Tenant } from "@worldnews/shared/types";
 import type { TenantContext } from "@worldnews/shared/types";
 import type { TenantConfig } from "@worldnews/shared/types";
@@ -18,12 +18,12 @@ export async function populateContextFromTenant(
 }
 export async function findTenantByDomain(
   domain: string,
-): Promise<Tenant | undefined> {
-  return tenants.find((t) => t.domain === domain);
+): Promise<Tenant | null> {
+  return await fetchTenant("", domain);
 }
 
-export async function findTenantById(id: string): Promise<Tenant | undefined> {
-  return tenants.find((t) => t.tenantId === id);
+export async function findTenantById(id: string): Promise<Tenant | null> {
+  return await fetchTenant(id);
 }
 
 export async function findTenantFromSegments(
