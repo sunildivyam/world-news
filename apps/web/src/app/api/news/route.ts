@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchArticles } from "@/lib/news-service";
-import { headers } from "next/headers";
 import { getUserContext } from "@/lib/contexts/user/UserContext.service";
 
 export async function GET(request: NextRequest) {
   try {
-    const h = await headers();
-
     const userContext = await getUserContext();
     const nextPage = request.nextUrl.searchParams.get("nextPage") || undefined;
     const category = request.nextUrl.searchParams.get("category") || undefined;

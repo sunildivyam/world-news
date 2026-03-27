@@ -1,12 +1,11 @@
-import { ArticleQueryParams } from "@worldnews/shared";
-import { UserContext } from "@worldnews/shared";
+import { ArticleQueryParams } from "@worldnews/shared/types";
+import { UserContext } from "@worldnews/shared/types";
 import { BaseArticleProvider } from "../BaseArticleProvider.class";
-import { Article } from "@worldnews/shared";
+import { Article } from "@worldnews/shared/types";
 import { ApiArticle, ApiArticlesResponse } from "./NewsApiAOrg.interface";
-import { ArticleSource } from "@worldnews/shared";
-import { OriginalArticle } from "@worldnews/shared";
-import { ArticleCollection } from "@worldnews/shared";
-import { DEFAULT_TENANT } from "@/app-constants/tenants.constant";
+import { ArticleSource } from "@worldnews/shared/types";
+import { OriginalArticle } from "@worldnews/shared/types";
+import { ArticleCollection } from "@worldnews/shared/types";
 import { getRandomIntInclusive } from "@/lib/Utils";
 
 export class NewsApiAOrgProvider extends BaseArticleProvider {
@@ -19,8 +18,8 @@ export class NewsApiAOrgProvider extends BaseArticleProvider {
     userContext: UserContext,
     articleQueryParams: ArticleQueryParams,
   ): URLSearchParams {
-    const { geo } = userContext;
-    const { language } = geo!;
+    const { geo } = userContext || {};
+    const { language } = geo || {};
     const { articleId, pageSize, nextPage, keywords, category } =
       articleQueryParams;
 
@@ -45,7 +44,7 @@ export class NewsApiAOrgProvider extends BaseArticleProvider {
     return sp;
   }
 
-  parseArticle(rawArticle: ApiArticle): Article | null {
+  async parseArticle(rawArticle: ApiArticle): Promise<Article | null> {
     if (!rawArticle) return null;
     const article: Article = {
       id: "",
@@ -98,14 +97,18 @@ export class NewsApiAOrgProvider extends BaseArticleProvider {
     return article;
   }
 
-  parseArticleCollection(
+  async parseArticleCollection(
     rawArticleCollection: ApiArticlesResponse,
-  ): ArticleCollection {
+  ): Promise<ArticleCollection> {
     const { totalResults, articles } = rawArticleCollection;
+    const articlesP = (
+      await Promise.all(
+        articles.map(async (a: any) => await this.parseArticle(a)),
+      )
+    ).filter((a) => a !== null);
+
     const articleCollection: ArticleCollection = {
-      articles: articles
-        .map((a: any) => this.parseArticle(a))
-        .filter((a) => a !== null),
+      articles: articlesP,
       totalResults,
       nextPage: getRandomIntInclusive(1, Math.max(1, totalResults / 10)),
     };

@@ -1,5 +1,5 @@
 import { getUserContext } from "@/lib/contexts/user/UserContext.service";
-import { PageTypeEnum } from "@worldnews/shared";
+import { PageTypeEnum } from "@worldnews/shared/types";
 import HomePage from "@/pages/HomePage";
 import CategoryPage from "@/pages/CategoryPage";
 import StaticPage from "@/pages/StaticPage";

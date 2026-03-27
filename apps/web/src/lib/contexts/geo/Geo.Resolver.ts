@@ -1,15 +1,27 @@
-import { GeoContext } from "@worldnews/shared";
+import { geoService } from "@worldnews/shared/server";
+import { GeoContext } from "@worldnews/shared/types";
 import { NextRequest } from "next/server";
-import { parseLanguageCode } from "../language/Language.parser";
 
-export function resolveGeoContext(request: NextRequest): GeoContext {
-  const language = request.headers.get("accept-language") || undefined;
+export async function resolveGeoContext(
+  request: NextRequest,
+): Promise<GeoContext> {
+  const language = await geoService.getLanguageCode(
+    (request.headers.get("accept-language") || "").toLowerCase(),
+  );
+  const country = (
+    request.headers.get("x-vercel-ip-country") || ""
+  ).toLowerCase();
+  const region = (
+    request.headers.get("x-vercel-ip-country-region") || ""
+  ).toLowerCase();
+  const city = (request.headers.get("x-vercel-ip-city") || "").toLowerCase();
+  const ip = (request.headers.get("x-forwarded-for") || "").toLowerCase();
 
   return {
-    country: request.headers.get("x-vercel-ip-country") || undefined,
-    region: request.headers.get("x-vercel-ip-country-region") || undefined,
-    city: request.headers.get("x-vercel-ip-city") || undefined,
-    ip: request.headers.get("x-forwarded-for") || undefined,
-    language: parseLanguageCode(language) || undefined,
+    country,
+    region,
+    city,
+    ip,
+    language,
   };
 }

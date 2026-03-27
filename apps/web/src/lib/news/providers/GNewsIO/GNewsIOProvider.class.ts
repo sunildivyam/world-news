@@ -1,13 +1,15 @@
-import { ArticleQueryParams } from "@worldnews/shared";
-import { UserContext } from "@worldnews/shared";
+import {
+  ArticleQueryParams,
+  UserContext,
+  Article,
+  ArticleSource,
+  OriginalArticle,
+  ArticleCollection,
+} from "@worldnews/shared/types";
 import { BaseArticleProvider } from "../BaseArticleProvider.class";
-import { Article } from "@worldnews/shared";
 import { ApiArticle, ApiArticlesResponse } from "./GNewsIO.interface";
-import { ArticleSource } from "@worldnews/shared";
-import { OriginalArticle } from "@worldnews/shared";
-import { ArticleCollection } from "@worldnews/shared";
-import { getLanguageCode } from "@/lib/contexts/language/Language.validators";
 import { getRandomIntInclusive } from "@/lib/Utils";
+import { geoService } from "@worldnews/shared/server";
 
 export class GNewsIOProvider extends BaseArticleProvider {
   name: string = "GNews.io";
@@ -19,8 +21,8 @@ export class GNewsIOProvider extends BaseArticleProvider {
     userContext: UserContext,
     articleQueryParams: ArticleQueryParams,
   ): URLSearchParams {
-    const { geo } = userContext;
-    const { language } = geo!;
+    const { geo } = userContext || {};
+    const { language } = geo || {};
     const { articleId, pageSize, nextPage, keywords, category } =
       articleQueryParams;
 
@@ -43,7 +45,7 @@ export class GNewsIOProvider extends BaseArticleProvider {
     return sp;
   }
 
-  parseArticle(rawArticle: ApiArticle): Article | null {
+  async parseArticle(rawArticle: ApiArticle): Promise<Article | null> {
     if (!rawArticle) return null;
     const article: Article = {
       id: rawArticle?.id ?? "",
@@ -56,7 +58,7 @@ export class GNewsIOProvider extends BaseArticleProvider {
       geo: {
         country: "",
       },
-      language: getLanguageCode(rawArticle.lang || ""),
+      language: await geoService.getLanguageCode(rawArticle.lang || ""),
       keywords: [],
       tags: [],
       publishTZ: "",
@@ -96,14 +98,18 @@ export class GNewsIOProvider extends BaseArticleProvider {
     return article;
   }
 
-  parseArticleCollection(
+  async parseArticleCollection(
     rawArticleCollection: ApiArticlesResponse,
-  ): ArticleCollection {
+  ): Promise<ArticleCollection> {
     const { totalArticles, articles } = rawArticleCollection;
+    const articlesP = (
+      await Promise.all(
+        articles.map(async (a: any) => await this.parseArticle(a)),
+      )
+    ).filter((a) => a !== null);
+
     const articleCollection: ArticleCollection = {
-      articles: articles
-        .map((a: any) => this.parseArticle(a))
-        .filter((a) => a !== null),
+      articles: articlesP,
       totalResults: totalArticles,
       nextPage: getRandomIntInclusive(1, Math.max(1, totalArticles / 10)),
     };

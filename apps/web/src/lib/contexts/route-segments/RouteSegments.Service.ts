@@ -1,4 +1,4 @@
-import { UserContext } from "@worldnews/shared";
+import { UserContext } from "@worldnews/shared/types";
 
 export function buildCanonicalPath(ctx: UserContext) {
   const parts = ctx.domain ? [] : [ctx.tenantId];

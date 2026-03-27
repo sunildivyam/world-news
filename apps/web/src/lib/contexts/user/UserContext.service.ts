@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 
-import { UserContext } from "@worldnews/shared";
+import { UserContext } from "@worldnews/shared/types";
 import { getGeoContext } from "../geo/Geo.Service";
 import { NextResponse } from "next/server";
 

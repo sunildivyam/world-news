@@ -1,7 +1,7 @@
 "use client";
 
 import { resolveUrlFromArticle } from "@/lib/contexts/url/Url.Resolver";
-import { Article } from "@worldnews/shared";
+import { Article } from "@worldnews/shared/types";
 import Image from "next/image";
 import NoPrefetchLink from "@/components/NoPrefetchLink";
 import ArticleSourceLink from "./ArticleSourceLink";
@@ -17,7 +17,7 @@ export default function HeroArticle({ article }: Props) {
   const url = resolveUrlFromArticle(article, userCtx);
 
   return (
-    <div className="block">
+    <div className="block relative">
       <NoPrefetchLink href={url} className="group block">
         <div className="relative w-full h-[70vh] overflow-hidden">
           <Image
@@ -49,7 +49,7 @@ export default function HeroArticle({ article }: Props) {
       </NoPrefetchLink>
       <div
         className="block absolute pr-4"
-        style={{ bottom: "1.5em", right: "0" }}
+        style={{ bottom: "0", right: "50%" }}
       >
         <ArticleSourceLink source={article.source} />
       </div>

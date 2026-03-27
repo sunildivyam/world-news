@@ -1,15 +1,14 @@
 import { fetchArticles } from "@/lib/news-service";
-import Header from "@/components/Header";
 import HeroArticle from "@/components/HeroArticle";
 import NewsGrid from "@/components/NewsGrid";
 import InfiniteScroll from "@/components/InfiniteScroll";
 import { SectionError } from "@/components/SectionError";
-import { AppError } from "@worldnews/shared";
-import { ArticleQueryParams } from "@worldnews/shared";
-import { ArticleCollection } from "@worldnews/shared";
+import { AppError } from "@worldnews/shared/types";
+import { ArticleQueryParams } from "@worldnews/shared/types";
+import { ArticleCollection } from "@worldnews/shared/types";
 import LocalisedTitle from "@/components/LocalisedTitle";
 import { categories } from "@/app-constants/categories.constants";
-import { UserContext } from "@worldnews/shared";
+import { UserContext } from "@worldnews/shared/types";
 
 export default async function CategoryPage({
   userContext,
@@ -63,7 +62,10 @@ export default async function CategoryPage({
 
         <div className="max-w-7xl mx-auto px-4 py-8">
           {rest.length > 0 && (
-            <NewsGrid articles={rest} mdCols={2} lgCols={3} />
+            <NewsGrid
+              articles={rest}
+              className="md:grid-cols-2 lg:grid-cols-3"
+            />
           )}
 
           {articleCollection.nextPage && (

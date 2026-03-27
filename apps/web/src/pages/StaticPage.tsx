@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import LocalisedTitle from "@/components/LocalisedTitle";
-import { UserContext } from "@worldnews/shared";
+import { UserContext } from "@worldnews/shared/types";
 
 export default async function StaticPage({
   userContext,

@@ -1,4 +1,4 @@
-import { UserContext } from "@worldnews/shared";
+import { UserContext } from "@worldnews/shared/types";
 
 interface LocalisedTitleProps {
   title: string;

@@ -1,7 +1,7 @@
 // lib/news/provider-manager.ts
 import { articleProviders } from "@/app-constants/ArticleProviders.constants";
-import { AppError } from "@worldnews/shared";
-import { ArticleProvider } from "@worldnews/shared";
+import { AppError } from "@worldnews/shared/types";
+import { ArticleProvider } from "@worldnews/shared/types";
 
 function hasRateLimitReached(res: any): boolean {
   if (

@@ -1,5 +1,5 @@
 import { SectionError } from "@/components/SectionError";
-import { AppError } from "@worldnews/shared";
+import { AppError } from "@worldnews/shared/types";
 
 export default function NotFound() {
   const error: AppError = new AppError(

@@ -1,6 +1,6 @@
 "use client";
 
-import { UserContext } from "@worldnews/shared";
+import { UserContext } from "@worldnews/shared/types";
 
 export async function setUserContextToRequestHeaders(
   req: Request,

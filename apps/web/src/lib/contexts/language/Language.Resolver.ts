@@ -11,7 +11,7 @@
  */
 
 import { DEFAULT_LANGUAGE } from "@/app-constants/app-constants";
-import { LanguageContext } from "@worldnews/shared";
+import { LanguageContext } from "@worldnews/shared/types";
 
 export function resolveLanguageContext(
   routeLang: string | undefined,

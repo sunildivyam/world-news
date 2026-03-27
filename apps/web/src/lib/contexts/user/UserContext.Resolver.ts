@@ -1,9 +1,10 @@
 import { NextRequest } from "next/server";
-import { UserContext } from "@worldnews/shared";
+import { UserContext } from "@worldnews/shared/types";
 import { resolveGeoContext } from "../geo/Geo.Resolver";
 import { resolveTenantContext } from "../tenant/Tenant.Resolver";
 import { resolveLanguageContext } from "../language/Language.Resolver";
 import { resolveRouteSegmentsContext } from "../route-segments/RouteSegments.Resolver";
+import { geoService } from "@worldnews/shared/server";
 
 export async function resolveUserContext(
   request: NextRequest,
@@ -12,8 +13,14 @@ export async function resolveUserContext(
   const c = request.cookies;
   const routeSegmentsCtx = await resolveRouteSegmentsContext(request);
   const geoCtx = await resolveGeoContext(request);
+  // Add Geo to countries DB, if not already there, this should not wait
+  geoService
+    .addGeotoDB(geoCtx)
+    .then(() => console.log("Geo Saved To DB"))
+    .catch((err) => console.log("Error Saving Geo: ", err));
+
   const tenantCtx = await resolveTenantContext(request);
-  routeSegmentsCtx.tenantId = tenantCtx?.tenant?.id;
+  routeSegmentsCtx.tenantId = tenantCtx?.tenant?.tenantId;
   const langCtx = await resolveLanguageContext(
     routeSegmentsCtx.language,
     tenantCtx?.language || "",
@@ -22,7 +29,7 @@ export async function resolveUserContext(
 
   const userContext: UserContext = {
     sessionId: h.get("x-session-id") || c.get("x-session-id")?.value,
-    tenantId: tenantCtx?.tenant?.id,
+    tenantId: tenantCtx?.tenant?.tenantId,
     domain: tenantCtx?.domain,
     geo: {
       country:

@@ -1,12 +1,11 @@
 import { fetchArticle, fetchRelatedArticles } from "@/lib/news-service";
-import Header from "@/components/Header";
 import RelatedArticles from "@/components/RelatedArticles";
 import { SectionError } from "@/components/SectionError";
-import { AppError } from "@worldnews/shared";
-import { Article } from "@worldnews/shared";
-import { ArticleCollection } from "@worldnews/shared";
+import { AppError } from "@worldnews/shared/types";
+import { Article } from "@worldnews/shared/types";
+import { ArticleCollection } from "@worldnews/shared/types";
 import ClientDate from "@/components/ClientDate";
-import { UserContext } from "@worldnews/shared";
+import { UserContext } from "@worldnews/shared/types";
 import ArticleSourceLink from "@/components/ArticleSourceLink";
 
 export default async function ArticlePage({

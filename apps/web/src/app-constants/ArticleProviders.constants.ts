@@ -1,7 +1,7 @@
 import { GNewsIOProvider } from "@/lib/news/providers/GNewsIO/GNewsIOProvider.class";
 import { NewsApiAOrgProvider } from "@/lib/news/providers/NewsApiAOrg/NewsApiAOrgProvider.class";
 import { NewsdataProvider } from "@/lib/news/providers/NewsData/NewsDataProvider.class";
-import { ArticleProvider } from "@worldnews/shared";
+import { ArticleProvider } from "@worldnews/shared/types";
 
 export const articleProviders: ArticleProvider[] = [
   new NewsdataProvider(),
