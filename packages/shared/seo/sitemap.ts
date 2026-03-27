@@ -18,6 +18,7 @@ export const isSitemapRequested = (
     (host === ctx.domain && segments[1] === "sitemap.xml") ||
     (segments[1] === ctx.tenantId && segments[2] === "sitemap.xml");
 
+  console.log(segments, " | ", isRoot, " | ", host, " | ", ctx);
   if (isRoot) {
     const parts = ["sitemaps", ctx.tenantId, sitemap];
     return "/" + parts.join("/");
