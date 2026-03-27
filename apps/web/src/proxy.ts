@@ -7,7 +7,7 @@ import { isInvalidPath, isSitemapRequested } from "@worldnews/shared/seo";
 export async function proxy(request: NextRequest) {
   const current = request.nextUrl.pathname;
   const host = (request.nextUrl.host || "").toLowerCase();
-  console.log("Cur:", current);
+  console.log("Curr:", current);
   // if a file with extension is requested, it should be rejected
   if (isInvalidPath(current, [".xml"])) {
     const url = new URL("/not-found", request.url);
