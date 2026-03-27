@@ -2,7 +2,6 @@
 import {
   fetchCountries,
   fetchTenant,
-  fetchTenants,
 } from "@worldnews/shared/news-engine-apis";
 
 export const dynamic = "force-dynamic";

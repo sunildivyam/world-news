@@ -7,7 +7,9 @@ import { MongoClient, Db } from "mongodb";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const uri = "mongodb://127.0.0.1/worldnews";
+// const uri = "mongodb://127.0.0.1/worldnews";
+const uri =
+  "mongodb+srv://Vercel-Admin-world-news-mongodb-atlas:StubxZqUev5F82Se@world-news-mongodb-atla.7d0x1mu.mongodb.net/?retryWrites=true&w=majority";
 const dbName = "worldnews";
 const client = new MongoClient(uri);
 
