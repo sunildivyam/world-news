@@ -1,58 +1,16 @@
-import { Country, GeoContext, Region, City } from "../types";
+import type { Country, GeoContext, Region, City } from "../types";
 
-import { fetchAddGeo, fetchCountry, fetchLanguage } from "../news-engine-apis";
+import {
+  fetchAddGeo,
+  fetchCountries,
+  fetchCountry,
+  fetchLanguage,
+} from "../news-engine-apis";
 
 export class GeoService {
+  cache: Country[] = [];
+
   constructor() {}
-
-  private buildLanguages(languages: string[], language?: string) {
-    const lang =
-      language && !languages?.includes(language)
-        ? [...languages, language]
-        : [...languages];
-    console.log(
-      "LANG: ",
-      lang,
-      language && !languages?.includes(language),
-      language,
-    );
-    return lang;
-  }
-
-  private buildCity(geoContext: GeoContext) {
-    if (!geoContext.city) return null;
-
-    return {
-      code: geoContext.city,
-      name: geoContext.city,
-      languages: geoContext.language ? [geoContext.language] : [],
-    } as City;
-  }
-
-  private buildRegion(geoContext: GeoContext) {
-    if (!geoContext.region) return null;
-
-    const city = this.buildCity(geoContext);
-
-    return {
-      code: geoContext.region,
-      name: geoContext.region,
-      cities: city ? [city] : [],
-      languages: geoContext.language ? [geoContext.language] : [],
-    } as Region;
-  }
-
-  private buildCountry(geoContext: GeoContext): Country | null {
-    if (!geoContext.country) return null;
-    const region = this.buildRegion(geoContext);
-
-    return {
-      code: geoContext.country,
-      name: geoContext.country,
-      regions: region ? [region] : [],
-      languages: geoContext.language ? [geoContext.language] : [],
-    } as Country;
-  }
 
   isRegionExist(country: Country, region: string): Region | null {
     if (!region) return null;
@@ -87,8 +45,15 @@ export class GeoService {
 
   async isCountryExist(code: string): Promise<Country | null> {
     if (!code?.length) return null;
-    const foundCountry = await fetchCountry(code);
-    if (foundCountry) return foundCountry;
+    // get countries from cache
+    if (this.cache?.length) {
+      this.cache = (await fetchCountries()) || [];
+    }
+
+    if (!this.cache.find((c) => c.code === code)) {
+      const foundCountry = await fetchCountry(code);
+      if (foundCountry) return foundCountry;
+    }
 
     return null;
   }
