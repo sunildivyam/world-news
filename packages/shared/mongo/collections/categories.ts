@@ -112,3 +112,25 @@ export async function findCategories() {
     return error(err?.message || err, 500);
   }
 }
+
+export async function createCategories(categoriesArray: Category[]) {
+  if (!categoriesArray || categoriesArray.length === 0)
+    return error("Empty categories array can not be created.");
+
+  try {
+    const { categories } = await getCollections();
+
+    const result = await categories.insertMany(categoriesArray);
+
+    if (!result.insertedIds || result.insertedCount === 0) {
+      return error("Failed to create categories");
+    }
+
+    return success({
+      insertedCount: result.insertedCount,
+      insertedIds: Object.values(result.insertedIds),
+    });
+  } catch (err: any) {
+    return error(err?.message || err, 500);
+  }
+}

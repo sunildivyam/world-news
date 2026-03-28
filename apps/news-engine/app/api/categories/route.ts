@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Category } from "@worldnews/shared";
 import {
+  createCategories,
   createCategory,
   findCategory,
   findCategoryByLabel,
@@ -30,10 +30,17 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const category: Category = await request.json();
+    const body = await request.json();
 
-    const result = await createCategory(category);
-    return result;
+    // Check if it's an array for bulk insert
+    if (Array.isArray(body)) {
+      const result = await createCategories(body);
+      return result;
+    } else {
+      // Single category insert
+      const result = await createCategory(body);
+      return result;
+    }
   } catch (err: any) {
     return error(err?.message || err, 500);
   }

@@ -131,3 +131,33 @@ export async function deleteCategory(name: string): Promise<{ name: string }> {
     throw new Error(err);
   }
 }
+
+export async function createCategories(
+  categoriesArray: Category[],
+): Promise<{ insertedCount: number; insertedIds: string[] }> {
+  const baseApiUrl = process.env.NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/categories`;
+  console.log(url);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(categoriesArray),
+    });
+
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    const res: SuccessResponse<{
+      insertedCount: number;
+      insertedIds: string[];
+    }> = await response.json();
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+}
