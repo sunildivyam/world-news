@@ -1,6 +1,7 @@
 import {
   ApiKey,
   Article,
+  ArticleSource,
   Category,
   Country,
   Language,
@@ -20,6 +21,7 @@ export async function getCollections() {
     categories: db.collection<Category>("categories"),
     newsEvents: db.collection<NewsEvent>("newsEvents"),
     tags: db.collection<Tag>("tags"),
+    articleSources: db.collection<ArticleSource>("articleSources"),
     headlines: db.collection("headlines"),
     articles: db.collection<Article>("articles"),
     subscriptions: db.collection("subscriptions"),
