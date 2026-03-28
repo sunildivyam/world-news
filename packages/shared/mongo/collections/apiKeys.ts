@@ -3,7 +3,7 @@ import { getCollections } from "../collections";
 import { randomBytes } from "crypto";
 import { InsertOneResult, UpdateResult } from "mongodb";
 import { error, success } from "../response";
-import { ApiKey, ErrorResponse, SuccessResponse } from "../../types";
+import { ApiKey } from "../../types";
 
 export function generateApiKey(): string {
   return randomBytes(32).toString("hex");

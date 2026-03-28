@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Language, GeoContext, SuccessResponse } from "../types";
+import { Language, SuccessResponse } from "../types";
 
 export async function fetchLanguage(
   code2?: string,
@@ -51,6 +51,80 @@ export async function fetchLanguages(): Promise<Language[]> {
     }
 
     const res: SuccessResponse<Language[]> = await response.json();
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+}
+
+export async function createLanguage(language: Language): Promise<Language> {
+  const baseApiUrl = process.env.NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/languages`;
+  console.log(url);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(language),
+    });
+
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    const res: SuccessResponse<Language> = await response.json();
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+}
+
+export async function updateLanguage(
+  code: string,
+  updates: Partial<Language>,
+): Promise<Language> {
+  const baseApiUrl = process.env.NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/languages/${code}`;
+  console.log(url);
+
+  try {
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updates),
+    });
+
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    const res: SuccessResponse<Language> = await response.json();
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+}
+
+export async function deleteLanguage(code: string): Promise<{ code: string }> {
+  const baseApiUrl = process.env.NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/languages/${code}`;
+  console.log(url);
+
+  try {
+    const response = await fetch(url, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    const res: SuccessResponse<{ code: string }> = await response.json();
     return res.data;
   } catch (err: any) {
     throw new Error(err);

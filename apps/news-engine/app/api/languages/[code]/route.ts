@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Language } from "@worldnews/shared";
+import type{ Language } from "@worldnews/shared";
 import {
   deleteLanguage,
   updateLanguage,

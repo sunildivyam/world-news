@@ -1,23 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Country, GeoContext, SuccessResponse } from "../types";
+import { Category, SuccessResponse } from "../types";
 
-export async function fetchCountry(
-  code?: string,
+export async function fetchCategory(
   name?: string,
-): Promise<Country | null> {
-  if (!code && !name) return null;
+  label?: string,
+): Promise<Category | null> {
+  if (!name && !label) return null;
 
   const baseApiUrl = process.env.NEWSENGINE_BASE;
   let query;
-  if (code && name) {
-    query = `code=${code}&name=${name}`;
-  } else if (code) {
-    query = `code=${code}`;
-  } else {
+  if (name && label) {
+    query = `name=${name}&label=${label}`;
+  } else if (name) {
     query = `name=${name}`;
+  } else {
+    query = `label=${label}`;
   }
 
-  const url = `${baseApiUrl}/countries?${query}`;
+  const url = `${baseApiUrl}/categories?${query}`;
   console.log(url);
   try {
     const response = await fetch(url, {
@@ -29,16 +29,16 @@ export async function fetchCountry(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Country> = await response.json();
+    const res: SuccessResponse<Category> = await response.json();
     return res.data;
   } catch (err: any) {
     throw new Error(err);
   }
 }
 
-export async function fetchCountries(): Promise<Country[]> {
+export async function fetchCategories(): Promise<Category[]> {
   const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/countries`;
+  const url = `${baseApiUrl}/categories`;
   console.log(url);
 
   try {
@@ -51,42 +51,16 @@ export async function fetchCountries(): Promise<Country[]> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Country[]> = await response.json();
+    const res: SuccessResponse<Category[]> = await response.json();
     return res.data;
   } catch (err: any) {
     throw new Error(err);
   }
 }
 
-export async function fetchAddGeo(
-  geoCtx: GeoContext,
-): Promise<{ code: string }> {
+export async function createCategory(category: Category): Promise<Category> {
   const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/countries/geo`;
-  console.log(url);
-
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(geoCtx),
-    });
-
-    if (!response.ok) {
-      if (response.status === 404) return { code: "" };
-      throw new Error(response.statusText);
-    }
-
-    const res: SuccessResponse<{ code: string }> = await response.json();
-    return res.data;
-  } catch (err: any) {
-    throw new Error(err);
-  }
-}
-
-export async function createCountry(country: Country): Promise<Country> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/countries`;
+  const url = `${baseApiUrl}/categories`;
   console.log(url);
 
   try {
@@ -95,26 +69,26 @@ export async function createCountry(country: Country): Promise<Country> {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(country),
+      body: JSON.stringify(category),
     });
 
     if (!response.ok) {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Country> = await response.json();
+    const res: SuccessResponse<Category> = await response.json();
     return res.data;
   } catch (err: any) {
     throw new Error(err);
   }
 }
 
-export async function updateCountry(
-  code: string,
-  updates: Partial<Country>,
-): Promise<Country> {
+export async function updateCategory(
+  name: string,
+  updates: Partial<Category>,
+): Promise<Category> {
   const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/countries/${code}`;
+  const url = `${baseApiUrl}/categories/${name}`;
   console.log(url);
 
   try {
@@ -130,16 +104,16 @@ export async function updateCountry(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Country> = await response.json();
+    const res: SuccessResponse<Category> = await response.json();
     return res.data;
   } catch (err: any) {
     throw new Error(err);
   }
 }
 
-export async function deleteCountry(code: string): Promise<{ code: string }> {
+export async function deleteCategory(name: string): Promise<{ name: string }> {
   const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/countries/${code}`;
+  const url = `${baseApiUrl}/categories/${name}`;
   console.log(url);
 
   try {
@@ -151,7 +125,7 @@ export async function deleteCountry(code: string): Promise<{ code: string }> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ code: string }> = await response.json();
+    const res: SuccessResponse<{ name: string }> = await response.json();
     return res.data;
   } catch (err: any) {
     throw new Error(err);

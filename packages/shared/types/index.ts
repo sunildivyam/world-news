@@ -31,3 +31,6 @@ export * from "./TenantConfig.interface";
 export * from "./TenantContext.interface";
 export * from "./TrendMatrics.interface";
 export * from "./UserContext.interface";
+export * from "./Category.interface";
+export * from "./NewsEvent.interface";
+export * from "./Tag.interface";
