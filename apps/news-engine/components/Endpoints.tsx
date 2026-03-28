@@ -1,9 +1,4 @@
-const endpoints = [
-  "GET /api/headlines",
-  "GET /api/news",
-  "GET /api/news/:id",
-  "GET /api/categories",
-];
+import { endpoints } from "@/app-constants/endpoints.constants";
 
 export default function Endpoints() {
   return (

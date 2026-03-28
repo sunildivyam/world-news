@@ -4,7 +4,6 @@ import { checkRateLimit } from "@worldnews/shared/mongo/rate-limit";
 import { success, error } from "@worldnews/shared/mongo/response";
 import { getHeadlines } from "@worldnews/shared/mongo/collections/headline";
 import { validateApiKey } from "@worldnews/shared/mongo/collections/apiKeys";
-import { ApiKey, SuccessResponse } from "@worldnews/shared";
 
 export async function GET(req: Request) {
   try {
