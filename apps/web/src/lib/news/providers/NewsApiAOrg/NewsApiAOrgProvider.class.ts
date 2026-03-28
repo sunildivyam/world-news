@@ -4,7 +4,6 @@ import { BaseArticleProvider } from "../BaseArticleProvider.class";
 import { Article } from "@worldnews/shared/types";
 import { ApiArticle, ApiArticlesResponse } from "./NewsApiAOrg.interface";
 import { ArticleSource } from "@worldnews/shared/types";
-import { OriginalArticle } from "@worldnews/shared/types";
 import { ArticleCollection } from "@worldnews/shared/types";
 import { getRandomIntInclusive } from "@/lib/Utils";
 
@@ -49,7 +48,10 @@ export class NewsApiAOrgProvider extends BaseArticleProvider {
     const article: Article = {
       id: "",
       slug: "",
-      tenant: undefined, 
+      tenant: undefined,
+      tenantId: "",
+      url: rawArticle.url,
+      sourceId: rawArticle.source.id,
       title: rawArticle.title,
       description: rawArticle.description,
       author: rawArticle.author,
@@ -60,9 +62,8 @@ export class NewsApiAOrgProvider extends BaseArticleProvider {
       language: "",
       keywords: [],
       tags: [],
-      publishTZ: "",
-      publishDate: rawArticle.publishedAt,
-      updateDate: "",
+      publishedAt: rawArticle.publishedAt,
+      updatedAt: "",
       imageUrl: rawArticle.urlToImage,
       videoUrl: "",
       content: undefined,
@@ -77,22 +78,7 @@ export class NewsApiAOrgProvider extends BaseArticleProvider {
         category: undefined,
         language: undefined,
       } as ArticleSource,
-      orginal: undefined,
     };
-
-    article.orginal = {
-      id: article.id,
-      title: article.title,
-      description: article.description,
-      url: rawArticle.url,
-      imageUrl: article.imageUrl,
-      videoUrl: article.videoUrl,
-      publishTZ: article.publishTZ,
-      publishDate: article.publishDate,
-      author: article.author,
-      source: article.source,
-      articeProviderName: this.name,
-    } as OriginalArticle;
 
     return article;
   }

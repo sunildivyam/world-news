@@ -2,6 +2,6 @@ export type ArticleSectionType =
   | "heading"
   | "paragraph"
   | "unorderedList"
-  | "OrderedList";
+  | "orderedList";
 
 export type ArticleContent = Record<ArticleSectionType, string>;

@@ -3,7 +3,6 @@ import {
   UserContext,
   Article,
   ArticleSource,
-  OriginalArticle,
   ArticleCollection,
   SentimentMetrics,
   SentimentEnum,
@@ -75,7 +74,10 @@ export class NewsdataProvider extends BaseArticleProvider {
     const article: Article = {
       id: rawArticle.article_id,
       slug: rawArticle.article_id,
-      tenant: undefined, 
+      tenantId: "",
+      sourceId: rawArticle.source_id,
+      url: rawArticle.link,
+      tenant: undefined,
       title: rawArticle.title,
       description: rawArticle.description,
       author: (rawArticle.creator?.length && rawArticle.creator[0]) || "",
@@ -88,9 +90,8 @@ export class NewsdataProvider extends BaseArticleProvider {
       language: await geoService.getLanguageCode(rawArticle.language),
       keywords: rawArticle.keywords,
       tags: [],
-      publishTZ: rawArticle.pubDateTZ,
-      publishDate: rawArticle.pubDate,
-      updateDate: rawArticle.pubDate,
+      publishedAt: rawArticle.pubDate,
+      updatedAt: rawArticle.pubDate,
       imageUrl: rawArticle.image_url,
       videoUrl: rawArticle.video_url,
       content: undefined,
@@ -111,6 +112,7 @@ export class NewsdataProvider extends BaseArticleProvider {
       },
       source: {
         id: rawArticle.source_id,
+        slug: rawArticle.source_id,
         name: rawArticle.source_name,
         description: undefined,
         url: rawArticle.source_url,
@@ -119,22 +121,7 @@ export class NewsdataProvider extends BaseArticleProvider {
         category: undefined,
         language: undefined,
       } as ArticleSource,
-      orginal: undefined,
     };
-
-    article.orginal = {
-      id: article.id,
-      title: article.title,
-      description: article.description,
-      url: rawArticle.link,
-      imageUrl: article.imageUrl,
-      videoUrl: article.videoUrl,
-      publishTZ: article.publishTZ,
-      publishDate: article.publishDate,
-      author: article.author,
-      source: article.source,
-      articeProviderName: this.name,
-    } as OriginalArticle;
 
     return article;
   }

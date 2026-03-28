@@ -50,8 +50,10 @@ export default async function ArticlePage({
             </h1>
 
             <p className="max-w-4xl mx-auto mt-4 text-gray-500 flex gap-4">
-              <ClientDate dateString={article.publishDate.toString()} /> •{" "}
-              <ArticleSourceLink source={article.source} />
+              {article.publishedAt && (
+                <ClientDate dateString={article.publishedAt.toString()} />
+              )}{" "}
+              • <ArticleSourceLink source={article.source} />
             </p>
 
             <div className="max-w-full mt-8">

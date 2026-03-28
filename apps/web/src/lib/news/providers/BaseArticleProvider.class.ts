@@ -89,15 +89,16 @@ export class BaseArticleProvider implements ArticleProvider {
       language,
       keywords,
       tags,
-      publishTZ,
-      publishDate,
-      updateDate,
+      publishedAt,
+      updatedAt,
       imageUrl,
       videoUrl,
       content,
       analytics,
       source,
-      orginal,
+      tenantId,
+      sourceId,
+      url,
     } = rawArticle;
 
     const article: Article = {
@@ -112,15 +113,16 @@ export class BaseArticleProvider implements ArticleProvider {
       language,
       keywords,
       tags,
-      publishTZ,
-      publishDate,
-      updateDate,
+      publishedAt,
+      updatedAt,
       imageUrl,
       videoUrl,
       content,
       analytics,
       source,
-      orginal,
+      tenantId,
+      sourceId,
+      url,
     };
 
     return article;

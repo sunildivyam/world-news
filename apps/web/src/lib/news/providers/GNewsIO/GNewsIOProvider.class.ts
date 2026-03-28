@@ -3,7 +3,6 @@ import {
   UserContext,
   Article,
   ArticleSource,
-  OriginalArticle,
   ArticleCollection,
 } from "@worldnews/shared/types";
 import { BaseArticleProvider } from "../BaseArticleProvider.class";
@@ -50,7 +49,10 @@ export class GNewsIOProvider extends BaseArticleProvider {
     const article: Article = {
       id: rawArticle?.id ?? "",
       slug: rawArticle?.id ?? "",
-      tenant: undefined, 
+      tenant: undefined,
+      tenantId: "",
+      sourceId: rawArticle.source?.id || "",
+      url: rawArticle.url || "",
       title: rawArticle.title ?? "",
       description: rawArticle.description ?? "",
       author: "",
@@ -61,9 +63,8 @@ export class GNewsIOProvider extends BaseArticleProvider {
       language: await geoService.getLanguageCode(rawArticle.lang || ""),
       keywords: [],
       tags: [],
-      publishTZ: "",
-      publishDate: rawArticle.publishedAt ?? "",
-      updateDate: "",
+      publishedAt: rawArticle.publishedAt ?? "",
+      updatedAt: "",
       imageUrl: rawArticle.image,
       videoUrl: "",
       content: undefined,
@@ -78,22 +79,7 @@ export class GNewsIOProvider extends BaseArticleProvider {
         category: undefined,
         language: undefined,
       } as ArticleSource,
-      orginal: undefined,
     };
-
-    article.orginal = {
-      id: article.id,
-      title: article.title,
-      description: article.description,
-      url: rawArticle.url,
-      imageUrl: article.imageUrl,
-      videoUrl: article.videoUrl,
-      publishTZ: article.publishTZ,
-      publishDate: article.publishDate,
-      author: article.author,
-      source: article.source,
-      articeProviderName: this.name,
-    } as OriginalArticle;
 
     return article;
   }

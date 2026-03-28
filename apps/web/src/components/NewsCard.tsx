@@ -41,7 +41,10 @@ export default function NewsCard({ article }: Props) {
         </p>
 
         <p className="mt-2 text-sm text-gray-500 flex gap-4">
-          <ClientDate dateString={article.publishDate.toString()} /> •{" "}
+          {article.publishedAt && (
+            <ClientDate dateString={article.publishedAt.toString()} />
+          )}{" "}
+          •{" "}
         </p>
       </NoPrefetchLink>
       <div
