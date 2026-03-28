@@ -3,6 +3,7 @@
 import type { Country } from "@worldnews/shared";
 import {
   createCountry,
+  createCountries,
   findCountry,
   findCountryByName,
   getAllCountries,
@@ -32,10 +33,17 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const country: Country = await request.json();
+    const body = await request.json();
 
-    const result = await createCountry(country);
-    return result;
+    // Check if it's an array for bulk insert
+    if (Array.isArray(body)) {
+      const result = await createCountries(body);
+      return result;
+    } else {
+      // Single country insert
+      const result = await createCountry(body);
+      return result;
+    }
   } catch (err: any) {
     return error(err?.message || err, 500);
   }

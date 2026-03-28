@@ -164,3 +164,25 @@ export async function findArticlesBySource(sourceId: string, limit?: number) {
     return error(err?.message || err, 500);
   }
 }
+
+export async function createArticles(articlesArray: Article[]) {
+  if (!articlesArray || articlesArray.length === 0)
+    return error("Empty articles array can not be created.");
+
+  try {
+    const { articles } = await getCollections();
+
+    const result = await articles.insertMany(articlesArray);
+
+    if (!result.insertedIds || result.insertedCount === 0) {
+      return error("Failed to create articles");
+    }
+
+    return success({
+      insertedCount: result.insertedCount,
+      insertedIds: Object.values(result.insertedIds),
+    });
+  } catch (err: any) {
+    return error(err?.message || err, 500);
+  }
+}

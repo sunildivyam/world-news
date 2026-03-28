@@ -133,3 +133,28 @@ export async function deleteTenant(
     throw new Error(err);
   }
 }
+
+export async function createTenants(tenants: Tenant[]): Promise<Tenant[]> {
+  const baseApiUrl = process.env.NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/tenants`;
+  console.log(url);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(tenants),
+    });
+
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    const res: SuccessResponse<Tenant[]> = await response.json();
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+}

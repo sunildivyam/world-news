@@ -2,6 +2,7 @@
 import { Tenant } from "@worldnews/shared";
 import {
   createTenant,
+  createTenants,
   findTenant,
   findTenantByDomain,
   findTenants,
@@ -30,10 +31,17 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const tenant: Tenant = await request.json();
+    const body = await request.json();
 
-    const result = await createTenant(tenant);
-    return result;
+    // Check if it's an array for bulk insert
+    if (Array.isArray(body)) {
+      const result = await createTenants(body);
+      return result;
+    } else {
+      // Single tenant insert
+      const result = await createTenant(body);
+      return result;
+    }
   } catch (err: any) {
     return error(err?.message || err, 500);
   }

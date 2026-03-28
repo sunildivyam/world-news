@@ -157,3 +157,30 @@ export async function deleteCountry(code: string): Promise<{ code: string }> {
     throw new Error(err);
   }
 }
+
+export async function createCountries(
+  countries: Country[],
+): Promise<Country[]> {
+  const baseApiUrl = process.env.NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/countries`;
+  console.log(url);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(countries),
+    });
+
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    const res: SuccessResponse<Country[]> = await response.json();
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+}

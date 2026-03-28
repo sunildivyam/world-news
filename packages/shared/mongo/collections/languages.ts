@@ -137,3 +137,27 @@ export async function findLanguages() {
     return error(err?.message || err, 500);
   }
 }
+
+export async function createLanguages(languages: Language[]) {
+  if (!languages?.length)
+    return error("Empty languages array can not be created.");
+
+  try {
+    const { languages: collection } = await getCollections();
+
+    const result = await collection.insertMany(languages);
+
+    if (!result.insertedCount) {
+      return error("Failed to create languages");
+    }
+
+    return success(
+      languages.map((language, index) => ({
+        ...language,
+        id: result.insertedIds[index],
+      })),
+    );
+  } catch (err: any) {
+    return error(err?.message || err, 500);
+  }
+}

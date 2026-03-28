@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   createNewsEvent,
+  createNewsEvents,
   findNewsEvent,
   findNewsEventByLabel,
   findNewsEvents,
@@ -29,10 +30,17 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const newsEvent = await request.json();
+    const body = await request.json();
 
-    const result = await createNewsEvent(newsEvent);
-    return result;
+    // Check if it's an array for bulk insert
+    if (Array.isArray(body)) {
+      const result = await createNewsEvents(body);
+      return result;
+    } else {
+      // Single news event insert
+      const result = await createNewsEvent(body);
+      return result;
+    }
   } catch (err: any) {
     return error(err?.message || err, 500);
   }

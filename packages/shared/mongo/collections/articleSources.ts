@@ -117,3 +117,27 @@ export async function findArticleSources() {
     return error(err?.message || err, 500);
   }
 }
+
+export async function createArticleSources(articleSources: ArticleSource[]) {
+  if (!articleSources?.length)
+    return error("Empty ArticleSources array can not be created.");
+
+  try {
+    const { articleSources: collection } = await getCollections();
+
+    const result = await collection.insertMany(articleSources);
+
+    if (!result.insertedCount) {
+      return error("Failed to create ArticleSources");
+    }
+
+    return success(
+      articleSources.map((source, index) => ({
+        ...source,
+        id: result.insertedIds[index],
+      })),
+    );
+  } catch (err: any) {
+    return error(err?.message || err, 500);
+  }
+}

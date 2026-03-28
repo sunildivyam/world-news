@@ -117,3 +117,26 @@ export async function findTenants() {
     return error(err?.message || err, 500);
   }
 }
+
+export async function createTenants(tenants: Tenant[]) {
+  if (!tenants?.length) return error("Empty tenants array can not be created.");
+
+  try {
+    const { tenants: collection } = await getCollections();
+
+    const result = await collection.insertMany(tenants);
+
+    if (!result.insertedCount) {
+      return error("Failed to create tenants");
+    }
+
+    return success(
+      tenants.map((tenant, index) => ({
+        ...tenant,
+        id: result.insertedIds[index],
+      })),
+    );
+  } catch (err: any) {
+    return error(err?.message || err, 500);
+  }
+}

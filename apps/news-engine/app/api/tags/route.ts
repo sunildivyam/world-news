@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   createTag,
+  createTags,
   findTag,
   findTagByLabel,
   findTags,
@@ -29,10 +30,17 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const tag = await request.json();
+    const body = await request.json();
 
-    const result = await createTag(tag);
-    return result;
+    // Check if it's an array for bulk insert
+    if (Array.isArray(body)) {
+      const result = await createTags(body);
+      return result;
+    } else {
+      // Single tag insert
+      const result = await createTag(body);
+      return result;
+    }
   } catch (err: any) {
     return error(err?.message || err, 500);
   }

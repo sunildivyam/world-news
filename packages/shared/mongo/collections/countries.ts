@@ -225,3 +225,27 @@ export async function findCountryByName(name: string) {
 function addLanguage(code: string, languages: string[]) {
   return languages?.includes(code) ? [...languages] : [...languages, code];
 }
+
+export async function createCountries(countries: Country[]) {
+  if (!countries?.length)
+    return error("Empty countries array can not be created.");
+
+  try {
+    const { countries: collection } = await getCollections();
+
+    const result = await collection.insertMany(countries);
+
+    if (!result.insertedCount) {
+      return error("Failed to create countries");
+    }
+
+    return success(
+      countries.map((country, index) => ({
+        ...country,
+        id: result.insertedIds[index],
+      })),
+    );
+  } catch (err: any) {
+    return error(err?.message || err, 500);
+  }
+}

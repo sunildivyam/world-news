@@ -130,3 +130,30 @@ export async function deleteLanguage(code: string): Promise<{ code: string }> {
     throw new Error(err);
   }
 }
+
+export async function createLanguages(
+  languages: Language[],
+): Promise<Language[]> {
+  const baseApiUrl = process.env.NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/languages`;
+  console.log(url);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(languages),
+    });
+
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    const res: SuccessResponse<Language[]> = await response.json();
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+}

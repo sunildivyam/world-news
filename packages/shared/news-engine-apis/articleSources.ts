@@ -135,3 +135,30 @@ export async function deleteArticleSource(
     throw new Error(err);
   }
 }
+
+export async function createArticleSources(
+  articleSources: ArticleSource[],
+): Promise<ArticleSource[]> {
+  const baseApiUrl = process.env.NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/sources`;
+  console.log(url);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(articleSources),
+    });
+
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    const res: SuccessResponse<ArticleSource[]> = await response.json();
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+}

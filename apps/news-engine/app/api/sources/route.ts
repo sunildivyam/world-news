@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   createArticleSource,
+  createArticleSources,
   findArticleSource,
   findArticleSourceByName,
   findArticleSources,
@@ -29,10 +30,17 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const articleSource = await request.json();
+    const body = await request.json();
 
-    const result = await createArticleSource(articleSource);
-    return result;
+    // Check if it's an array for bulk insert
+    if (Array.isArray(body)) {
+      const result = await createArticleSources(body);
+      return result;
+    } else {
+      // Single article source insert
+      const result = await createArticleSource(body);
+      return result;
+    }
   } catch (err: any) {
     return error(err?.message || err, 500);
   }

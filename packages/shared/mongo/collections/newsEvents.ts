@@ -115,3 +115,27 @@ export async function findNewsEvents() {
     return error(err?.message || err, 500);
   }
 }
+
+export async function createNewsEvents(newsEvents: NewsEvent[]) {
+  if (!newsEvents?.length)
+    return error("Empty newsEvents array can not be created.");
+
+  try {
+    const { newsEvents: collection } = await getCollections();
+
+    const result = await collection.insertMany(newsEvents);
+
+    if (!result.insertedCount) {
+      return error("Failed to create newsEvents");
+    }
+
+    return success(
+      newsEvents.map((newsEvent, index) => ({
+        ...newsEvent,
+        id: result.insertedIds[index],
+      })),
+    );
+  } catch (err: any) {
+    return error(err?.message || err, 500);
+  }
+}

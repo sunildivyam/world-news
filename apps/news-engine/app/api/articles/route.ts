@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   createArticle,
+  createArticles,
   findArticle,
   findArticleByTitle,
   findArticles,
@@ -44,10 +45,17 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const article = await request.json();
+    const body = await request.json();
 
-    const result = await createArticle(article);
-    return result;
+    // Check if it's an array for bulk insert
+    if (Array.isArray(body)) {
+      const result = await createArticles(body);
+      return result;
+    } else {
+      // Single article insert
+      const result = await createArticle(body);
+      return result;
+    }
   } catch (err: any) {
     return error(err?.message || err, 500);
   }

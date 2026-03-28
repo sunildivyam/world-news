@@ -112,3 +112,26 @@ export async function findTags() {
     return error(err?.message || err, 500);
   }
 }
+
+export async function createTags(tags: Tag[]) {
+  if (!tags?.length) return error("Empty tags array can not be created.");
+
+  try {
+    const { tags: collection } = await getCollections();
+
+    const result = await collection.insertMany(tags);
+
+    if (!result.insertedCount) {
+      return error("Failed to create tags");
+    }
+
+    return success(
+      tags.map((tag, index) => ({
+        ...tag,
+        id: result.insertedIds[index],
+      })),
+    );
+  } catch (err: any) {
+    return error(err?.message || err, 500);
+  }
+}
