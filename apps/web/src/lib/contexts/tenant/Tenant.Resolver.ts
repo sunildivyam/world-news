@@ -1,4 +1,3 @@
-import { NextRequest } from "next/server";
 import {
   findTenantByDomain,
   findTenantById,
@@ -18,11 +17,9 @@ import type { TenantContext } from "@worldnews/shared/types";
  * @returns
  */
 export async function resolveTenantContext(
-  request: NextRequest,
+  host: string,
+  pathname: string,
 ): Promise<TenantContext | null> {
-  const host = request.headers.get("host") || "";
-
-  const pathname = request.nextUrl.pathname;
   const segments = pathname.split("/").filter(Boolean);
 
   // 1️⃣ custom domain

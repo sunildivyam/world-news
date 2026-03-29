@@ -20,6 +20,7 @@ export const getUserContext = async (): Promise<UserContext> => {
 export const setResponseHeadersWithUserContext = (
   res: NextResponse<unknown>,
   userCtx: UserContext,
+  pathname?: string,
 ): void => {
   res.headers.set("x-session-id", userCtx.sessionId ?? "");
   res.headers.set("x-user-tenant-id", userCtx.tenantId ?? "");
@@ -31,4 +32,5 @@ export const setResponseHeadersWithUserContext = (
   res.headers.set("x-user-language", userCtx.language ?? "");
   res.headers.set("x-user-page-type", userCtx.pageType ?? "");
   res.headers.set("x-user-page-id", userCtx.pageId ?? "");
+  pathname && res.headers.set("x-pathname", pathname);
 };

@@ -2,7 +2,7 @@
 import { CACHE_1_WEEK } from "@worldnews/shared/seo";
 import { fetchTenant } from "@worldnews/shared/news-engine-apis";
 export const dynamic = "force-dynamic";
-export const revalidate = CACHE_1_WEEK;
+export const revalidate = 3600;
 
 export async function GET(
   request: Request,

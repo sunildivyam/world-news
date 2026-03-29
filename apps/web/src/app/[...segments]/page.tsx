@@ -7,6 +7,9 @@ import EventPage from "@/pages/EventPage";
 import TagPage from "@/pages/TagPage";
 import ArticlePage from "@/pages/ArticlePage";
 import { getTenantConfig } from "@/lib/contexts/tenant/Tenant.validators";
+import { generatePageMeta } from "@worldnews/shared/seo";
+import { resolveTenantContext } from "@/lib/contexts/tenant/Tenant.Resolver";
+import { headers } from "next/headers";
 
 export default async function RouterPage() {
   const ctx = await getUserContext();
@@ -38,4 +41,17 @@ export default async function RouterPage() {
     default:
       return <HomePage userContext={ctx} tenantConfig={tenantConfig} />;
   }
+}
+
+export async function generateMetadata() {
+  const h = await headers();
+  const host = h.get("host") || "";
+  const pathname = h.get("x-pathname") || "";
+  console.log(host, " *** ", pathname);
+  const userCtx = await getUserContext();
+  const tenantCtx = await resolveTenantContext(host, pathname);
+
+  if (!userCtx || !tenantCtx) return {};
+  const metaData = await generatePageMeta(userCtx, tenantCtx);
+  return metaData;
 }

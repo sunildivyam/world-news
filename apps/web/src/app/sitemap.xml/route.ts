@@ -3,7 +3,7 @@ import { CACHE_1_HOUR } from "@worldnews/shared/seo";
 import { fetchTenants } from "@worldnews/shared/news-engine-apis";
 
 export const dynamic = "force-dynamic";
-export const revalidate = CACHE_1_HOUR; // Cache for 1 hour to protect DB
+export const revalidate = 3600; // Cache for 1 hour to protect DB
 
 export async function GET() {
   const tenants = await fetchTenants();

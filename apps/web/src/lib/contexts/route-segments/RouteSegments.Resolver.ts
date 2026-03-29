@@ -1,20 +1,13 @@
 import { PageTypeEnum, RouteSegmentContext } from "@worldnews/shared/types";
-import { NextRequest } from "next/server";
 import { staticPages } from "@/app-constants/staticPages.constant";
 import { geoService } from "@worldnews/shared/server";
 
 const pageTypes = Object.keys(PageTypeEnum);
 
 export async function resolveRouteSegmentsContext(
-  request: NextRequest | string[],
+  pathname: string,
 ): Promise<RouteSegmentContext> {
-  let segments;
-  if (!Array.isArray(request)) {
-    const pathname = request.nextUrl.pathname;
-    segments = pathname.split("/").filter(Boolean);
-  } else {
-    segments = request;
-  }
+  let segments = pathname.split("/").filter(Boolean);
 
   const ctx: RouteSegmentContext = {
     tenantId: undefined,
@@ -71,7 +64,7 @@ export async function resolveRouteSegmentsContext(
         regionExist || undefined,
         cityExist || undefined,
       );
-      
+
       if (languageExist) {
         ctx.language = seg;
         i++;

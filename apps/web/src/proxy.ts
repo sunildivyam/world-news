@@ -10,20 +10,23 @@ import {
 } from "@worldnews/shared/seo";
 
 export async function proxy(request: NextRequest) {
-  const current = request.nextUrl.pathname;
+  const pathname = (request.nextUrl.pathname || "").toLowerCase();
   const host = (request.nextUrl.host || "").toLowerCase();
-  console.log("Cur:", current);
+  const headers = request.headers;
+  const cookies = request.cookies;
+
+  console.log("Cur:", pathname);
 
   // if a file with extension is requested, it should be rejected
-  if (isInvalidPath(current, [".xml", ".txt"])) {
+  if (isInvalidPath(pathname, [".xml", ".txt"])) {
     const url = new URL("/not-found", request.url);
     return NextResponse.redirect(url);
   }
 
-  const userCtx = await resolveUserContext(request);
+  const userCtx = await resolveUserContext(host, pathname, headers, cookies);
 
   // If tenantId is missing, redirect to global error page
-  if (!userCtx.tenantId && current !== "/not-found") {
+  if (!userCtx.tenantId && pathname !== "/not-found") {
     const url = new URL("/not-found", request.url);
     return NextResponse.redirect(url);
   }
@@ -32,7 +35,7 @@ export async function proxy(request: NextRequest) {
   const domainNotFoundPage = isDomainNotFoundPage(
     userCtx.tenantId || "",
     userCtx.domain || "",
-    current,
+    pathname,
     host,
   );
 
@@ -47,7 +50,7 @@ export async function proxy(request: NextRequest) {
   const sitemapUrl = isDomainSitemap(
     userCtx.tenantId || "",
     userCtx.domain || "",
-    current,
+    pathname,
     host,
   );
 
@@ -61,7 +64,7 @@ export async function proxy(request: NextRequest) {
   const robotsTxtUrl = isDomainRobotsTxt(
     userCtx.tenantId || "",
     userCtx.domain || "",
-    current,
+    pathname,
     host,
   );
 
@@ -79,19 +82,19 @@ export async function proxy(request: NextRequest) {
     " | T: ",
     userCtx.tenantId,
     " | C Url: ",
-    current,
+    pathname,
     " | Cano Url: ",
     canonical,
   );
 
-  if (current !== canonical) {
+  if (pathname !== canonical) {
     const url = new URL(canonical, request.url);
 
     return NextResponse.redirect(url);
   }
 
   const res = NextResponse.next();
-  setResponseHeadersWithUserContext(res, userCtx);
+  setResponseHeadersWithUserContext(res, userCtx, pathname);
 
   return res;
 }
