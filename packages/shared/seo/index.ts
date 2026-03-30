@@ -4,3 +4,4 @@ export * from "./seo.constants";
 export * from "./robots";
 export * from "./not-found";
 export * from "./meta";
+export * from "./jsonLd";
