@@ -1,24 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Category, SuccessResponse } from "../types";
+import { NewsBatch, SuccessResponse } from "../types";
 import { NEWSENGINE_BASE } from "./apiUrls";
 
-export async function fetchCategory(
-  name?: string,
-  label?: string,
-): Promise<Category | null> {
-  if (!name && !label) return null;
-
+export async function fetchNewsBatch(id: string): Promise<NewsBatch | null> {
   const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  let query;
-  if (name && label) {
-    query = `name=${name}&label=${label}`;
-  } else if (name) {
-    query = `name=${name}`;
-  } else {
-    query = `label=${label}`;
-  }
-
-  const url = `${baseApiUrl}/api/categories?${query}`;
+  const url = `${baseApiUrl}/api/news-batches?id=${id}`;
   console.log(url);
   try {
     const response = await fetch(url, {
@@ -30,16 +16,16 @@ export async function fetchCategory(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Category> = await response.json();
+    const res: SuccessResponse<NewsBatch> = await response.json();
     return res.data;
   } catch (err: any) {
     throw new Error(err);
   }
 }
 
-export async function fetchCategories(): Promise<Category[]> {
+export async function fetchNewsBatches(): Promise<NewsBatch[]> {
   const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/categories`;
+  const url = `${baseApiUrl}/api/news-batches`;
   console.log(url);
 
   try {
@@ -52,16 +38,18 @@ export async function fetchCategories(): Promise<Category[]> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Category[]> = await response.json();
+    const res: SuccessResponse<NewsBatch[]> = await response.json();
     return res.data;
   } catch (err: any) {
     throw new Error(err);
   }
 }
 
-export async function createCategory(category: Category): Promise<Category> {
+export async function createNewsBatch(
+  newsBatch: NewsBatch,
+): Promise<NewsBatch> {
   const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/categories`;
+  const url = `${baseApiUrl}/api/news-batches`;
   console.log(url);
 
   try {
@@ -70,26 +58,26 @@ export async function createCategory(category: Category): Promise<Category> {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(category),
+      body: JSON.stringify(newsBatch),
     });
 
     if (!response.ok) {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Category> = await response.json();
+    const res: SuccessResponse<NewsBatch> = await response.json();
     return res.data;
   } catch (err: any) {
     throw new Error(err);
   }
 }
 
-export async function updateCategory(
-  name: string,
-  updates: Partial<Category>,
-): Promise<Category> {
+export async function updateNewsBatch(
+  id: string,
+  updates: Partial<NewsBatch>,
+): Promise<NewsBatch> {
   const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/categories/${name}`;
+  const url = `${baseApiUrl}/api/news-batches/${id}`;
   console.log(url);
 
   try {
@@ -105,16 +93,16 @@ export async function updateCategory(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Category> = await response.json();
+    const res: SuccessResponse<NewsBatch> = await response.json();
     return res.data;
   } catch (err: any) {
     throw new Error(err);
   }
 }
 
-export async function deleteCategory(name: string): Promise<{ name: string }> {
+export async function deleteNewsBatch(id: string): Promise<{ id: string }> {
   const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/categories/${name}`;
+  const url = `${baseApiUrl}/api/news-batches/${id}`;
   console.log(url);
 
   try {
@@ -126,18 +114,18 @@ export async function deleteCategory(name: string): Promise<{ name: string }> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ name: string }> = await response.json();
+    const res: SuccessResponse<{ id: string }> = await response.json();
     return res.data;
   } catch (err: any) {
     throw new Error(err);
   }
 }
 
-export async function createCategories(
-  categoriesArray: Category[],
-): Promise<{ insertedCount: number; insertedIds: string[] }> {
+export async function createNewsBatches(
+  newsBatches: NewsBatch[],
+): Promise<NewsBatch[]> {
   const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/categories`;
+  const url = `${baseApiUrl}/api/news-batches`;
   console.log(url);
 
   try {
@@ -146,17 +134,14 @@ export async function createCategories(
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(categoriesArray),
+      body: JSON.stringify(newsBatches),
     });
 
     if (!response.ok) {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{
-      insertedCount: number;
-      insertedIds: string[];
-    }> = await response.json();
+    const res: SuccessResponse<NewsBatch[]> = await response.json();
     return res.data;
   } catch (err: any) {
     throw new Error(err);

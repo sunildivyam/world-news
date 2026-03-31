@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NewsEvent, SuccessResponse } from "../types";
+import { NEWSENGINE_BASE } from "./apiUrls";
 
 export async function fetchNewsEvent(
   name?: string,
@@ -7,7 +8,7 @@ export async function fetchNewsEvent(
 ): Promise<NewsEvent | null> {
   if (!name && !label) return null;
 
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
   let query;
   if (name && label) {
     query = `name=${name}&label=${label}`;
@@ -17,7 +18,7 @@ export async function fetchNewsEvent(
     query = `label=${label}`;
   }
 
-  const url = `${baseApiUrl}/events?${query}`;
+  const url = `${baseApiUrl}/api/events?${query}`;
   console.log(url);
   try {
     const response = await fetch(url, {
@@ -37,8 +38,8 @@ export async function fetchNewsEvent(
 }
 
 export async function fetchNewsEvents(): Promise<NewsEvent[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/events`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/events`;
   console.log(url);
 
   try {
@@ -61,8 +62,8 @@ export async function fetchNewsEvents(): Promise<NewsEvent[]> {
 export async function createNewsEvent(
   newsEvent: NewsEvent,
 ): Promise<NewsEvent> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/events`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/events`;
   console.log(url);
 
   try {
@@ -89,8 +90,8 @@ export async function updateNewsEvent(
   name: string,
   updates: Partial<NewsEvent>,
 ): Promise<{ name: string }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/events/${name}`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/events/${name}`;
   console.log(url);
 
   try {
@@ -114,8 +115,8 @@ export async function updateNewsEvent(
 }
 
 export async function deleteNewsEvent(name: string): Promise<{ name: string }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/events/${name}`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/events/${name}`;
   console.log(url);
 
   try {
@@ -137,8 +138,8 @@ export async function deleteNewsEvent(name: string): Promise<{ name: string }> {
 export async function createNewsEvents(
   newsEvents: NewsEvent[],
 ): Promise<NewsEvent[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/events`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/events`;
   console.log(url);
 
   try {

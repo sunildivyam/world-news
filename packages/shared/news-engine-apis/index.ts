@@ -4,6 +4,7 @@ export * from "./articles";
 export * from "./categories";
 export * from "./countries";
 export * from "./languages";
+export * from "./newsBatches";
 export * from "./newsEvents";
 export * from "./tags";
 export * from "./tenants";

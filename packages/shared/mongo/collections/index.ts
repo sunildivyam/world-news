@@ -8,3 +8,4 @@ export * from "./subscription";
 export * from "./tags";
 export * from "./countries";
 export * from "./tenants";
+export * from "./newsBatches";

@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApiKey, SuccessResponse } from "../types";
+import { NEWSENGINE_BASE } from "./apiUrls";
 
 export async function fetchApiKey(key: string): Promise<ApiKey | null> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/apikeys?key=${key}`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/apikeys?key=${key}`;
   console.log(url);
 
   try {
@@ -24,8 +25,8 @@ export async function fetchApiKey(key: string): Promise<ApiKey | null> {
 }
 
 export async function validateApiKey(key: string): Promise<ApiKey | null> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/apikeys?key=${key}&validate=true`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/apikeys?key=${key}&validate=true`;
   console.log(url);
 
   try {
@@ -46,8 +47,8 @@ export async function validateApiKey(key: string): Promise<ApiKey | null> {
 }
 
 export async function fetchTenantApiKeys(tenantId: string): Promise<ApiKey[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/apikeys?tenantId=${tenantId}`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/apikeys?tenantId=${tenantId}`;
   console.log(url);
 
   try {
@@ -70,8 +71,8 @@ export async function fetchTenantApiKeys(tenantId: string): Promise<ApiKey[]> {
 export async function fetchInactiveTenantApiKeys(
   tenantId: string,
 ): Promise<ApiKey[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/apikeys?tenantId=${tenantId}&inactive=true`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/apikeys?tenantId=${tenantId}&inactive=true`;
   console.log(url);
 
   try {
@@ -92,8 +93,8 @@ export async function fetchInactiveTenantApiKeys(
 }
 
 export async function createApiKey(tenantId: string): Promise<ApiKey> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/apikeys`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/apikeys`;
   console.log(url);
 
   try {
@@ -120,8 +121,8 @@ export async function updateApiKey(
   key: string,
   updates: Partial<ApiKey>,
 ): Promise<{ apiKey: string }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/apikeys/${key}`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/apikeys/${key}`;
   console.log(url);
 
   try {
@@ -145,8 +146,8 @@ export async function updateApiKey(
 }
 
 export async function expireApiKey(key: string): Promise<{ apiKey: string }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/apikeys/${key}`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/apikeys/${key}`;
   console.log(url);
 
   try {
@@ -170,8 +171,8 @@ export async function expireApiKey(key: string): Promise<{ apiKey: string }> {
 }
 
 export async function deleteApiKey(key: string): Promise<{ apiKey: string }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/apikeys/${key}`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/apikeys/${key}`;
   console.log(url);
 
   try {

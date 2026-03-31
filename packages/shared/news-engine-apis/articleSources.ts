@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ArticleSource, SuccessResponse } from "../types";
+import { NEWSENGINE_BASE } from "./apiUrls";
 
 export async function fetchArticleSource(
   slug?: string,
@@ -7,7 +8,7 @@ export async function fetchArticleSource(
 ): Promise<ArticleSource | null> {
   if (!slug && !name) return null;
 
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
   let query;
   if (slug && name) {
     query = `slug=${slug}&name=${name}`;
@@ -17,7 +18,7 @@ export async function fetchArticleSource(
     query = `name=${name}`;
   }
 
-  const url = `${baseApiUrl}/sources?${query}`;
+  const url = `${baseApiUrl}/api/sources?${query}`;
   console.log(url);
   try {
     const response = await fetch(url, {
@@ -37,8 +38,8 @@ export async function fetchArticleSource(
 }
 
 export async function fetchArticleSources(): Promise<ArticleSource[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/sources`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/sources`;
   console.log(url);
 
   try {
@@ -61,8 +62,8 @@ export async function fetchArticleSources(): Promise<ArticleSource[]> {
 export async function createArticleSource(
   articleSource: ArticleSource,
 ): Promise<ArticleSource> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/sources`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/sources`;
   console.log(url);
 
   try {
@@ -89,8 +90,8 @@ export async function updateArticleSource(
   slug: string,
   updates: Partial<ArticleSource>,
 ): Promise<{ slug: string }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/sources/${slug}`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/sources/${slug}`;
   console.log(url);
 
   try {
@@ -116,8 +117,8 @@ export async function updateArticleSource(
 export async function deleteArticleSource(
   slug: string,
 ): Promise<{ slug: string }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/sources/${slug}`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/sources/${slug}`;
   console.log(url);
 
   try {
@@ -139,8 +140,8 @@ export async function deleteArticleSource(
 export async function createArticleSources(
   articleSources: ArticleSource[],
 ): Promise<ArticleSource[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/sources`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/sources`;
   console.log(url);
 
   try {

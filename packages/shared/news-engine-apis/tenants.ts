@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SuccessResponse, Tenant } from "../types";
+import { NEWSENGINE_BASE } from "./apiUrls";
 
 export async function fetchTenant(
   tenantId?: string,
@@ -7,7 +8,7 @@ export async function fetchTenant(
 ): Promise<Tenant | null> {
   if (!tenantId && !domain) return null;
 
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
   let query;
   if (tenantId && domain) {
     query = `tenantId=${tenantId}&domain=${domain}`;
@@ -17,7 +18,7 @@ export async function fetchTenant(
     query = `domain=${domain}`;
   }
 
-  const url = `${baseApiUrl}/tenants?${query}`;
+  const url = `${baseApiUrl}/api/tenants?${query}`;
   console.log(url);
   try {
     const response = await fetch(url, {
@@ -37,8 +38,8 @@ export async function fetchTenant(
 }
 
 export async function fetchTenants(): Promise<Tenant[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/tenants`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/tenants`;
   console.log(url);
 
   try {
@@ -59,8 +60,8 @@ export async function fetchTenants(): Promise<Tenant[]> {
 }
 
 export async function createTenant(tenant: Tenant): Promise<Tenant> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/tenants`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/tenants`;
   console.log(url);
 
   try {
@@ -87,8 +88,8 @@ export async function updateTenant(
   tenantId: string,
   updates: Partial<Tenant>,
 ): Promise<Tenant> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/tenants/${tenantId}`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/tenants/${tenantId}`;
   console.log(url);
 
   try {
@@ -114,8 +115,8 @@ export async function updateTenant(
 export async function deleteTenant(
   tenantId: string,
 ): Promise<{ tenantId: string }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/tenants/${tenantId}`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/tenants/${tenantId}`;
   console.log(url);
 
   try {
@@ -135,8 +136,8 @@ export async function deleteTenant(
 }
 
 export async function createTenants(tenants: Tenant[]): Promise<Tenant[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/tenants`;
+  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
+  const url = `${baseApiUrl}/api/tenants`;
   console.log(url);
 
   try {

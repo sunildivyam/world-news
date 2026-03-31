@@ -18,6 +18,7 @@ export * from "./ErrorResponse.interface";
 export * from "./GeoContext.interface";
 export * from "./Language.interface";
 export * from "./LanguageContext.type";
+export * from "./NewsBatch.interface";
 export * from "./PageSection.type";
 export * from "./PageType.enum";
 export * from "./Region.interface";
