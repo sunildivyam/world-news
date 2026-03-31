@@ -1,9 +1,11 @@
-import { AppError } from "@worldnews/shared/types";
-import { Article } from "@worldnews/shared/types";
-import { ArticleCollection } from "@worldnews/shared/types";
-import { ArticleProvider } from "@worldnews/shared/types";
-import { ArticleQueryParams } from "@worldnews/shared/types";
-import { UserContext } from "@worldnews/shared/types";
+import {
+  AppError,
+  Article,
+  ArticleCollection,
+  ArticleProvider,
+  ArticleQueryParams,
+  UserContext,
+} from "../../types";
 
 export class BaseArticleProvider implements ArticleProvider {
   name: string = "BaseArticleProvider";

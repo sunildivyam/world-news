@@ -6,11 +6,11 @@ import {
   ArticleCollection,
   SentimentMetrics,
   SentimentEnum,
-} from "@worldnews/shared/types";
+} from "../../../types";
 import { BaseArticleProvider } from "../BaseArticleProvider.class";
 import { ApiArticle, ApiArticlesResponse } from "./NewsData.interface";
-import { getRandomIntInclusive } from "@/lib/Utils";
-import { geoService } from "@worldnews/shared/server";
+import { getRandomIntInclusive } from "../../../utils/common";
+import { geoService } from "../../../server";
 
 export class NewsdataProvider extends BaseArticleProvider {
   name: string = "NewsData";

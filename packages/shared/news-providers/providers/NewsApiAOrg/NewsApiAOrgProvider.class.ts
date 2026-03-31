@@ -1,11 +1,11 @@
-import { ArticleQueryParams } from "@worldnews/shared/types";
-import { UserContext } from "@worldnews/shared/types";
+import { ArticleQueryParams } from "../../../types";
+import { UserContext } from "../../../types";
 import { BaseArticleProvider } from "../BaseArticleProvider.class";
-import { Article } from "@worldnews/shared/types";
+import { Article } from "../../../types";
 import { ApiArticle, ApiArticlesResponse } from "./NewsApiAOrg.interface";
-import { ArticleSource } from "@worldnews/shared/types";
-import { ArticleCollection } from "@worldnews/shared/types";
-import { getRandomIntInclusive } from "@/lib/Utils";
+import { ArticleSource } from "../../../types";
+import { ArticleCollection } from "../../../types";
+import { getRandomIntInclusive } from "../../../utils/common";
 
 export class NewsApiAOrgProvider extends BaseArticleProvider {
   name: string = "NewsApi.org";

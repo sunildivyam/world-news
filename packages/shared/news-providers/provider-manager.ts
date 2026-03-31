@@ -1,7 +1,5 @@
 // lib/news/provider-manager.ts
-import { articleProviders } from "@/app-constants/ArticleProviders.constants";
-import { AppError } from "@worldnews/shared/types";
-import { ArticleProvider } from "@worldnews/shared/types";
+import { AppError, ArticleProvider } from "../types";
 
 function hasRateLimitReached(res: any): boolean {
   if (
@@ -18,6 +16,7 @@ function hasRateLimitReached(res: any): boolean {
 
 export async function executeWithFailover<T>(
   operation: (provider: ArticleProvider) => Promise<T>,
+  articleProviders: ArticleProvider[],
 ): Promise<T> {
   let lastError: AppError = new AppError("", "");
 

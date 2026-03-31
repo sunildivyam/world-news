@@ -4,11 +4,11 @@ import {
   Article,
   ArticleSource,
   ArticleCollection,
-} from "@worldnews/shared/types";
+} from "../../../types";
 import { BaseArticleProvider } from "../BaseArticleProvider.class";
 import { ApiArticle, ApiArticlesResponse } from "./GNewsIO.interface";
-import { getRandomIntInclusive } from "@/lib/Utils";
-import { geoService } from "@worldnews/shared/server";
+import { getRandomIntInclusive } from "../../../utils/common";
+import { geoService } from "../../../server";
 
 export class GNewsIOProvider extends BaseArticleProvider {
   name: string = "GNews.io";
