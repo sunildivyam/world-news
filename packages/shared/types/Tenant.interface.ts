@@ -23,4 +23,7 @@ export interface Tenant {
   settings: TenantConfig;
   subscriptionPlan?: string;
   customFields?: Record<string, any>;
+  country?: string[];
+  language?: string[];
+  category?: string[];
 }
