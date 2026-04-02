@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { NewsBatch } from "@worldnews/shared";
+import { getNewsBatchInfoFromTenant } from "../services/NewsBatchHelpers";
 
 interface NewsBatchFormProps {
   mode: "create" | "edit";
@@ -35,12 +36,17 @@ export default function NewsBatchForm({
   useEffect(() => {
     if (mode === "edit" && initialData) {
       setFormData(initialData);
-      setTenantsInput((initialData.tenants || []).join(", "));
-      setCountryInput((initialData.country || []).join(", "));
-      setCategoryInput((initialData.category || []).join(", "));
-      setLanguageInput((initialData.language || []).join(", "));
     }
   }, [mode, initialData]);
+
+  useEffect(() => {
+    const { tenants, country, category, language } = formData;
+
+    setTenantsInput((tenants || []).join(", "));
+    setCountryInput((country || []).join(", "));
+    setCategoryInput((category || []).join(", "));
+    setLanguageInput((language || []).join(", "));
+  }, [formData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,7 +74,7 @@ export default function NewsBatchForm({
       mode === "create"
         ? ({ ...formData, ...parsedData } as NewsBatch)
         : ({ ...formData, ...parsedData } as Partial<NewsBatch>);
-
+    console.log(data);
     await onSubmit(data);
   };
 
@@ -76,7 +82,14 @@ export default function NewsBatchForm({
     field: "scheduledAt" | "startedAt" | "finishedAt",
     value: string,
   ) => {
-    setFormData({ ...formData, [field]: value ? new Date(value) : undefined });
+    setFormData({ ...formData, [field]: value ? new Date(value) : null });
+  };
+
+  const handleAutoLoad = () => {
+    getNewsBatchInfoFromTenant().then((info) => {
+      console.log(info);
+      setFormData({ ...info });
+    });
   };
 
   const buttonText = mode === "create" ? "Create Batch" : "Update Batch";
@@ -87,7 +100,15 @@ export default function NewsBatchForm({
       <h1 className="text-2xl font-bold mb-6">
         {mode === "create" ? "Create News Batch" : "Edit News Batch"}
       </h1>
-
+      <div className="mb-4 flex justify-end">
+        <button
+          type="button"
+          onClick={handleAutoLoad}
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+        >
+          Auto load
+        </button>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1">

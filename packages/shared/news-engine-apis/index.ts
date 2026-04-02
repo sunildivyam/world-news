@@ -3,6 +3,7 @@ export * from "./articleSources";
 export * from "./articles";
 export * from "./categories";
 export * from "./countries";
+export * from "./headlines";
 export * from "./languages";
 export * from "./newsBatches";
 export * from "./newsEvents";

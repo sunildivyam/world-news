@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Language, SuccessResponse } from "../types";
-import { NEWSENGINE_BASE } from "./apiUrls";
+import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchLanguage(
   code2?: string,
@@ -9,7 +9,6 @@ export async function fetchLanguage(
 ): Promise<Language | null> {
   if (!code && !name && !code2) return null;
 
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
   let query;
   if (code2) {
     query = `code2=${code2}`;
@@ -21,7 +20,7 @@ export async function fetchLanguage(
     query = `name=${name}`;
   }
 
-  const url = `${baseApiUrl}/api/languages?${query}`;
+  const url = `${newsEngineBaseApiUrl}/api/languages?${query}`;
   console.log(url);
   try {
     const response = await fetch(url);
@@ -39,8 +38,7 @@ export async function fetchLanguage(
 }
 
 export async function fetchLanguages(): Promise<Language[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/languages`;
+  const url = `${newsEngineBaseApiUrl}/api/languages`;
   console.log(url);
 
   try {
@@ -59,8 +57,7 @@ export async function fetchLanguages(): Promise<Language[]> {
 }
 
 export async function createLanguage(language: Language): Promise<Language> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/languages`;
+  const url = `${newsEngineBaseApiUrl}/api/languages`;
   console.log(url);
 
   try {
@@ -87,8 +84,7 @@ export async function updateLanguage(
   code: string,
   updates: Partial<Language>,
 ): Promise<Language> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/languages/${code}`;
+  const url = `${newsEngineBaseApiUrl}/api/languages/${code}`;
   console.log(url);
 
   try {
@@ -112,8 +108,7 @@ export async function updateLanguage(
 }
 
 export async function deleteLanguage(code: string): Promise<{ code: string }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/languages/${code}`;
+  const url = `${newsEngineBaseApiUrl}/api/languages/${code}`;
   console.log(url);
 
   try {
@@ -135,8 +130,7 @@ export async function deleteLanguage(code: string): Promise<{ code: string }> {
 export async function createLanguages(
   languages: Language[],
 ): Promise<Language[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/languages`;
+  const url = `${newsEngineBaseApiUrl}/api/languages`;
   console.log(url);
 
   try {

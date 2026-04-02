@@ -1,5 +1,8 @@
 export const endpoints = [
   "GET /api/headlines",
+  "POST /api/headlines",
+  "PUT /api/headlines/:slug",
+  "DELETE /api/headlines/:slug",
   "GET /api/categories",
   "POST /api/categories",
   "PUT /api/categories/:name",

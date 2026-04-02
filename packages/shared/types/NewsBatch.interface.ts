@@ -4,7 +4,7 @@ export interface NewsBatch {
   country: string[]; // merged list of tenant's allowed countries
   category: string[]; // merged list of tenant's allowed categories
   language: string[]; // merged list of tenant's allowed languages
-  scheduledAt?: Date | string;
-  startedAt?: Date | string;
-  finishedAt?: Date | string;
+  scheduledAt?: Date | string | null;
+  startedAt?: Date | string | null;
+  finishedAt?: Date | string | null;
 }

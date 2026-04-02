@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Country, GeoContext, SuccessResponse } from "../types";
-import { NEWSENGINE_BASE } from "./apiUrls";
+import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchCountry(
   code?: string,
@@ -8,7 +8,6 @@ export async function fetchCountry(
 ): Promise<Country | null> {
   if (!code && !name) return null;
 
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
   let query;
   if (code && name) {
     query = `code=${code}&name=${name}`;
@@ -18,7 +17,7 @@ export async function fetchCountry(
     query = `name=${name}`;
   }
 
-  const url = `${baseApiUrl}/api/countries?${query}`;
+  const url = `${newsEngineBaseApiUrl}/api/countries?${query}`;
   console.log(url);
   try {
     const response = await fetch(url, {
@@ -38,8 +37,7 @@ export async function fetchCountry(
 }
 
 export async function fetchCountries(): Promise<Country[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/countries`;
+  const url = `${newsEngineBaseApiUrl}/api/countries`;
   console.log(url);
 
   try {
@@ -62,8 +60,7 @@ export async function fetchCountries(): Promise<Country[]> {
 export async function fetchAddGeo(
   geoCtx: GeoContext,
 ): Promise<{ code: string }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/countries/geo`;
+  const url = `${newsEngineBaseApiUrl}/api/countries/geo`;
   console.log(url);
 
   try {
@@ -86,8 +83,7 @@ export async function fetchAddGeo(
 }
 
 export async function createCountry(country: Country): Promise<Country> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/countries`;
+  const url = `${newsEngineBaseApiUrl}/api/countries`;
   console.log(url);
 
   try {
@@ -114,8 +110,7 @@ export async function updateCountry(
   code: string,
   updates: Partial<Country>,
 ): Promise<Country> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/countries/${code}`;
+  const url = `${newsEngineBaseApiUrl}/api/countries/${code}`;
   console.log(url);
 
   try {
@@ -139,8 +134,7 @@ export async function updateCountry(
 }
 
 export async function deleteCountry(code: string): Promise<{ code: string }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/countries/${code}`;
+  const url = `${newsEngineBaseApiUrl}/api/countries/${code}`;
   console.log(url);
 
   try {
@@ -162,8 +156,7 @@ export async function deleteCountry(code: string): Promise<{ code: string }> {
 export async function createCountries(
   countries: Country[],
 ): Promise<Country[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/countries`;
+  const url = `${newsEngineBaseApiUrl}/api/countries`;
   console.log(url);
 
   try {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Category, SuccessResponse } from "../types";
-import { NEWSENGINE_BASE } from "./apiUrls";
+import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchCategory(
   name?: string,
@@ -8,7 +8,6 @@ export async function fetchCategory(
 ): Promise<Category | null> {
   if (!name && !label) return null;
 
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
   let query;
   if (name && label) {
     query = `name=${name}&label=${label}`;
@@ -18,7 +17,7 @@ export async function fetchCategory(
     query = `label=${label}`;
   }
 
-  const url = `${baseApiUrl}/api/categories?${query}`;
+  const url = `${newsEngineBaseApiUrl}/api/categories?${query}`;
   console.log(url);
   try {
     const response = await fetch(url, {
@@ -38,8 +37,7 @@ export async function fetchCategory(
 }
 
 export async function fetchCategories(): Promise<Category[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/categories`;
+  const url = `${newsEngineBaseApiUrl}/api/categories`;
   console.log(url);
 
   try {
@@ -60,8 +58,7 @@ export async function fetchCategories(): Promise<Category[]> {
 }
 
 export async function createCategory(category: Category): Promise<Category> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/categories`;
+  const url = `${newsEngineBaseApiUrl}/api/categories`;
   console.log(url);
 
   try {
@@ -88,8 +85,7 @@ export async function updateCategory(
   name: string,
   updates: Partial<Category>,
 ): Promise<Category> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/categories/${name}`;
+  const url = `${newsEngineBaseApiUrl}/api/categories/${name}`;
   console.log(url);
 
   try {
@@ -113,8 +109,7 @@ export async function updateCategory(
 }
 
 export async function deleteCategory(name: string): Promise<{ name: string }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/categories/${name}`;
+  const url = `${newsEngineBaseApiUrl}/api/categories/${name}`;
   console.log(url);
 
   try {
@@ -136,8 +131,7 @@ export async function deleteCategory(name: string): Promise<{ name: string }> {
 export async function createCategories(
   categoriesArray: Category[],
 ): Promise<{ insertedCount: number; insertedIds: string[] }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/categories`;
+  const url = `${newsEngineBaseApiUrl}/api/categories`;
   console.log(url);
 
   try {

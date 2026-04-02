@@ -16,6 +16,7 @@ export * from "./CountryList.interface";
 export * from "./EngagementMetrics.interface";
 export * from "./ErrorResponse.interface";
 export * from "./GeoContext.interface";
+export * from "./Headline.interface";
 export * from "./Language.interface";
 export * from "./LanguageContext.type";
 export * from "./NewsBatch.interface";

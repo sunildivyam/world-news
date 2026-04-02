@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NewsBatch, SuccessResponse } from "../types";
-import { NEWSENGINE_BASE } from "./apiUrls";
+import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchNewsBatch(id: string): Promise<NewsBatch | null> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/news-batches?id=${id}`;
+  const url = `${newsEngineBaseApiUrl}/api/news-batches?id=${id}`;
   console.log(url);
   try {
     const response = await fetch(url, {
@@ -23,9 +22,29 @@ export async function fetchNewsBatch(id: string): Promise<NewsBatch | null> {
   }
 }
 
+export async function fetchActiveNewsBatches(): Promise<NewsBatch[]> {
+  const url = `${newsEngineBaseApiUrl}/api/news-batches?active=true`;
+  console.log(url);
+
+  try {
+    const response = await fetch(url, {
+      next: { revalidate: 120 },
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) return [];
+      throw new Error(response.statusText);
+    }
+
+    const res: SuccessResponse<NewsBatch[]> = await response.json();
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+}
+
 export async function fetchNewsBatches(): Promise<NewsBatch[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/news-batches`;
+  const url = `${newsEngineBaseApiUrl}/api/news-batches`;
   console.log(url);
 
   try {
@@ -48,8 +67,7 @@ export async function fetchNewsBatches(): Promise<NewsBatch[]> {
 export async function createNewsBatch(
   newsBatch: NewsBatch,
 ): Promise<NewsBatch> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/news-batches`;
+  const url = `${newsEngineBaseApiUrl}/api/news-batches`;
   console.log(url);
 
   try {
@@ -76,8 +94,7 @@ export async function updateNewsBatch(
   id: string,
   updates: Partial<NewsBatch>,
 ): Promise<NewsBatch> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/news-batches/${id}`;
+  const url = `${newsEngineBaseApiUrl}/api/news-batches/${id}`;
   console.log(url);
 
   try {
@@ -101,8 +118,7 @@ export async function updateNewsBatch(
 }
 
 export async function deleteNewsBatch(id: string): Promise<{ id: string }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/news-batches/${id}`;
+  const url = `${newsEngineBaseApiUrl}/api/news-batches/${id}`;
   console.log(url);
 
   try {
@@ -124,8 +140,7 @@ export async function deleteNewsBatch(id: string): Promise<{ id: string }> {
 export async function createNewsBatches(
   newsBatches: NewsBatch[],
 ): Promise<NewsBatch[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/news-batches`;
+  const url = `${newsEngineBaseApiUrl}/api/news-batches`;
   console.log(url);
 
   try {

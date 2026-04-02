@@ -23,6 +23,28 @@ export async function createNewsBatch(newsBatch: NewsBatch) {
   }
 }
 
+export async function getActiveNewsBatches() {
+  try {
+    const { newsBatches } = await getCollections();
+    const result = await newsBatches
+
+      .find({ $or: [{ finishedAt: { $exists: false } }, { finishedAt: null }] })
+      .sort({ startedAt: -1 })
+      .toArray();
+
+    // Transform _id to id for consistency
+    const transformed = result.map((batch) => ({
+      ...batch,
+      id: batch._id,
+      _id: undefined,
+    }));
+
+    return success(transformed);
+  } catch (err: any) {
+    return error(err?.message || err, 500);
+  }
+}
+
 export async function getAllNewsBatches() {
   try {
     const { newsBatches } = await getCollections();

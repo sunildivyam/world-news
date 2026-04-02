@@ -3,6 +3,7 @@ import {
   createNewsBatch,
   createNewsBatches,
   findNewsBatch,
+  getActiveNewsBatches,
   getAllNewsBatches,
 } from "@worldnews/shared/mongo/collections/newsBatches";
 import { error } from "@worldnews/shared/mongo/response";
@@ -12,9 +13,12 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
+    const active = searchParams.get("active");
 
     if (id) {
       return await findNewsBatch(id);
+    } else if (active === "true") {
+      return await getActiveNewsBatches();
     } else {
       return await getAllNewsBatches();
     }

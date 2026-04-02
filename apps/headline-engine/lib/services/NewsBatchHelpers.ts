@@ -1,10 +1,6 @@
-import { fetchTenants, Tenant } from "@worldnews/shared";
-interface NewsBatchInfo {
-  tenants: string[];
-  country: string[];
-  language: string[];
-  category: string[];
-}
+import { NewsBatchInfo } from "@/types/NewsBatchInfo.interface";
+import type { Tenant } from "@worldnews/shared";
+import { fetchTenants } from "@worldnews/shared/news-engine-apis";
 
 export async function getNewsBatchInfoFromTenant(): Promise<NewsBatchInfo> {
   const tenants: Tenant[] = await fetchTenants();

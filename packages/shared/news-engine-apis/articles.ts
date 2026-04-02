@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Article, SuccessResponse } from "../types";
-import { NEWSENGINE_BASE } from "./apiUrls";
+import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchArticle(
   slug?: string,
@@ -8,7 +8,6 @@ export async function fetchArticle(
 ): Promise<Article | null> {
   if (!slug && !title) return null;
 
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
   let query;
   if (slug && title) {
     query = `slug=${slug}&title=${title}`;
@@ -18,7 +17,7 @@ export async function fetchArticle(
     query = `title=${title}`;
   }
 
-  const url = `${baseApiUrl}/api/articles?${query}`;
+  const url = `${newsEngineBaseApiUrl}/api/articles?${query}`;
   console.log(url);
   try {
     const response = await fetch(url, {
@@ -38,9 +37,8 @@ export async function fetchArticle(
 }
 
 export async function fetchArticles(limit?: number): Promise<Article[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
   const query = limit ? `?limit=${limit}` : "";
-  const url = `${baseApiUrl}/api/articles${query}`;
+  const url = `${newsEngineBaseApiUrl}/api/articles${query}`;
   console.log(url);
 
   try {
@@ -64,9 +62,8 @@ export async function fetchArticlesByTenant(
   tenantId: string,
   limit?: number,
 ): Promise<Article[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
   const query = limit ? `&limit=${limit}` : "";
-  const url = `${baseApiUrl}/api/articles?tenantId=${tenantId}${query}`;
+  const url = `${newsEngineBaseApiUrl}/api/articles?tenantId=${tenantId}${query}`;
   console.log(url);
 
   try {
@@ -90,9 +87,8 @@ export async function fetchArticlesByCategory(
   category: string,
   limit?: number,
 ): Promise<Article[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
   const query = limit ? `&limit=${limit}` : "";
-  const url = `${baseApiUrl}/api/articles?category=${category}${query}`;
+  const url = `${newsEngineBaseApiUrl}/api/articles?category=${category}${query}`;
   console.log(url);
 
   try {
@@ -116,9 +112,8 @@ export async function fetchArticlesBySource(
   sourceId: string,
   limit?: number,
 ): Promise<Article[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
   const query = limit ? `&limit=${limit}` : "";
-  const url = `${baseApiUrl}/api/articles?sourceId=${sourceId}${query}`;
+  const url = `${newsEngineBaseApiUrl}/api/articles?sourceId=${sourceId}${query}`;
   console.log(url);
 
   try {
@@ -139,8 +134,7 @@ export async function fetchArticlesBySource(
 }
 
 export async function createArticle(article: Article): Promise<Article> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/articles`;
+  const url = `${newsEngineBaseApiUrl}/api/articles`;
   console.log(url);
 
   try {
@@ -167,8 +161,7 @@ export async function updateArticle(
   slug: string,
   updates: Partial<Article>,
 ): Promise<{ slug: string }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/articles/${slug}`;
+  const url = `${newsEngineBaseApiUrl}/api/articles/${slug}`;
   console.log(url);
 
   try {
@@ -192,8 +185,7 @@ export async function updateArticle(
 }
 
 export async function deleteArticle(slug: string): Promise<{ slug: string }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/articles/${slug}`;
+  const url = `${newsEngineBaseApiUrl}/api/articles/${slug}`;
   console.log(url);
 
   try {
@@ -213,8 +205,7 @@ export async function deleteArticle(slug: string): Promise<{ slug: string }> {
 }
 
 export async function createArticles(articles: Article[]): Promise<Article[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/articles`;
+  const url = `${newsEngineBaseApiUrl}/api/articles`;
   console.log(url);
 
   try {

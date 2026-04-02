@@ -7,6 +7,7 @@ import { NewsBatch } from "@worldnews/shared";
 import {
   fetchNewsBatches,
   deleteNewsBatch,
+  startNewsBatches,
 } from "@worldnews/shared/news-engine-apis";
 
 export default function NewsBatchesPage() {
@@ -41,6 +42,12 @@ export default function NewsBatchesPage() {
     }
   };
 
+  const handleStartBatch = () => {
+    startNewsBatches().then((res: { success: boolean }) => {
+      console.log(`News Batches Started: ${res.success}`);
+    });
+  };
+
   if (loading) return <div className="p-4">Loading...</div>;
   if (error) return <div className="p-4 text-red-500">Error: {error}</div>;
 
@@ -54,6 +61,13 @@ export default function NewsBatchesPage() {
         >
           Create New Batch
         </Link>
+        <button
+          type="button"
+          onClick={handleStartBatch}
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+        >
+          Start Batch
+        </button>
       </div>
 
       <div className="grid gap-4">

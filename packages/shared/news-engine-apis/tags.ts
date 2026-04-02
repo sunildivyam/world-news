@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Tag, SuccessResponse } from "../types";
-import { NEWSENGINE_BASE } from "./apiUrls";
+import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchTag(
   name?: string,
@@ -8,7 +8,6 @@ export async function fetchTag(
 ): Promise<Tag | null> {
   if (!name && !label) return null;
 
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
   let query;
   if (name && label) {
     query = `name=${name}&label=${label}`;
@@ -18,7 +17,7 @@ export async function fetchTag(
     query = `label=${label}`;
   }
 
-  const url = `${baseApiUrl}/api/tags?${query}`;
+  const url = `${newsEngineBaseApiUrl}/api/tags?${query}`;
   console.log(url);
   try {
     const response = await fetch(url, {
@@ -38,8 +37,7 @@ export async function fetchTag(
 }
 
 export async function fetchTags(): Promise<Tag[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/tags`;
+  const url = `${newsEngineBaseApiUrl}/api/tags`;
   console.log(url);
 
   try {
@@ -60,8 +58,7 @@ export async function fetchTags(): Promise<Tag[]> {
 }
 
 export async function createTag(tag: Tag): Promise<Tag> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/tags`;
+  const url = `${newsEngineBaseApiUrl}/api/tags`;
   console.log(url);
 
   try {
@@ -88,8 +85,7 @@ export async function updateTag(
   name: string,
   updates: Partial<Tag>,
 ): Promise<{ name: string }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/tags/${name}`;
+  const url = `${newsEngineBaseApiUrl}/api/tags/${name}`;
   console.log(url);
 
   try {
@@ -113,8 +109,7 @@ export async function updateTag(
 }
 
 export async function deleteTag(name: string): Promise<{ name: string }> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/tags/${name}`;
+  const url = `${newsEngineBaseApiUrl}/api/tags/${name}`;
   console.log(url);
 
   try {
@@ -134,8 +129,7 @@ export async function deleteTag(name: string): Promise<{ name: string }> {
 }
 
 export async function createTags(tags: Tag[]): Promise<Tag[]> {
-  const baseApiUrl = process.env.NEWSENGINE_BASE || NEWSENGINE_BASE;
-  const url = `${baseApiUrl}/api/tags`;
+  const url = `${newsEngineBaseApiUrl}/api/tags`;
   console.log(url);
 
   try {
