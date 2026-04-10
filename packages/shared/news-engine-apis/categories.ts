@@ -36,8 +36,13 @@ export async function fetchCategory(
   }
 }
 
-export async function fetchCategories(): Promise<Category[]> {
-  const url = `${newsEngineBaseApiUrl}/api/categories`;
+export async function fetchCategories(names?: string[]): Promise<Category[]> {
+  let q = "";
+  if (names?.length) {
+    q = `?names=${names.join(",")}`;
+  }
+
+  const url = `${newsEngineBaseApiUrl}/api/categories${q}`;
   console.log(url);
 
   try {

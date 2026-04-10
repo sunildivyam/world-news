@@ -102,10 +102,15 @@ export async function findCategoryByLabel(label: string) {
   }
 }
 
-export async function findCategories() {
+export async function findCategories(names?: string[]) {
   try {
     const { categories } = await getCollections();
-    const result = await categories.find<Category>({}).toArray();
+    let filter = {};
+    if (names?.length) {
+      filter = { name: { $in: names } };
+    }
+
+    const result = await categories.find<Category>(filter).toArray();
 
     return success(result);
   } catch (err: any) {

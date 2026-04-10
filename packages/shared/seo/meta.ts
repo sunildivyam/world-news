@@ -46,9 +46,13 @@ export async function generatePageMeta(
             title: `${article.title} - ${baseTitle}`,
             description: article.description || baseDescription,
             keywords: article.keywords?.join(", "),
+            alternates: {
+              canonical: article.url,
+            },
             openGraph: {
               title: article.title,
               description: article.description,
+              siteName: displayName,
               images: article.imageUrl
                 ? [{ url: article.imageUrl }]
                 : undefined,
@@ -59,7 +63,7 @@ export async function generatePageMeta(
               description: article.description,
               images: article.imageUrl ? [article.imageUrl] : undefined,
             },
-          };
+          } as Metadata;
         }
         break;
       }

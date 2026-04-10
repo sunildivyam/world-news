@@ -13,6 +13,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const name = searchParams.get("name");
     const label = searchParams.get("label");
+    const names = searchParams.get("names");
 
     if (name && label) {
       return await findCategory(name.toLowerCase(), label);
@@ -20,6 +21,8 @@ export async function GET(request: Request) {
       return await findCategory(name.toLowerCase());
     } else if (label) {
       return await findCategoryByLabel(label);
+    } else if (names) {
+        return await findCategories(names.split(","));
     } else {
       return await findCategories();
     }

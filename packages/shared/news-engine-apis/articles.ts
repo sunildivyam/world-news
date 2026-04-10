@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Article, SuccessResponse } from "../types";
+import { Article, LatestArticlesQueryParams, SuccessResponse } from "../types";
 import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchArticle(
@@ -218,6 +218,60 @@ export async function createArticles(articles: Article[]): Promise<Article[]> {
     });
 
     if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    const res: SuccessResponse<Article[]> = await response.json();
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+}
+
+export async function fetchLatestArticles(
+  params?: LatestArticlesQueryParams,
+): Promise<Article[]> {
+  const {
+    id,
+    slug,
+    country,
+    language,
+    tenantId,
+    keywords,
+    tags,
+    category,
+    page,
+    limit,
+    fields,
+    hours,
+  } = params || {};
+
+  const q: string[] = [];
+  if (id) q.push(`id=${id}`);
+  if (slug) q.push(`slug=${slug}`);
+  if (country) q.push(`country=${country}`);
+  if (language) q.push(`language=${language}`);
+  if (tenantId) q.push(`tenantId=${tenantId}`);
+  if (keywords) q.push(`keywords=${keywords.join(",")}`);
+  if (tags) q.push(`tags=${tags.join(",")}`);
+  if (category) q.push(`category=${category}`);
+  if (page) q.push(`page=${page}`);
+  if (limit) q.push(`limit=${limit}`);
+  if (fields?.length) q.push(`fields=${fields.join(",")}`);
+  if (hours) q.push(`hours=${hours}`);
+
+  const query = "?" + q.join("&");
+
+  const url = `${newsEngineBaseApiUrl}/api/articles/latest${query}`;
+  console.log(url);
+
+  try {
+    const response = await fetch(url, {
+      next: { revalidate: 120 },
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) return [];
       throw new Error(response.statusText);
     }
 

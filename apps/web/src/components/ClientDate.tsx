@@ -25,7 +25,7 @@ export default function ClientDate({ dateString }: { dateString: string }) {
 
   useEffect(() => {
     // This runs only on the client after initial render
-    setClientDate(new Date(dateString).toLocaleDateString());
+    setClientDate(dateString);
   }, [dateString]);
 
   return (

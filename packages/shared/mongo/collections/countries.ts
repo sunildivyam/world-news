@@ -22,11 +22,16 @@ export async function createCountry(country: Country) {
   }
 }
 
-export async function getAllCountries() {
+export async function getAllCountries(codes?: string[]) {
   try {
     const { countries } = await getCollections();
+    let filter = {};
+    if (codes?.length) {
+      filter = { code: { $in: codes } };
+    }
+    console.log(filter);
     const result = await countries
-      .find({})
+      .find(filter)
       .project({ code: 1, name: 1, languages: 1 })
       .toArray();
 

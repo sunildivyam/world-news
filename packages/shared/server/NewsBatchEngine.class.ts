@@ -1,14 +1,20 @@
-import { articleProviders } from "../news-providers";
+import { headlineProviders } from "../news-providers";
 import {
   createHeadlines,
   fetchActiveNewsBatches,
   updateNewsBatch,
 } from "../news-engine-apis";
 import { executeWithFailover } from "../news-providers/provider-manager";
-import { AppError, Article, ArticleCollection, NewsBatch } from "../types";
+import {
+  AppError,
+  Article,
+  ArticleCollection,
+  Headline,
+  NewsBatch,
+} from "../types";
 
 export class NewsBatchEngine {
-  newsBatch: NewsBatch[] = [];
+  newsBatches: NewsBatch[] = [];
 
   private static instance: NewsBatchEngine;
 
@@ -22,12 +28,13 @@ export class NewsBatchEngine {
   }
 
   async loadBatches() {
-    this.newsBatch = await fetchActiveNewsBatches();
+    this.newsBatches = await fetchActiveNewsBatches();
   }
 
   async getArticles(
     country: string,
     category: string,
+    tenants: string[],
   ): Promise<ArticleCollection | AppError> {
     let providerName = "";
     const articleCollection = await executeWithFailover<
@@ -38,7 +45,7 @@ export class NewsBatchEngine {
         { geo: { country: country } },
         { category: [category] },
       );
-    }, articleProviders);
+    }, headlineProviders);
 
     if (AppError.isError(articleCollection)) {
       console.log(`Error fetching: ${country} and ${category}`);
@@ -48,7 +55,7 @@ export class NewsBatchEngine {
       // send them to deduplication service
       const uniqueArticles = await this.deDuplicate(articles);
       // Save them to headlines DB collection
-      await this.sendToHeadlines(uniqueArticles, providerName);
+      await this.sendToHeadlines(uniqueArticles, providerName, tenants);
       console.log(`Finished for:${country} | ${category}`);
 
       return articleCollection;
@@ -58,13 +65,23 @@ export class NewsBatchEngine {
   async sendToHeadlines(
     articles: Article[],
     providerName: string,
+    tenants: string[],
   ): Promise<void> {
-    const headlines = articles.map((a) => ({
-      ...a,
-      providerName,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }));
+    const headlines = articles.map(
+      (a) =>
+        ({
+          ...a,
+          tenantIds: [...tenants],
+          providerName,
+          contentGenerated: {
+            language: [],
+            tenantId: [],
+          },
+          contentGeneratedAt: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }) as Headline,
+    );
     await createHeadlines(headlines);
   }
 
@@ -81,33 +98,44 @@ export class NewsBatchEngine {
   }
 
   async start() {
+    if (this.newsBatches?.length) {
+      console.log("Batch is already started.");
+      return null;
+    }
+
     await this.loadBatches();
+
     let currentIndex = 0;
-    while (this.newsBatch?.length && currentIndex < this.newsBatch?.length) {
-      const batch = this.newsBatch[currentIndex];
+
+    while (
+      this.newsBatches?.length &&
+      currentIndex < this.newsBatches?.length
+    ) {
+      const batch = this.newsBatches[currentIndex];
       await this.markNewsBatchStarted(batch.id || "");
       console.log(`Batch started: ${batch.id}`);
 
-      const { country } = batch;
-      await Promise.all(
-        country.map(async (c: string) => {
-          const { category } = batch;
-          const catPromisesRes = await Promise.all(
-            category.map(async (cat: string) => {
-              // call news api with for each country and category
-              return this.getArticles(c, cat);
-            }),
-          );
-          console.log(`Finished for: ${country}`);
-          return catPromisesRes;
-        }),
-      );
+      const { country, tenants } = batch;
+
+      for (const c of country) {
+        const { category } = batch;
+        for (const cat of category) {
+          // call news api with for each country and category
+          await this.getArticles(c, cat, tenants);
+        }
+
+        console.log(`Finished for: ${country}`);
+      }
+
       currentIndex++;
       console.log(`Finished for: ${batch.id}`);
       // Mark News Batch as finished
       await this.markNewsBatchFinished(batch.id || "");
     }
+
     console.log(`Finished All BATCHES`);
+    this.newsBatches = []; // resets the batches
+    return true;
   }
 }
 

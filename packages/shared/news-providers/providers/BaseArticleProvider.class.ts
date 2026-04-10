@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   AppError,
   Article,
@@ -134,6 +135,7 @@ export class BaseArticleProvider implements ArticleProvider {
     rawArticleCollection: any,
   ): Promise<ArticleCollection> {
     const { totalResults, articles, nextPage } = rawArticleCollection;
+
     const articlesP = (
       await Promise.all(
         articles.map(async (a: any) => await this.parseArticle(a)),
@@ -166,7 +168,6 @@ export class BaseArticleProvider implements ArticleProvider {
 
       const error = this.checkError(res, json, fnName);
       if (error) return error;
-
       const articleCollection = await this.parseArticleCollection(json);
 
       const errorC = this.checkArticleCollection(articleCollection, fnName);
@@ -194,7 +195,6 @@ export class BaseArticleProvider implements ArticleProvider {
       });
 
       const json = await res.json();
-
       const error = this.checkError(res, json, fnName);
       if (error) return error;
 

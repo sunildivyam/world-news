@@ -7,4 +7,5 @@ export interface NewsBatch {
   scheduledAt?: Date | string | null;
   startedAt?: Date | string | null;
   finishedAt?: Date | string | null;
+  headlineFinishedAt?: Date | string | null;
 }

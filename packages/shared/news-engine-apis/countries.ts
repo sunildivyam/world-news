@@ -36,8 +36,13 @@ export async function fetchCountry(
   }
 }
 
-export async function fetchCountries(): Promise<Country[]> {
-  const url = `${newsEngineBaseApiUrl}/api/countries`;
+export async function fetchCountries(codes?: string[]): Promise<Country[]> {
+  let q = "";
+  if (codes?.length) {
+    q = `?codes=${codes.join(",")}`;
+  }
+
+  const url = `${newsEngineBaseApiUrl}/api/countries${q}`;
   console.log(url);
 
   try {

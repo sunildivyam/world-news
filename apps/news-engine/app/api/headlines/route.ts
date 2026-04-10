@@ -10,6 +10,7 @@ import {
   findHeadlinesBySource,
   findHeadlinesByTenant,
   findHeadlinesByCountryAndCategory,
+  findHeadlinesByContentGenerated,
 } from "@worldnews/shared/mongo/collections/headline";
 import { error } from "@worldnews/shared/mongo/response";
 
@@ -22,6 +23,7 @@ export async function GET(request: Request) {
     const category = searchParams.get("category");
     const sourceId = searchParams.get("sourceId");
     const providerName = searchParams.get("providerName");
+    const contentGeneratedAt = searchParams.get("contentGeneratedAt");
     const countries = searchParams.getAll("country");
     const categories = searchParams.getAll("category");
     const limit = searchParams.get("limit")
@@ -48,6 +50,8 @@ export async function GET(request: Request) {
         categories,
         limit,
       );
+    } else if (contentGeneratedAt) {
+      return await findHeadlinesByContentGenerated(contentGeneratedAt, limit);
     } else {
       return await findHeadlines(limit);
     }

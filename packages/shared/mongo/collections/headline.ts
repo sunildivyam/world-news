@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Headline } from "../../types";
 import { getCollections } from "../collections";
-import { InsertOneResult, UpdateResult } from "mongodb";
+import { InsertOneResult, ObjectId, UpdateResult } from "mongodb";
 import { error, success } from "../response";
 
 export async function createHeadline(headline: Headline) {
@@ -22,36 +22,51 @@ export async function createHeadline(headline: Headline) {
   }
 }
 
-export async function updateHeadline(slug: string, updates: Partial<Headline>) {
-  if (!slug) return error("Empty Headline slug, can not be updated.");
+export async function updateHeadline(id: string, updates: Partial<Headline>) {
+  // 1. Check if ID exists and is structurally valid for MongoDB
+  if (!id || !ObjectId.isValid(id)) {
+    return error("Invalid or missing Headline ID.", 400);
+  }
+
   try {
     const { headlines } = await getCollections();
-    const result: UpdateResult = await headlines.updateOne(
-      { slug },
-      { $set: updates },
-    );
 
-    if (result.modifiedCount === 0) {
-      return error("Failed to update Headline", 500);
+    // 2. Clean the updates object
+    const { _id, ...finalUpdates } = updates as any;
+
+    // 3. Prevent 400 error if there's nothing to update
+    if (Object.keys(finalUpdates).length === 0) {
+      return success({ id, note: "Nothing to update" });
     }
 
-    return success({ slug });
+    const result: UpdateResult = await headlines.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: finalUpdates },
+    );
+
+    if (result.matchedCount === 0) {
+      return error("Headline not found", 404);
+    }
+
+    return success({ id });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    console.log(err?.message);
+    // This will catch the "Argument passed in must be a string of 12 bytes..." error
+    return error(err?.message || "Database update failed", 400);
   }
 }
 
-export async function deleteHeadline(slug: string) {
-  if (!slug) return error("Empty Headline slug, can not be deleted.");
+export async function deleteHeadline(id: string) {
+  if (!id) return error("Empty Headline id, can not be deleted.");
   try {
     const { headlines } = await getCollections();
-    const result = await headlines.deleteOne({ slug });
+    const result = await headlines.deleteOne({ _id: new ObjectId(id) });
 
     if (result.deletedCount === 0) {
       return error("Failed to delete Headline", 404);
     }
 
-    return success({ slug });
+    return success({ id });
   } catch (err: any) {
     return error(err?.message || err, 500);
   }
@@ -132,7 +147,28 @@ export async function findHeadlinesByTenant(tenantId: string, limit?: number) {
     return error(err?.message || err, 500);
   }
 }
+export async function findHeadlinesByContentGenerated(
+  contentGeneratedAt: Date | string | null,
+  limit?: number,
+) {
+  try {
+    const { headlines } = await getCollections();
+    const query = headlines.find<Headline>({
+      $or: [
+        { contentGeneratedAt: { $exists: false } },
+        { contentGeneratedAt: null },
+      ],
+    });
+    if (limit) {
+      query.limit(limit);
+    }
+    const result = await query.toArray();
 
+    return success(result);
+  } catch (err: any) {
+    return error(err?.message || err, 500);
+  }
+}
 export async function findHeadlinesByCategory(
   category: string,
   limit?: number,

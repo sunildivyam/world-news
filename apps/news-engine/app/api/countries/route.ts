@@ -16,6 +16,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const code = searchParams.get("code");
     const name = searchParams.get("name");
+    const codes = searchParams.get("codes");
 
     if (code && name) {
       return await findCountry(code.toLowerCase(), name);
@@ -23,6 +24,8 @@ export async function GET(request: Request) {
       return await findCountry(code.toLowerCase());
     } else if (name) {
       return await findCountryByName(name);
+    } else if (codes) {
+      return await getAllCountries(codes.split(","));
     } else {
       return await getAllCountries();
     }

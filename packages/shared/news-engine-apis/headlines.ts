@@ -83,6 +83,31 @@ export async function fetchHeadlinesByTenant(
   }
 }
 
+export async function fetchHeadlinesByContentGenerated(
+  contentGeneratedAt: Date | string | null,
+  limit?: number,
+): Promise<Headline[]> {
+  const query = limit ? `&limit=${limit}` : "";
+  const url = `${newsEngineBaseApiUrl}/api/headlines?contentGeneratedAt=${contentGeneratedAt}${query}`;
+  console.log(url);
+
+  try {
+    const response = await fetch(url, {
+      next: { revalidate: 120 },
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) return [];
+      throw new Error(response.statusText);
+    }
+
+    const res: SuccessResponse<Headline[]> = await response.json();
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+}
+
 export async function fetchHeadlinesByCategory(
   category: string,
   limit?: number,
@@ -225,10 +250,10 @@ export async function createHeadline(headline: Headline): Promise<Headline> {
 }
 
 export async function updateHeadline(
-  slug: string,
+  id: string,
   updates: Partial<Headline>,
-): Promise<{ slug: string }> {
-  const url = `${newsEngineBaseApiUrl}/api/headlines/${slug}`;
+): Promise<{ id: string }> {
+  const url = `${newsEngineBaseApiUrl}/api/headlines/${id}`;
   console.log(url);
 
   try {
@@ -244,15 +269,16 @@ export async function updateHeadline(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ slug: string }> = await response.json();
+    const res: SuccessResponse<{ id: string }> = await response.json();
     return res.data;
   } catch (err: any) {
+    console.log(err?.message);
     throw new Error(err);
   }
 }
 
-export async function deleteHeadline(slug: string): Promise<{ slug: string }> {
-  const url = `${newsEngineBaseApiUrl}/api/headlines/${slug}`;
+export async function deleteHeadline(id: string): Promise<{ id: string }> {
+  const url = `${newsEngineBaseApiUrl}/api/headlines/${id}`;
   console.log(url);
 
   try {
@@ -264,7 +290,7 @@ export async function deleteHeadline(slug: string): Promise<{ slug: string }> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ slug: string }> = await response.json();
+    const res: SuccessResponse<{ id: string }> = await response.json();
     return res.data;
   } catch (err: any) {
     throw new Error(err);

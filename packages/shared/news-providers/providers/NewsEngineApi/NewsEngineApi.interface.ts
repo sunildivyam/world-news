@@ -1,12 +1,13 @@
-import type { ArticleAnalytics } from "./ArticleAnalytics.interface";
-import type { ArticleContent } from "./ArticleContent.type";
-import type { ArticleGeo } from "./ArticleGeo.interface";
-import type { ArticleSource } from "./ArticleSource.interface";
-import { Tenant } from "./Tenant.interface";
+import {
+  ArticleAnalytics,
+  ArticleContent,
+  ArticleGeo,
+  ArticleSource,
+  Tenant,
+} from "../../../types";
 
-export interface Article {
+export interface ApiArticle {
   _id?: string;
-  id?: string;
   slug: string;
   title: string;
   description: string;
@@ -29,5 +30,11 @@ export interface Article {
   // non db properties. These can be populated on demand
   tenant?: Tenant;
   source?: ArticleSource;
-  headlineId?: string; // reference to original headline
+}
+
+export interface ApiArticlesResponse {
+  status: string;
+  totalResults: number;
+  articles: Array<ApiArticle>;
+  nextPage?: string;
 }

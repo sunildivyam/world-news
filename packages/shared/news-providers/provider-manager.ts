@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // lib/news/provider-manager.ts
 import { AppError, ArticleProvider } from "../types";
 
