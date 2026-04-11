@@ -1,26 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ArticleSource } from "../../types";
+import { AppError, ArticleSource } from "../../types";
 import { getCollections } from "../collections";
 import { InsertOneResult, UpdateResult } from "mongodb";
-import { error, success } from "../response";
+import { toDbFormat, toNormalFormat } from "../mongo-utils";
+
+const moduleError = new AppError("ArticleSources Collection", "");
 
 export async function createArticleSource(articleSource: ArticleSource) {
   if (!articleSource?.slug)
-    return error("Empty ArticleSource slug can not be created.");
+    throw moduleError.set("Empty ArticleSource slug can not be created.", 400);
 
   try {
     const { articleSources } = await getCollections();
 
-    const result: InsertOneResult =
-      await articleSources.insertOne(articleSource);
+    const result: InsertOneResult = await articleSources.insertOne(
+      toDbFormat(articleSource, true),
+    );
 
     if (!result.insertedId) {
-      return error("Failed to create ArticleSource");
+      throw moduleError.set("Failed to create ArticleSource", 500);
     }
 
-    return success({ ...articleSource, id: result.insertedId });
+    return toNormalFormat({ ...articleSource, _id: result.insertedId });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
@@ -28,7 +31,8 @@ export async function updateArticleSource(
   slug: string,
   updates: Partial<ArticleSource>,
 ) {
-  if (!slug) return error("Empty ArticleSource slug, can not be updated.");
+  if (!slug)
+    throw moduleError.set("Empty ArticleSource slug, can not be updated.", 400);
   try {
     const { articleSources } = await getCollections();
     const result: UpdateResult = await articleSources.updateOne(
@@ -37,33 +41,34 @@ export async function updateArticleSource(
     );
 
     if (result.modifiedCount === 0) {
-      return error("Failed to update ArticleSource", 500);
+      throw moduleError.set("Failed to update ArticleSource", 500);
     }
 
-    return success({ slug });
+    return toNormalFormat({ slug });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function deleteArticleSource(slug: string) {
-  if (!slug) return error("Empty ArticleSource slug, can not be deleted.");
+  if (!slug)
+    throw moduleError.set("Empty ArticleSource slug, can not be deleted.", 400);
   try {
     const { articleSources } = await getCollections();
     const result = await articleSources.deleteOne({ slug });
 
     if (result.deletedCount === 0) {
-      return error("Failed to delete ArticleSource", 404);
+      throw moduleError.set("Failed to delete ArticleSource", 404);
     }
 
-    return success({ slug });
+    return toNormalFormat({ slug });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function findArticleSource(slug: string, name?: string) {
-  if (!slug) return error("Empty ArticleSource slug");
+  if (!slug) throw moduleError.set("Empty ArticleSource slug", 400);
 
   try {
     const { articleSources } = await getCollections();
@@ -79,17 +84,17 @@ export async function findArticleSource(slug: string, name?: string) {
     const articleSource = await articleSources.findOne(q);
 
     if (!articleSource) {
-      return error("ArticleSource not found", 404);
+      throw moduleError.set("ArticleSource not found", 404);
     }
 
-    return success(articleSource);
+    return toNormalFormat(articleSource);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function findArticleSourceByName(name: string) {
-  if (!name) return error("Empty ArticleSource name");
+  if (!name) throw moduleError.set("Empty ArticleSource name", 400);
 
   try {
     const { articleSources } = await getCollections();
@@ -98,12 +103,12 @@ export async function findArticleSourceByName(name: string) {
     });
 
     if (!articleSource) {
-      return error("ArticleSource not found", 404);
+      throw moduleError.set("ArticleSource not found", 404);
     }
 
-    return success(articleSource);
+    return toNormalFormat(articleSource);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
@@ -112,15 +117,18 @@ export async function findArticleSources() {
     const { articleSources } = await getCollections();
     const result = await articleSources.find<ArticleSource>({}).toArray();
 
-    return success(result);
+    return toNormalFormat(result);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function createArticleSources(articleSources: ArticleSource[]) {
   if (!articleSources?.length)
-    return error("Empty ArticleSources array can not be created.");
+    throw moduleError.set(
+      "Empty ArticleSources array can not be created.",
+      400,
+    );
 
   try {
     const { articleSources: collection } = await getCollections();
@@ -128,16 +136,16 @@ export async function createArticleSources(articleSources: ArticleSource[]) {
     const result = await collection.insertMany(articleSources);
 
     if (!result.insertedCount) {
-      return error("Failed to create ArticleSources");
+      throw moduleError.set("Failed to create ArticleSources", 500);
     }
 
-    return success(
+    return toNormalFormat(
       articleSources.map((source, index) => ({
         ...source,
-        id: result.insertedIds[index],
+        _id: result.insertedIds[index],
       })),
     );
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }

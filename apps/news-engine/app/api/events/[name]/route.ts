@@ -4,7 +4,7 @@ import {
   deleteNewsEvent,
   updateNewsEvent,
 } from "@worldnews/shared/mongo/collections/newsEvents";
-import { error } from "@worldnews/shared/mongo/response";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 export async function PUT(
   request: Request,
@@ -16,9 +16,9 @@ export async function PUT(
 
     const result = await updateNewsEvent(name.toLowerCase(), updates);
 
-    return result;
-  } catch (e: any) {
-    return error(e.message || e);
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }
 
@@ -29,8 +29,8 @@ export async function DELETE(
   try {
     const name = (await params).name;
     const result = await deleteNewsEvent(name.toLowerCase());
-    return result;
-  } catch (e: any) {
-    return error(e.message || e);
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }

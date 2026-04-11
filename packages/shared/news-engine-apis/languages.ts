@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Language, SuccessResponse } from "../types";
+import { Language } from "../types";
 import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchLanguage(
@@ -30,8 +30,8 @@ export async function fetchLanguage(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Language> = await response.json();
-    return res.data;
+    const res: Language = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -49,8 +49,8 @@ export async function fetchLanguages(): Promise<Language[]> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Language[]> = await response.json();
-    return res.data;
+    const res: Language[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -73,8 +73,8 @@ export async function createLanguage(language: Language): Promise<Language> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Language> = await response.json();
-    return res.data;
+    const res: Language = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -100,8 +100,8 @@ export async function updateLanguage(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Language> = await response.json();
-    return res.data;
+    const res: Language = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -120,8 +120,8 @@ export async function deleteLanguage(code: string): Promise<{ code: string }> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ code: string }> = await response.json();
-    return res.data;
+    const res: { code: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -146,8 +146,8 @@ export async function createLanguages(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Language[]> = await response.json();
-    return res.data;
+    const res: Language[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }

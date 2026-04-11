@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   createArticle,
+  createArticleSource,
+  fetchArticleSource,
   fetchLanguage,
   fetchTenant,
 } from "../../news-engine-apis";
@@ -15,6 +17,7 @@ import {
   Tenant,
   PageTypeEnum,
   ArticleContent,
+  ArticleSource,
 } from "../../types";
 import { generateAIContent } from "./ai-apis";
 import { getPrompt } from "./ai-prompts";
@@ -127,6 +130,16 @@ export class ContentEngine {
     return nArticle;
   }
 
+  private async getOrAddSource(articleSource: ArticleSource): Promise<string> {
+    const source = await fetchArticleSource(articleSource.slug);
+    if (source) {
+      return source._id!;
+    }
+
+    const result = await createArticleSource(articleSource);
+    return result._id!;
+  }
+
   private async generateArticle(
     headline: Headline,
     tenantId: string,
@@ -145,7 +158,7 @@ export class ContentEngine {
       keywords: [...(headline.keywords || [])],
       tags: [...(headline.tags || [])],
       tenantId,
-      sourceId: headline.source?.id || "", // if source exists else add it to sources
+      sourceId: headline.source?._id || "", // if source exists else add it to sources
       url: "", // generate article's canonical url
       imageUrl: headline.imageUrl,
       videoUrl: headline.videoUrl,
@@ -159,6 +172,9 @@ export class ContentEngine {
       source: headline.source ? { ...headline.source } : undefined,
     };
 
+    // Assign Source
+    if (article.source) article.sourceId = await this.getOrAddSource(article.source);
+
     // Get Language Name
     const lang = await fetchLanguage(language);
     // call AI endpoint
@@ -167,6 +183,7 @@ export class ContentEngine {
     const aiContent: ArticleContent | null = await generateAIContent(prompt);
 
     // populate article from aiContent
+
     article = this.populateArticleWithAiContent(
       article,
       aiContent,
@@ -206,10 +223,10 @@ export class ContentEngine {
         source: undefined,
       });
 
-      this.log(`Created and saved to DB, Article with id: ${result.id}`);
+      this.log(`Created and saved to DB, Article with id: ${result._id}`);
       // Update progress
       this.progress.articles.push({
-        id: result.id || "",
+        id: result._id || "",
         title: result.title,
         tenantId: result.tenantId,
         language: result.language,

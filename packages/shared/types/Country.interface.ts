@@ -3,7 +3,7 @@ import { LanguageContext } from "./LanguageContext.type";
 import { Region } from "./Region.interface";
 
 export interface Country {
-  id?: string;
+  _id?: string;
   code: string;
   name: string; // common name
   capital?: City;

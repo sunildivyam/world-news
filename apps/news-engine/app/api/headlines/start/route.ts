@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { newsBatchEngine } from "@worldnews/shared/server";
-import { error, success } from "@worldnews/shared/mongo/response";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 export async function GET(request: Request) {
   try {
     newsBatchEngine.start();
-    return success({ success: true });
+    return apiSuccess({ success: true });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    return apiError(err);
   }
 }

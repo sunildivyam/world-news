@@ -3,32 +3,39 @@ import { Tenant } from "../../types/Tenant.interface";
 import { getCollections } from "../collections";
 import { randomBytes } from "crypto";
 import { InsertOneResult, UpdateResult } from "mongodb";
-import { error, success } from "../response";
+import { toDbFormat, toNormalFormat } from "../mongo-utils";
+import { AppError } from "../../types";
+
+const moduleError = new AppError("Tenants Collection", "");
 
 export function generateTenant(): string {
   return randomBytes(32).toString("hex");
 }
 
 export async function createTenant(tenant: Tenant) {
-  if (!tenant?.tenantId) return error("Empty Tenant can not be created.");
+  if (!tenant?.tenantId)
+    throw moduleError.set("Empty Tenant can not be created.", 400);
 
   try {
     const { tenants } = await getCollections();
 
-    const result: InsertOneResult = await tenants.insertOne(tenant);
+    const result: InsertOneResult = await tenants.insertOne(
+      toDbFormat(tenant, true),
+    );
 
     if (!result.insertedId) {
-      return error("Failed to create Tenant");
+      throw moduleError.set("Failed to create Tenant", 500);
     }
 
-    return success({ ...tenant, id: result.insertedId });
+    return toNormalFormat({ ...tenant, _id: result.insertedId });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function updateTenant(tenantId: string, updates: Partial<Tenant>) {
-  if (!tenantId) return error("Empty Tenant, can not be updated.");
+  if (!tenantId)
+    throw moduleError.set("Empty Tenant, can not be updated.", 400);
   try {
     const { tenants } = await getCollections();
     const result: UpdateResult = await tenants.updateOne(
@@ -37,33 +44,34 @@ export async function updateTenant(tenantId: string, updates: Partial<Tenant>) {
     );
 
     if (result.modifiedCount === 0) {
-      return error("Failed to update Tenant", 500);
+      throw moduleError.set("Failed to update Tenant", 500);
     }
 
-    return success({ tenantId });
+    return toNormalFormat({ tenantId });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function deleteTenant(tenantId: string) {
-  if (!tenantId) return error("Empty Tenant, can not be deleted.");
+  if (!tenantId)
+    throw moduleError.set("Empty Tenant, can not be deleted.", 400);
   try {
     const { tenants } = await getCollections();
     const result = await tenants.deleteOne({ tenantId });
 
     if (result.deletedCount === 0) {
-      return error("Failed to delete Tenant", 404);
+      throw moduleError.set("Failed to delete Tenant", 404);
     }
 
-    return success({ tenantId });
+    return toNormalFormat({ tenantId });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function findTenant(tenantId: string, domain?: string) {
-  if (!tenantId) return error("Empty Tenant tenantId");
+  if (!tenantId) throw moduleError.set("Empty Tenant tenantId", 400);
 
   try {
     const { tenants } = await getCollections();
@@ -79,17 +87,17 @@ export async function findTenant(tenantId: string, domain?: string) {
     const tenant = await tenants.findOne(q);
 
     if (!tenant) {
-      return error("Tenant not found", 404);
+      throw moduleError.set("Tenant not found", 404);
     }
 
-    return success(tenant);
+    return toNormalFormat(tenant);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function findTenantByDomain(domain: string) {
-  if (!domain) return error("Empty Tenant domain");
+  if (!domain) throw moduleError.set("Empty Tenant domain", 400);
 
   try {
     const { tenants } = await getCollections();
@@ -98,12 +106,12 @@ export async function findTenantByDomain(domain: string) {
     });
 
     if (!tenant) {
-      return error("Tenant not found", 404);
+      throw moduleError.set("Tenant not found", 404);
     }
 
-    return success(tenant);
+    return toNormalFormat(tenant);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
@@ -112,14 +120,15 @@ export async function findTenants() {
     const { tenants } = await getCollections();
     const result = await tenants.find<Tenant>({}).toArray();
 
-    return success(result);
+    return toNormalFormat(result);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function createTenants(tenants: Tenant[]) {
-  if (!tenants?.length) return error("Empty tenants array can not be created.");
+  if (!tenants?.length)
+    throw moduleError.set("Empty tenants array can not be created.", 400);
 
   try {
     const { tenants: collection } = await getCollections();
@@ -127,16 +136,16 @@ export async function createTenants(tenants: Tenant[]) {
     const result = await collection.insertMany(tenants);
 
     if (!result.insertedCount) {
-      return error("Failed to create tenants");
+      throw moduleError.set("Failed to create tenants", 500);
     }
 
-    return success(
+    return toNormalFormat(
       tenants.map((tenant, index) => ({
         ...tenant,
-        id: result.insertedIds[index],
+        _id: result.insertedIds[index],
       })),
     );
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }

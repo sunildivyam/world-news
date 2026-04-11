@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ArticleSource, SuccessResponse } from "../types";
+import { ArticleSource } from "../types";
 import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchArticleSource(
@@ -29,8 +29,8 @@ export async function fetchArticleSource(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<ArticleSource> = await response.json();
-    return res.data;
+    const res: ArticleSource = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -50,8 +50,8 @@ export async function fetchArticleSources(): Promise<ArticleSource[]> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<ArticleSource[]> = await response.json();
-    return res.data;
+    const res: ArticleSource[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -76,8 +76,8 @@ export async function createArticleSource(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<ArticleSource> = await response.json();
-    return res.data;
+    const res: ArticleSource = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -103,8 +103,8 @@ export async function updateArticleSource(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ slug: string }> = await response.json();
-    return res.data;
+    const res: { slug: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -125,8 +125,8 @@ export async function deleteArticleSource(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ slug: string }> = await response.json();
-    return res.data;
+    const res: { slug: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -151,8 +151,8 @@ export async function createArticleSources(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<ArticleSource[]> = await response.json();
-    return res.data;
+    const res: ArticleSource[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NewsBatch, SuccessResponse } from "../types";
+import { NewsBatch } from "../types";
 import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchNewsBatch(id: string): Promise<NewsBatch | null> {
@@ -15,8 +15,8 @@ export async function fetchNewsBatch(id: string): Promise<NewsBatch | null> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<NewsBatch> = await response.json();
-    return res.data;
+    const res: NewsBatch = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -36,8 +36,8 @@ export async function fetchActiveNewsBatches(): Promise<NewsBatch[]> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<NewsBatch[]> = await response.json();
-    return res.data;
+    const res: NewsBatch[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -57,8 +57,8 @@ export async function fetchNewsBatches(): Promise<NewsBatch[]> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<NewsBatch[]> = await response.json();
-    return res.data;
+    const res: NewsBatch[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -83,8 +83,8 @@ export async function createNewsBatch(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<NewsBatch> = await response.json();
-    return res.data;
+    const res: NewsBatch = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -110,8 +110,8 @@ export async function updateNewsBatch(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<NewsBatch> = await response.json();
-    return res.data;
+    const res: NewsBatch = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -130,8 +130,8 @@ export async function deleteNewsBatch(id: string): Promise<{ id: string }> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ id: string }> = await response.json();
-    return res.data;
+    const res: { id: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -156,8 +156,8 @@ export async function createNewsBatches(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<NewsBatch[]> = await response.json();
-    return res.data;
+    const res: NewsBatch[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }

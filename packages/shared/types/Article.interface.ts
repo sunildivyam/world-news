@@ -6,7 +6,6 @@ import { Tenant } from "./Tenant.interface";
 
 export interface Article {
   _id?: string;
-  id?: string;
   slug: string;
   title: string;
   description: string;

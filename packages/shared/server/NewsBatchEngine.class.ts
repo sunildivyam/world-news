@@ -35,10 +35,10 @@ export class NewsBatchEngine {
     country: string,
     category: string,
     tenants: string[],
-  ): Promise<ArticleCollection | AppError> {
+  ): Promise<ArticleCollection> {
     let providerName = "";
     const articleCollection = await executeWithFailover<
-      ArticleCollection | AppError
+      ArticleCollection
     >(async (provider) => {
       providerName = provider.name;
       return await provider.fetchArticles(
@@ -47,19 +47,14 @@ export class NewsBatchEngine {
       );
     }, headlineProviders);
 
-    if (AppError.isError(articleCollection)) {
-      console.log(`Error fetching: ${country} and ${category}`);
-      return articleCollection;
-    } else {
-      const articles = (articleCollection as ArticleCollection).articles;
-      // send them to deduplication service
-      const uniqueArticles = await this.deDuplicate(articles);
-      // Save them to headlines DB collection
-      await this.sendToHeadlines(uniqueArticles, providerName, tenants);
-      console.log(`Finished for:${country} | ${category}`);
+    const articles = (articleCollection as ArticleCollection).articles;
+    // send them to deduplication service
+    const uniqueArticles = await this.deDuplicate(articles);
+    // Save them to headlines DB collection
+    await this.sendToHeadlines(uniqueArticles, providerName, tenants);
+    console.log(`Finished for:${country} | ${category}`);
 
-      return articleCollection;
-    }
+    return articleCollection;
   }
 
   async sendToHeadlines(
@@ -112,8 +107,8 @@ export class NewsBatchEngine {
       currentIndex < this.newsBatches?.length
     ) {
       const batch = this.newsBatches[currentIndex];
-      await this.markNewsBatchStarted(batch.id || "");
-      console.log(`Batch started: ${batch.id}`);
+      await this.markNewsBatchStarted(batch._id || "");
+      console.log(`Batch started: ${batch._id}`);
 
       const { country, tenants } = batch;
 
@@ -128,9 +123,9 @@ export class NewsBatchEngine {
       }
 
       currentIndex++;
-      console.log(`Finished for: ${batch.id}`);
+      console.log(`Finished for: ${batch._id}`);
       // Mark News Batch as finished
-      await this.markNewsBatchFinished(batch.id || "");
+      await this.markNewsBatchFinished(batch._id || "");
     }
 
     console.log(`Finished All BATCHES`);

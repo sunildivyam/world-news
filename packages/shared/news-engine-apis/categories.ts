@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Category, SuccessResponse } from "../types";
+import { Category } from "../types";
 import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchCategory(
@@ -29,8 +29,8 @@ export async function fetchCategory(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Category> = await response.json();
-    return res.data;
+    const res: Category = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -55,8 +55,8 @@ export async function fetchCategories(names?: string[]): Promise<Category[]> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Category[]> = await response.json();
-    return res.data;
+    const res: Category[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -79,8 +79,8 @@ export async function createCategory(category: Category): Promise<Category> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Category> = await response.json();
-    return res.data;
+    const res: Category = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -106,8 +106,8 @@ export async function updateCategory(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Category> = await response.json();
-    return res.data;
+    const res: Category = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -126,8 +126,8 @@ export async function deleteCategory(name: string): Promise<{ name: string }> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ name: string }> = await response.json();
-    return res.data;
+    const res: { name: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -152,11 +152,11 @@ export async function createCategories(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{
+    const res: {
       insertedCount: number;
       insertedIds: string[];
-    }> = await response.json();
-    return res.data;
+    } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }

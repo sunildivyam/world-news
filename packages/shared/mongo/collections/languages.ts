@@ -3,32 +3,38 @@ import { Language } from "../../types/Language.interface";
 import { getCollections } from "../collections";
 import { randomBytes } from "crypto";
 import { InsertOneResult, UpdateResult } from "mongodb";
-import { error, success } from "../response";
+import { toDbFormat, toNormalFormat } from "../mongo-utils";
+import { AppError } from "../../types";
+
+const moduleError = new AppError("Languages Collection", "");
 
 export function generateLanguage(): string {
   return randomBytes(32).toString("hex");
 }
 
 export async function createLanguage(language: Language) {
-  if (!language?.code) return error("Empty Language can not be created.");
+  if (!language?.code)
+    throw moduleError.set("Empty Language can not be created.", 400);
 
   try {
     const { languages } = await getCollections();
 
-    const result: InsertOneResult = await languages.insertOne(language);
+    const result: InsertOneResult = await languages.insertOne(
+      toDbFormat(language, true),
+    );
 
     if (!result.insertedId) {
-      return error("Failed to create Language");
+      throw moduleError.set("Failed to create Language", 500);
     }
 
-    return success({ ...language, id: result.insertedId });
+    return toNormalFormat({ ...language, _id: result.insertedId });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function updateLanguage(code: string, updates: Partial<Language>) {
-  if (!code) return error("Empty Language, can not be updated.");
+  if (!code) throw moduleError.set("Empty Language, can not be updated.", 400);
   try {
     const { languages } = await getCollections();
     const result: UpdateResult = await languages.updateOne(
@@ -37,33 +43,33 @@ export async function updateLanguage(code: string, updates: Partial<Language>) {
     );
 
     if (result.modifiedCount === 0) {
-      return error("Failed to update Language", 500);
+      throw moduleError.set("Failed to update Language", 500);
     }
 
-    return success({ code });
+    return toNormalFormat({ code });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function deleteLanguage(code: string) {
-  if (!code) return error("Empty Language, can not be deleted.");
+  if (!code) throw moduleError.set("Empty Language, can not be deleted.", 400);
   try {
     const { languages } = await getCollections();
     const result = await languages.deleteOne({ code });
 
     if (result.deletedCount === 0) {
-      return error("Failed to delete Language", 404);
+      throw moduleError.set("Failed to delete Language", 404);
     }
 
-    return success({ code });
+    return toNormalFormat({ code });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function findLanguage(code: string, name?: string) {
-  if (!code) return error("Empty Language code");
+  if (!code) throw moduleError.set("Empty Language code", 400);
 
   try {
     const { languages } = await getCollections();
@@ -79,17 +85,17 @@ export async function findLanguage(code: string, name?: string) {
     const language = await languages.findOne(q);
 
     if (!language) {
-      return error("Language not found", 404);
+      throw moduleError.set("Language not found", 404);
     }
 
-    return success(language);
+    return toNormalFormat(language);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function findLanguageByName(name: string) {
-  if (!name) return error("Empty Language name");
+  if (!name) throw moduleError.set("Empty Language name", 400);
 
   try {
     const { languages } = await getCollections();
@@ -98,17 +104,17 @@ export async function findLanguageByName(name: string) {
     });
 
     if (!language) {
-      return error("Language not found", 404);
+      throw moduleError.set("Language not found", 404);
     }
 
-    return success(language);
+    return toNormalFormat(language);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function findLanguageByCode2(code2: string) {
-  if (!code2) return error("Empty Language code2");
+  if (!code2) throw moduleError.set("Empty Language code2", 400);
 
   try {
     const { languages } = await getCollections();
@@ -118,12 +124,12 @@ export async function findLanguageByCode2(code2: string) {
     });
 
     if (!language) {
-      return error("Language not found", 404);
+      throw moduleError.set("Language not found", 404);
     }
 
-    return success(language);
+    return toNormalFormat(language);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
@@ -132,15 +138,15 @@ export async function findLanguages() {
     const { languages } = await getCollections();
     const result = await languages.find<Language>({}).toArray();
 
-    return success(result);
+    return toNormalFormat(result);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function createLanguages(languages: Language[]) {
   if (!languages?.length)
-    return error("Empty languages array can not be created.");
+    throw moduleError.set("Empty languages array can not be created.", 400);
 
   try {
     const { languages: collection } = await getCollections();
@@ -148,16 +154,16 @@ export async function createLanguages(languages: Language[]) {
     const result = await collection.insertMany(languages);
 
     if (!result.insertedCount) {
-      return error("Failed to create languages");
+      throw moduleError.set("Failed to create languages", 500);
     }
 
-    return success(
+    return toNormalFormat(
       languages.map((language, index) => ({
         ...language,
-        id: result.insertedIds[index],
+        _id: result.insertedIds[index],
       })),
     );
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }

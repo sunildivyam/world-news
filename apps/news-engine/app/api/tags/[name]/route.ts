@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Tag } from "@worldnews/shared";
 import { deleteTag, updateTag } from "@worldnews/shared/mongo/collections/tags";
-import { error } from "@worldnews/shared/mongo/response";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 export async function PUT(
   request: Request,
@@ -13,9 +13,9 @@ export async function PUT(
 
     const result = await updateTag(name.toLowerCase(), updates);
 
-    return result;
-  } catch (e: any) {
-    return error(e.message || e);
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }
 
@@ -26,8 +26,8 @@ export async function DELETE(
   try {
     const name = (await params).name;
     const result = await deleteTag(name.toLowerCase());
-    return result;
-  } catch (e: any) {
-    return error(e.message || e);
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }

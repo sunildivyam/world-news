@@ -19,31 +19,31 @@ export async function executeWithFailover<T>(
   operation: (provider: ArticleProvider) => Promise<T>,
   articleProviders: ArticleProvider[],
 ): Promise<T> {
-  let lastError: AppError = new AppError("", "");
+  const lastError: AppError = new AppError("Provider Manager", "");
 
   for (const provider of articleProviders) {
     try {
       console.log(`Trying provider: ${provider.name}`);
+
       const result = await operation(provider);
-      if (!hasRateLimitReached(result)) {
-        console.log(`Provider ${provider.name} succeeded`);
-        return result;
-      } else {
-        lastError = { ...(result as AppError) };
+
+      return result;
+    } catch (error: any) {
+      lastError.set(error.message, error.status);
+      if (hasRateLimitReached(error)) {
         console.log(
           `Provider ${provider.name} failed. Moving to next.`,
-          (result as AppError).message,
+          error.message,
         );
+      } else {
+        console.log(
+          `Provider ${provider.name} failed. Rate limit not hit, but soemthing went wrong. So Exiting`,
+          error,
+        );
+        throw lastError;
       }
-    } catch (error: any) {
-      console.log(`Provider ${provider.name} failed. Moving to next.`, error);
-      lastError = {
-        source: "Provider Manager",
-        message: error.message,
-        status: error.status,
-      };
     }
   }
 
-  return lastError as T;
+  throw lastError;
 }

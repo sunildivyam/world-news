@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NewsEvent, SuccessResponse } from "../types";
+import { NewsEvent } from "../types";
 import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchNewsEvent(
@@ -29,8 +29,8 @@ export async function fetchNewsEvent(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<NewsEvent> = await response.json();
-    return res.data;
+    const res: NewsEvent = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -50,8 +50,8 @@ export async function fetchNewsEvents(): Promise<NewsEvent[]> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<NewsEvent[]> = await response.json();
-    return res.data;
+    const res: NewsEvent[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -76,8 +76,8 @@ export async function createNewsEvent(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<NewsEvent> = await response.json();
-    return res.data;
+    const res: NewsEvent = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -103,8 +103,8 @@ export async function updateNewsEvent(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ name: string }> = await response.json();
-    return res.data;
+    const res: { name: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -123,8 +123,8 @@ export async function deleteNewsEvent(name: string): Promise<{ name: string }> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ name: string }> = await response.json();
-    return res.data;
+    const res: { name: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -149,8 +149,8 @@ export async function createNewsEvents(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<NewsEvent[]> = await response.json();
-    return res.data;
+    const res: NewsEvent[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }

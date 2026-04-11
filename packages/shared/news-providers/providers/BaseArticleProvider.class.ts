@@ -81,7 +81,7 @@ export class BaseArticleProvider implements ArticleProvider {
   public async parseArticle(rawArticle: any): Promise<Article | null> {
     if (!rawArticle) return null;
     const {
-      id,
+      _id,
       slug,
       tenant,
       title,
@@ -105,7 +105,7 @@ export class BaseArticleProvider implements ArticleProvider {
     } = rawArticle;
 
     const article: Article = {
-      id,
+      _id,
       slug,
       tenant,
       title,
@@ -154,7 +154,7 @@ export class BaseArticleProvider implements ArticleProvider {
   public async fetchArticles(
     context: UserContext,
     options?: ArticleQueryParams,
-  ): Promise<ArticleCollection | AppError> {
+  ): Promise<ArticleCollection> {
     const fnName = "fetchArticles()";
     const req = this.createRequest(context, options || {});
     console.log(`${this.name} | ${fnName}}`, req.url);
@@ -167,22 +167,22 @@ export class BaseArticleProvider implements ArticleProvider {
       const json = await res.json();
 
       const error = this.checkError(res, json, fnName);
-      if (error) return error;
+      if (error) throw error;
       const articleCollection = await this.parseArticleCollection(json);
 
       const errorC = this.checkArticleCollection(articleCollection, fnName);
-      if (errorC) return errorC;
+      if (errorC) throw errorC;
 
       return articleCollection;
     } catch (err: any) {
-      return this.catchError(err, fnName);
+      throw this.catchError(err, fnName);
     }
   }
 
   public async fetchArticle(
     context: UserContext,
     slug: string,
-  ): Promise<Article | AppError> {
+  ): Promise<Article> {
     const fnName = "fetchArticle()";
     const req = this.createRequest(context, {
       articleId: slug,
@@ -196,28 +196,28 @@ export class BaseArticleProvider implements ArticleProvider {
 
       const json = await res.json();
       const error = this.checkError(res, json, fnName);
-      if (error) return error;
+      if (error) throw error;
 
       const articleCollection = await this.parseArticleCollection(json);
 
       const errorC = this.checkArticleCollection(articleCollection, fnName);
-      if (errorC) return errorC;
+      if (errorC) throw errorC;
 
       const article = articleCollection.articles[0];
       return article;
     } catch (err: any) {
-      return this.catchError(err, fnName);
+      throw this.catchError(err, fnName);
     }
   }
 
   public async fetchRelatedArticles(
     context: UserContext,
     article: Article,
-  ): Promise<ArticleCollection | AppError> {
+  ): Promise<ArticleCollection> {
     const fnName = "fetchRelatedArticles()";
 
     if (!article)
-      return new AppError(
+      throw new AppError(
         `${this.name} | ${fnName}`,
         "Expected article for related articles",
         400,
@@ -239,16 +239,16 @@ export class BaseArticleProvider implements ArticleProvider {
       const json = await res.json();
 
       const error = this.checkError(res, json, fnName);
-      if (error) return error;
+      if (error) throw error;
 
       const articleCollection = await this.parseArticleCollection(json);
 
       const errorC = this.checkArticleCollection(articleCollection, fnName);
-      if (errorC) return errorC;
+      if (errorC) throw errorC;
 
       return articleCollection;
     } catch (err: any) {
-      return this.catchError(err, fnName);
+      throw this.catchError(err, fnName);
     }
   }
 

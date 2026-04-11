@@ -1,25 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NewsBatch } from "../../types";
-import { error, success } from "../response";
+import { AppError, NewsBatch } from "../../types";
+import { toDbFormat, toNormalFormat } from "../mongo-utils";
 import { getCollections } from "../collections";
 import { InsertOneResult, ObjectId } from "mongodb";
 
+const moduleError = new AppError("NewsBatches Collection", "");
+
 export async function createNewsBatch(newsBatch: NewsBatch) {
   if (!newsBatch?.tenants?.length)
-    return error("Can not create an empty news batch");
+    throw moduleError.set("Can not create an empty news batch", 400);
 
   try {
     const { newsBatches } = await getCollections();
 
-    const result: InsertOneResult = await newsBatches.insertOne(newsBatch);
+    const result: InsertOneResult = await newsBatches.insertOne(
+      toDbFormat(newsBatch, true),
+    );
 
     if (!result.insertedId) {
-      return error("Failed to create news batch", 500);
+      throw moduleError.set("Failed to create news batch", 500);
     }
 
-    return success({ ...newsBatch, id: result.insertedId });
+    return toNormalFormat({ ...newsBatch, id: result.insertedId });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
@@ -32,16 +36,9 @@ export async function getActiveNewsBatches() {
       .sort({ startedAt: -1 })
       .toArray();
 
-    // Transform _id to id for consistency
-    const transformed = result.map((batch) => ({
-      ...batch,
-      id: batch._id,
-      _id: undefined,
-    }));
-
-    return success(transformed);
+    return toNormalFormat(result);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
@@ -50,16 +47,9 @@ export async function getAllNewsBatches() {
     const { newsBatches } = await getCollections();
     const result = await newsBatches.find({}).toArray();
 
-    // Transform _id to id for consistency
-    const transformed = result.map((batch) => ({
-      ...batch,
-      id: batch._id,
-      _id: undefined,
-    }));
-
-    return success(transformed);
+    return toNormalFormat(result);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
@@ -75,12 +65,12 @@ export async function updateNewsBatch(
     );
 
     if (result.matchedCount === 0) {
-      return error("News batch not found", 404);
+      throw moduleError.set("News batch not found", 404);
     }
 
-    return success({ id });
+    return toNormalFormat({ _id: id });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
@@ -90,12 +80,12 @@ export async function deleteNewsBatch(id: string) {
     const result = await newsBatches.deleteOne({ _id: new ObjectId(id) });
 
     if (result.deletedCount === 0) {
-      return error("News batch not found", 404);
+      throw moduleError.set("News batch not found", 404);
     }
 
-    return success({ id });
+    return toNormalFormat({ _id: id });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
@@ -106,25 +96,18 @@ export async function findNewsBatch(id: string) {
     const newsBatch = await newsBatches.findOne({ _id: new ObjectId(id) });
 
     if (!newsBatch) {
-      return error("News batch not found", 404);
+      throw moduleError.set("News batch not found", 404);
     }
 
-    // Transform _id to id for consistency
-    const transformed = {
-      ...newsBatch,
-      id: newsBatch._id,
-      _id: undefined,
-    };
-
-    return success(transformed);
+    return toNormalFormat(newsBatch);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function createNewsBatches(newsBatches: NewsBatch[]) {
   if (!newsBatches?.length)
-    return error("Empty news batches array can not be created.");
+    throw moduleError.set("Empty news batches array can not be created.", 400);
 
   try {
     const { newsBatches: collection } = await getCollections();
@@ -132,16 +115,16 @@ export async function createNewsBatches(newsBatches: NewsBatch[]) {
     const result = await collection.insertMany(newsBatches);
 
     if (!result.insertedCount) {
-      return error("Failed to create news batches");
+      throw moduleError.set("Failed to create news batches", 500);
     }
 
-    return success(
+    return toNormalFormat(
       newsBatches.map((newsBatch, index) => ({
         ...newsBatch,
-        id: result.insertedIds[index],
+        _id: result.insertedIds[index],
       })),
     );
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }

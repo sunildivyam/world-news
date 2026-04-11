@@ -72,7 +72,7 @@ export class NewsdataProvider extends BaseArticleProvider {
   async parseArticle(rawArticle: ApiArticle): Promise<Article | null> {
     if (!rawArticle) return null;
     const article: Article = {
-      id: rawArticle.article_id,
+      _id: rawArticle.article_id,
       slug: rawArticle.article_id,
       tenantId: "",
       sourceId: rawArticle.source_id,
@@ -111,7 +111,7 @@ export class NewsdataProvider extends BaseArticleProvider {
         },
       },
       source: {
-        id: rawArticle.source_id,
+        _id: rawArticle.source_id,
         slug: rawArticle.source_id,
         name: rawArticle.source_name,
         description: undefined,

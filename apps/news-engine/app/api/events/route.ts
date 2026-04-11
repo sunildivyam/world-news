@@ -6,7 +6,7 @@ import {
   findNewsEventByLabel,
   findNewsEvents,
 } from "@worldnews/shared/mongo/collections/newsEvents";
-import { error } from "@worldnews/shared/mongo/response";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 export async function GET(request: Request) {
   try {
@@ -14,17 +14,20 @@ export async function GET(request: Request) {
     const name = searchParams.get("name");
     const label = searchParams.get("label");
 
+    let result;
     if (name && label) {
-      return await findNewsEvent(name.toLowerCase(), label);
+      result = await findNewsEvent(name.toLowerCase(), label);
     } else if (name) {
-      return await findNewsEvent(name.toLowerCase());
+      result = await findNewsEvent(name.toLowerCase());
     } else if (label) {
-      return await findNewsEventByLabel(label);
+      result = await findNewsEventByLabel(label);
     } else {
-      return await findNewsEvents();
+      result = await findNewsEvents();
     }
-  } catch (e: any) {
-    return error(e?.message || e, 500);
+
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }
 
@@ -35,13 +38,13 @@ export async function POST(request: Request) {
     // Check if it's an array for bulk insert
     if (Array.isArray(body)) {
       const result = await createNewsEvents(body);
-      return result;
+      return apiSuccess(result);
     } else {
       // Single news event insert
       const result = await createNewsEvent(body);
-      return result;
+      return apiSuccess(result);
     }
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    return apiError(err);
   }
 }

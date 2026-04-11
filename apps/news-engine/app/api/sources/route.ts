@@ -6,25 +6,27 @@ import {
   findArticleSourceByName,
   findArticleSources,
 } from "@worldnews/shared/mongo/collections/articleSources";
-import { error } from "@worldnews/shared/mongo/response";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const slug = searchParams.get("slug");
     const name = searchParams.get("name");
-
+    let result;
     if (slug && name) {
-      return await findArticleSource(slug.toLowerCase(), name);
+      result = await findArticleSource(slug.toLowerCase(), name);
     } else if (slug) {
-      return await findArticleSource(slug.toLowerCase());
+      result = await findArticleSource(slug.toLowerCase());
     } else if (name) {
-      return await findArticleSourceByName(name);
+      result = await findArticleSourceByName(name);
     } else {
-      return await findArticleSources();
+      result = await findArticleSources();
     }
-  } catch (e: any) {
-    return error(e?.message || e, 500);
+
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }
 
@@ -35,13 +37,13 @@ export async function POST(request: Request) {
     // Check if it's an array for bulk insert
     if (Array.isArray(body)) {
       const result = await createArticleSources(body);
-      return result;
+      return apiSuccess(result);
     } else {
       // Single article source insert
       const result = await createArticleSource(body);
-      return result;
+      return apiSuccess(result);
     }
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    return apiError(err);
   }
 }

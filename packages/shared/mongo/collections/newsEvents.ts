@@ -1,24 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NewsEvent } from "../../types";
+import { AppError, NewsEvent } from "../../types";
 import { getCollections } from "../collections";
 import { InsertOneResult, UpdateResult } from "mongodb";
-import { error, success } from "../response";
+import { toDbFormat, toNormalFormat } from "../mongo-utils";
+
+const moduleError = new AppError("NewsEvents Collection", "");
 
 export async function createNewsEvent(newsEvent: NewsEvent) {
-  if (!newsEvent?.name) return error("Empty NewsEvent can not be created.");
+  if (!newsEvent?.name)
+    throw moduleError.set("Empty NewsEvent can not be created.", 400);
 
   try {
     const { newsEvents } = await getCollections();
 
-    const result: InsertOneResult = await newsEvents.insertOne(newsEvent);
+    const result: InsertOneResult = await newsEvents.insertOne(
+      toDbFormat(newsEvent, true),
+    );
 
     if (!result.insertedId) {
-      return error("Failed to create NewsEvent");
+      throw moduleError.set("Failed to create NewsEvent", 500);
     }
 
-    return success({ ...newsEvent, id: result.insertedId });
+    return toNormalFormat({ ...newsEvent, _id: result.insertedId });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
@@ -26,7 +31,8 @@ export async function updateNewsEvent(
   name: string,
   updates: Partial<NewsEvent>,
 ) {
-  if (!name) return error("Empty NewsEvent name, can not be updated.");
+  if (!name)
+    throw moduleError.set("Empty NewsEvent name, can not be updated.", 400);
   try {
     const { newsEvents } = await getCollections();
     const result: UpdateResult = await newsEvents.updateOne(
@@ -35,33 +41,34 @@ export async function updateNewsEvent(
     );
 
     if (result.modifiedCount === 0) {
-      return error("Failed to update NewsEvent", 500);
+      throw moduleError.set("Failed to update NewsEvent", 500);
     }
 
-    return success({ name });
+    return toNormalFormat({ name });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function deleteNewsEvent(name: string) {
-  if (!name) return error("Empty NewsEvent name, can not be deleted.");
+  if (!name)
+    throw moduleError.set("Empty NewsEvent name, can not be deleted.", 400);
   try {
     const { newsEvents } = await getCollections();
     const result = await newsEvents.deleteOne({ name });
 
     if (result.deletedCount === 0) {
-      return error("Failed to delete NewsEvent", 404);
+      throw moduleError.set("Failed to delete NewsEvent", 404);
     }
 
-    return success({ name });
+    return toNormalFormat({ name });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function findNewsEvent(name: string, label?: string) {
-  if (!name) return error("Empty NewsEvent name");
+  if (!name) throw moduleError.set("Empty NewsEvent name", 400);
 
   try {
     const { newsEvents } = await getCollections();
@@ -77,17 +84,17 @@ export async function findNewsEvent(name: string, label?: string) {
     const newsEvent = await newsEvents.findOne(q);
 
     if (!newsEvent) {
-      return error("NewsEvent not found", 404);
+      throw moduleError.set("NewsEvent not found", 404);
     }
 
-    return success(newsEvent);
+    return toNormalFormat(newsEvent);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function findNewsEventByLabel(label: string) {
-  if (!label) return error("Empty NewsEvent label");
+  if (!label) throw moduleError.set("Empty NewsEvent label", 400);
 
   try {
     const { newsEvents } = await getCollections();
@@ -96,12 +103,12 @@ export async function findNewsEventByLabel(label: string) {
     });
 
     if (!newsEvent) {
-      return error("NewsEvent not found", 404);
+      throw moduleError.set("NewsEvent not found", 404);
     }
 
-    return success(newsEvent);
+    return toNormalFormat(newsEvent);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
@@ -110,15 +117,15 @@ export async function findNewsEvents() {
     const { newsEvents } = await getCollections();
     const result = await newsEvents.find<NewsEvent>({}).toArray();
 
-    return success(result);
+    return toNormalFormat(result);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function createNewsEvents(newsEvents: NewsEvent[]) {
   if (!newsEvents?.length)
-    return error("Empty newsEvents array can not be created.");
+    throw moduleError.set("Empty newsEvents array can not be created.", 400);
 
   try {
     const { newsEvents: collection } = await getCollections();
@@ -126,16 +133,16 @@ export async function createNewsEvents(newsEvents: NewsEvent[]) {
     const result = await collection.insertMany(newsEvents);
 
     if (!result.insertedCount) {
-      return error("Failed to create newsEvents");
+      throw moduleError.set("Failed to create newsEvents", 500);
     }
 
-    return success(
+    return toNormalFormat(
       newsEvents.map((newsEvent, index) => ({
         ...newsEvent,
-        id: result.insertedIds[index],
+        _id: result.insertedIds[index],
       })),
     );
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }

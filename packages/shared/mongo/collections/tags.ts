@@ -1,29 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Tag } from "../../types";
+import { AppError, Tag } from "../../types";
 import { getCollections } from "../collections";
 import { InsertOneResult, UpdateResult } from "mongodb";
-import { error, success } from "../response";
+import { toDbFormat, toNormalFormat } from "../mongo-utils";
+
+const moduleError = new AppError("Tags Collection", "");
 
 export async function createTag(tag: Tag) {
-  if (!tag?.name) return error("Empty Tag can not be created.");
+  if (!tag?.name) throw moduleError.set("Empty Tag can not be created.", 400);
 
   try {
     const { tags } = await getCollections();
 
-    const result: InsertOneResult = await tags.insertOne(tag);
+    const result: InsertOneResult = await tags.insertOne(toDbFormat(tag, true));
 
     if (!result.insertedId) {
-      return error("Failed to create Tag");
+      throw moduleError.set("Failed to create Tag", 500);
     }
 
-    return success({ ...tag, id: result.insertedId });
+    return toNormalFormat({ ...tag, _id: result.insertedId });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function updateTag(name: string, updates: Partial<Tag>) {
-  if (!name) return error("Empty Tag name, can not be updated.");
+  if (!name) throw moduleError.set("Empty Tag name, can not be updated.", 400);
   try {
     const { tags } = await getCollections();
     const result: UpdateResult = await tags.updateOne(
@@ -32,33 +34,33 @@ export async function updateTag(name: string, updates: Partial<Tag>) {
     );
 
     if (result.modifiedCount === 0) {
-      return error("Failed to update Tag", 500);
+      throw moduleError.set("Failed to update Tag", 500);
     }
 
-    return success({ name });
+    return toNormalFormat({ name });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function deleteTag(name: string) {
-  if (!name) return error("Empty Tag name, can not be deleted.");
+  if (!name) throw moduleError.set("Empty Tag name, can not be deleted.", 400);
   try {
     const { tags } = await getCollections();
     const result = await tags.deleteOne({ name });
 
     if (result.deletedCount === 0) {
-      return error("Failed to delete Tag", 404);
+      throw moduleError.set("Failed to delete Tag", 404);
     }
 
-    return success({ name });
+    return toNormalFormat({ name });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function findTag(name: string, label?: string) {
-  if (!name) return error("Empty Tag name");
+  if (!name) throw moduleError.set("Empty Tag name", 400);
 
   try {
     const { tags } = await getCollections();
@@ -74,17 +76,17 @@ export async function findTag(name: string, label?: string) {
     const tag = await tags.findOne(q);
 
     if (!tag) {
-      return error("Tag not found", 404);
+      throw moduleError.set("Tag not found", 404);
     }
 
-    return success(tag);
+    return toNormalFormat(tag);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function findTagByLabel(label: string) {
-  if (!label) return error("Empty Tag label");
+  if (!label) throw moduleError.set("Empty Tag label", 400);
 
   try {
     const { tags } = await getCollections();
@@ -93,12 +95,12 @@ export async function findTagByLabel(label: string) {
     });
 
     if (!tag) {
-      return error("Tag not found", 404);
+      throw moduleError.set("Tag not found", 404);
     }
 
-    return success(tag);
+    return toNormalFormat(tag);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
@@ -107,14 +109,15 @@ export async function findTags() {
     const { tags } = await getCollections();
     const result = await tags.find<Tag>({}).toArray();
 
-    return success(result);
+    return toNormalFormat(result);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function createTags(tags: Tag[]) {
-  if (!tags?.length) return error("Empty tags array can not be created.");
+  if (!tags?.length)
+    throw moduleError.set("Empty tags array can not be created.", 400);
 
   try {
     const { tags: collection } = await getCollections();
@@ -122,16 +125,16 @@ export async function createTags(tags: Tag[]) {
     const result = await collection.insertMany(tags);
 
     if (!result.insertedCount) {
-      return error("Failed to create tags");
+      throw moduleError.set("Failed to create tags", 500);
     }
 
-    return success(
+    return toNormalFormat(
       tags.map((tag, index) => ({
         ...tag,
-        id: result.insertedIds[index],
+        _id: result.insertedIds[index],
       })),
     );
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }

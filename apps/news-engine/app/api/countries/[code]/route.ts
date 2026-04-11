@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { apiError, apiSuccess } from "@/lib/api-response";
 import { Country } from "@worldnews/shared";
 import {
   deleteCountry,
   updateCountry,
 } from "@worldnews/shared/mongo/collections/countries";
-import { error } from "@worldnews/shared/mongo/response";
 
 export async function PUT(
   request: Request,
@@ -16,9 +16,9 @@ export async function PUT(
 
     const result = await updateCountry(code.toLowerCase(), updates);
 
-    return result;
-  } catch (e: any) {
-    return error(e.message || e);
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }
 
@@ -29,8 +29,8 @@ export async function DELETE(
   try {
     const code = (await params).code;
     const result = await deleteCountry(code.toLowerCase());
-    return result;
-  } catch (e: any) {
-    return error(e.message || e);
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }

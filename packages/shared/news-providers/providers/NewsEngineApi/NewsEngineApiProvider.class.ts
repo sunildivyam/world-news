@@ -52,7 +52,7 @@ export class NewsEngineApiProvider extends BaseArticleProvider {
   async parseArticle(rawArticle: ApiArticle): Promise<Article | null> {
     if (!rawArticle) return null;
     const article: Article = {
-      id: rawArticle._id,
+      _id: rawArticle._id,
       slug: rawArticle.slug,
       tenantId: rawArticle.tenantId,
       sourceId: rawArticle.sourceId,

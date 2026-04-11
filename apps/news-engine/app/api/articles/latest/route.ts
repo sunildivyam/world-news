@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { findLatest } from "@worldnews/shared/mongo/collections/articles";
-import { error } from "@worldnews/shared/mongo/response";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 export async function GET(request: Request) {
   try {
@@ -36,7 +36,7 @@ export async function GET(request: Request) {
     const hours = searchParams.get("hours")
       ? parseInt(searchParams.get("hours")!)
       : undefined;
-    const result = await findLatest(
+    const result = await findLatest({
       id,
       slug,
       country,
@@ -49,10 +49,10 @@ export async function GET(request: Request) {
       limit,
       fields,
       hours,
-    );
+    });
 
     return Response.json(result);
-  } catch (e: any) {
-    return error(e?.message || e, 500);
+  } catch (err: any) {
+    return apiError(err);
   }
 }

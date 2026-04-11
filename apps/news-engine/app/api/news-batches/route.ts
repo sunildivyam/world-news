@@ -6,7 +6,7 @@ import {
   getActiveNewsBatches,
   getAllNewsBatches,
 } from "@worldnews/shared/mongo/collections/newsBatches";
-import { error } from "@worldnews/shared/mongo/response";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 export const revalidate = 120;
 export async function GET(request: Request) {
@@ -15,15 +15,18 @@ export async function GET(request: Request) {
     const id = searchParams.get("id");
     const active = searchParams.get("active");
 
+    let result;
     if (id) {
-      return await findNewsBatch(id);
+      result = await findNewsBatch(id);
     } else if (active === "true") {
-      return await getActiveNewsBatches();
+      result = await getActiveNewsBatches();
     } else {
-      return await getAllNewsBatches();
+      result = await getAllNewsBatches();
     }
-  } catch (e: any) {
-    return error(e?.message || e, 500);
+
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }
 
@@ -34,13 +37,13 @@ export async function POST(request: Request) {
     // Check if it's an array for bulk insert
     if (Array.isArray(body)) {
       const result = await createNewsBatches(body);
-      return result;
+      return apiSuccess(result);
     } else {
       // Single news batch insert
       const result = await createNewsBatch(body);
-      return result;
+      return apiSuccess(result);
     }
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    return apiError(err);
   }
 }

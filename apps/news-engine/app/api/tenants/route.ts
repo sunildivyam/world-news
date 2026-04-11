@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Tenant } from "@worldnews/shared";
 import {
   createTenant,
   createTenants,
@@ -7,7 +6,7 @@ import {
   findTenantByDomain,
   findTenants,
 } from "@worldnews/shared/mongo/collections/tenants";
-import { error } from "@worldnews/shared/mongo/response";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 export async function GET(request: Request) {
   try {
@@ -15,17 +14,20 @@ export async function GET(request: Request) {
     const tenantId = searchParams.get("tenantId");
     const domain = searchParams.get("domain");
 
+    let result;
     if (tenantId && domain) {
-      return await findTenant(tenantId.toLowerCase(), domain);
+      result = await findTenant(tenantId.toLowerCase(), domain);
     } else if (tenantId) {
-      return await findTenant(tenantId.toLowerCase());
+      result = await findTenant(tenantId.toLowerCase());
     } else if (domain) {
-      return await findTenantByDomain(domain);
+      result = await findTenantByDomain(domain);
     } else {
-      return await findTenants();
+      result = await findTenants();
     }
-  } catch (e: any) {
-    return error(e?.message || e, 500);
+
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }
 
@@ -36,13 +38,13 @@ export async function POST(request: Request) {
     // Check if it's an array for bulk insert
     if (Array.isArray(body)) {
       const result = await createTenants(body);
-      return result;
+      return apiSuccess(result);
     } else {
       // Single tenant insert
       const result = await createTenant(body);
-      return result;
+      return apiSuccess(result);
     }
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    return apiError(err);
   }
 }

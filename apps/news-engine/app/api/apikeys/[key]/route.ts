@@ -5,7 +5,7 @@ import {
   expireApiKey,
   updateApiKey,
 } from "@worldnews/shared/mongo/collections/apiKeys";
-import { error } from "@worldnews/shared/mongo/response";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 export async function PUT(
   request: Request,
@@ -17,13 +17,13 @@ export async function PUT(
 
     if (expire === true) {
       const result = await expireApiKey(key);
-      return result;
+      return apiSuccess(result);
     }
 
     const result = await updateApiKey(key, updates);
-    return result;
-  } catch (e: any) {
-    return error(e.message || e);
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }
 
@@ -34,8 +34,8 @@ export async function DELETE(
   try {
     const key = (await params).key;
     const result = await deleteApiKey(key);
-    return result;
-  } catch (e: any) {
-    return error(e.message || e);
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }

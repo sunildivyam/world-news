@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SuccessResponse, Tenant } from "../types";
+import { Tenant } from "../types";
 import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchTenant(
@@ -29,8 +29,8 @@ export async function fetchTenant(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Tenant> = await response.json();
-    return res.data;
+    const res: Tenant = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -50,8 +50,8 @@ export async function fetchTenants(): Promise<Tenant[]> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Tenant[]> = await response.json();
-    return res.data;
+    const res: Tenant[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -74,8 +74,8 @@ export async function createTenant(tenant: Tenant): Promise<Tenant> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Tenant> = await response.json();
-    return res.data;
+    const res: Tenant = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -101,8 +101,8 @@ export async function updateTenant(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Tenant> = await response.json();
-    return res.data;
+    const res: Tenant = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -123,8 +123,8 @@ export async function deleteTenant(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ tenantId: string }> = await response.json();
-    return res.data;
+    const res: { tenantId: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -147,8 +147,8 @@ export async function createTenants(tenants: Tenant[]): Promise<Tenant[]> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Tenant[]> = await response.json();
-    return res.data;
+    const res: Tenant[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }

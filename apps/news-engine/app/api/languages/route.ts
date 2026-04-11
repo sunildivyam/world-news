@@ -8,7 +8,7 @@ import {
   findLanguageByName,
   findLanguages,
 } from "@worldnews/shared/mongo/collections/languages";
-import { error } from "@worldnews/shared/mongo/response";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 export async function GET(request: Request) {
   try {
@@ -17,21 +17,24 @@ export async function GET(request: Request) {
     const name = searchParams.get("name");
     const code2 = searchParams.get("code2");
 
+    let result;
     if (code2) {
-      return await findLanguageByCode2(code2.toLowerCase());
+      result = await findLanguageByCode2(code2.toLowerCase());
     }
 
     if (code && name) {
-      return await findLanguage(code.toLowerCase(), name);
+      result = await findLanguage(code.toLowerCase(), name);
     } else if (code) {
-      return await findLanguage(code.toLowerCase());
+      result = await findLanguage(code.toLowerCase());
     } else if (name) {
-      return await findLanguageByName(name);
+      result = await findLanguageByName(name);
     } else {
-      return await findLanguages();
+      result = await findLanguages();
     }
-  } catch (e: any) {
-    return error(e?.message || e, 500);
+
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }
 
@@ -42,13 +45,13 @@ export async function POST(request: Request) {
     // Check if it's an array for bulk insert
     if (Array.isArray(body)) {
       const result = await createLanguages(body);
-      return result;
+      return apiSuccess(result);
     } else {
       // Single language insert
       const result = await createLanguage(body);
-      return result;
+      return apiSuccess(result);
     }
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    return apiError(err);
   }
 }

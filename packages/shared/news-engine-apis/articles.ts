@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Article, LatestArticlesQueryParams, SuccessResponse } from "../types";
+import { Article, LatestArticlesQueryParams } from "../types";
 import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchArticle(
@@ -29,8 +29,8 @@ export async function fetchArticle(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Article> = await response.json();
-    return res.data;
+    const res: Article = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -51,8 +51,8 @@ export async function fetchArticles(limit?: number): Promise<Article[]> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Article[]> = await response.json();
-    return res.data;
+    const res: Article[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -76,8 +76,8 @@ export async function fetchArticlesByTenant(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Article[]> = await response.json();
-    return res.data;
+    const res: Article[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -101,8 +101,8 @@ export async function fetchArticlesByCategory(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Article[]> = await response.json();
-    return res.data;
+    const res: Article[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -126,8 +126,8 @@ export async function fetchArticlesBySource(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Article[]> = await response.json();
-    return res.data;
+    const res: Article[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -150,8 +150,8 @@ export async function createArticle(article: Article): Promise<Article> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Article> = await response.json();
-    return res.data;
+    const res: Article = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -177,8 +177,8 @@ export async function updateArticle(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ slug: string }> = await response.json();
-    return res.data;
+    const res: { slug: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -197,8 +197,8 @@ export async function deleteArticle(slug: string): Promise<{ slug: string }> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ slug: string }> = await response.json();
-    return res.data;
+    const res: { slug: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -221,8 +221,8 @@ export async function createArticles(articles: Article[]): Promise<Article[]> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Article[]> = await response.json();
-    return res.data;
+    const res: Article[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -275,8 +275,8 @@ export async function fetchLatestArticles(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Article[]> = await response.json();
-    return res.data;
+    const res: Article[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }

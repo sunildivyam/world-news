@@ -6,7 +6,7 @@ import {
   findCategoryByLabel,
   findCategories,
 } from "@worldnews/shared/mongo/collections/categories";
-import { error } from "@worldnews/shared/mongo/response";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 export async function GET(request: Request) {
   try {
@@ -15,19 +15,22 @@ export async function GET(request: Request) {
     const label = searchParams.get("label");
     const names = searchParams.get("names");
 
+    let result;
     if (name && label) {
-      return await findCategory(name.toLowerCase(), label);
+      result = await findCategory(name.toLowerCase(), label);
     } else if (name) {
-      return await findCategory(name.toLowerCase());
+      result = await findCategory(name.toLowerCase());
     } else if (label) {
-      return await findCategoryByLabel(label);
+      result = await findCategoryByLabel(label);
     } else if (names) {
-        return await findCategories(names.split(","));
+      result = await findCategories(names.split(","));
     } else {
-      return await findCategories();
+      result = await findCategories();
     }
-  } catch (e: any) {
-    return error(e?.message || e, 500);
+
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }
 
@@ -38,13 +41,13 @@ export async function POST(request: Request) {
     // Check if it's an array for bulk insert
     if (Array.isArray(body)) {
       const result = await createCategories(body);
-      return result;
+      return apiSuccess(result);
     } else {
       // Single category insert
       const result = await createCategory(body);
-      return result;
+      return apiSuccess(result);
     }
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    return apiError(err);
   }
 }

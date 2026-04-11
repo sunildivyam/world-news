@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Country, GeoContext, SuccessResponse } from "../types";
+import { Country, GeoContext } from "../types";
 import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchCountry(
@@ -29,8 +29,8 @@ export async function fetchCountry(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Country> = await response.json();
-    return res.data;
+    const res: Country = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -55,8 +55,8 @@ export async function fetchCountries(codes?: string[]): Promise<Country[]> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Country[]> = await response.json();
-    return res.data;
+    const res: Country[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -80,8 +80,8 @@ export async function fetchAddGeo(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ code: string }> = await response.json();
-    return res.data;
+    const res: { code: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -104,8 +104,8 @@ export async function createCountry(country: Country): Promise<Country> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Country> = await response.json();
-    return res.data;
+    const res: Country = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -131,8 +131,8 @@ export async function updateCountry(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Country> = await response.json();
-    return res.data;
+    const res: Country = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -151,8 +151,8 @@ export async function deleteCountry(code: string): Promise<{ code: string }> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ code: string }> = await response.json();
-    return res.data;
+    const res: { code: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -177,8 +177,8 @@ export async function createCountries(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Country[]> = await response.json();
-    return res.data;
+    const res: Country[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }

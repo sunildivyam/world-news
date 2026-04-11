@@ -1,5 +1,5 @@
 export interface NewsEvent {
-  id?: string;
+  _id?: string;
   name: string;
   label: string;
   description?: string;

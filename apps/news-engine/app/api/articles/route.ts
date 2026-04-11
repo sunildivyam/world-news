@@ -9,7 +9,7 @@ import {
   findArticlesBySource,
   findArticlesByTenant,
 } from "@worldnews/shared/mongo/collections/articles";
-import { error } from "@worldnews/shared/mongo/response";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 export async function GET(request: Request) {
   try {
@@ -23,23 +23,26 @@ export async function GET(request: Request) {
       ? parseInt(searchParams.get("limit")!)
       : undefined;
 
+    let result;
     if (slug && title) {
-      return await findArticle(slug.toLowerCase(), title);
+      result = await findArticle(slug.toLowerCase(), title);
     } else if (slug) {
-      return await findArticle(slug.toLowerCase());
+      result = await findArticle(slug.toLowerCase());
     } else if (title) {
-      return await findArticleByTitle(title);
+      result = await findArticleByTitle(title);
     } else if (tenantId) {
-      return await findArticlesByTenant(tenantId, limit);
+      result = await findArticlesByTenant(tenantId, limit);
     } else if (category) {
-      return await findArticlesByCategory(category, limit);
+      result = await findArticlesByCategory(category, limit);
     } else if (sourceId) {
-      return await findArticlesBySource(sourceId, limit);
+      result = await findArticlesBySource(sourceId, limit);
     } else {
-      return await findArticles(limit);
+      result = await findArticles(limit);
     }
-  } catch (e: any) {
-    return error(e?.message || e, 500);
+
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }
 
@@ -50,13 +53,13 @@ export async function POST(request: Request) {
     // Check if it's an array for bulk insert
     if (Array.isArray(body)) {
       const result = await createArticles(body);
-      return result;
+      return apiSuccess(result);
     } else {
       // Single article insert
       const result = await createArticle(body);
-      return result;
+      return apiSuccess(result);
     }
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    return apiError(err);
   }
 }

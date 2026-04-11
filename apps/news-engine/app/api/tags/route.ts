@@ -6,7 +6,7 @@ import {
   findTagByLabel,
   findTags,
 } from "@worldnews/shared/mongo/collections/tags";
-import { error } from "@worldnews/shared/mongo/response";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 export async function GET(request: Request) {
   try {
@@ -14,17 +14,20 @@ export async function GET(request: Request) {
     const name = searchParams.get("name");
     const label = searchParams.get("label");
 
+    let result;
     if (name && label) {
-      return await findTag(name.toLowerCase(), label);
+      result = await findTag(name.toLowerCase(), label);
     } else if (name) {
-      return await findTag(name.toLowerCase());
+      result = await findTag(name.toLowerCase());
     } else if (label) {
-      return await findTagByLabel(label);
+      result = await findTagByLabel(label);
     } else {
-      return await findTags();
+      result = await findTags();
     }
-  } catch (e: any) {
-    return error(e?.message || e, 500);
+
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }
 
@@ -35,13 +38,13 @@ export async function POST(request: Request) {
     // Check if it's an array for bulk insert
     if (Array.isArray(body)) {
       const result = await createTags(body);
-      return result;
+      return apiSuccess(result);
     } else {
       // Single tag insert
       const result = await createTag(body);
-      return result;
+      return apiSuccess(result);
     }
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    return apiError(err);
   }
 }

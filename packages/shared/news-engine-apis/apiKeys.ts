@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ApiKey, SuccessResponse } from "../types";
+import { ApiKey } from "../types";
 import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchApiKey(key: string): Promise<ApiKey | null> {
@@ -16,8 +16,8 @@ export async function fetchApiKey(key: string): Promise<ApiKey | null> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<ApiKey> = await response.json();
-    return res.data;
+    const res: ApiKey = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -37,8 +37,8 @@ export async function validateApiKey(key: string): Promise<ApiKey | null> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<ApiKey> = await response.json();
-    return res.data;
+    const res: ApiKey = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -58,8 +58,8 @@ export async function fetchTenantApiKeys(tenantId: string): Promise<ApiKey[]> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<ApiKey[]> = await response.json();
-    return res.data;
+    const res: ApiKey[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -81,8 +81,8 @@ export async function fetchInactiveTenantApiKeys(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<ApiKey[]> = await response.json();
-    return res.data;
+    const res: ApiKey[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -105,8 +105,8 @@ export async function createApiKey(tenantId: string): Promise<ApiKey> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<ApiKey> = await response.json();
-    return res.data;
+    const res: ApiKey = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -132,8 +132,8 @@ export async function updateApiKey(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ apiKey: string }> = await response.json();
-    return res.data;
+    const res: { apiKey: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -156,8 +156,8 @@ export async function expireApiKey(key: string): Promise<{ apiKey: string }> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ apiKey: string }> = await response.json();
-    return res.data;
+    const res: { apiKey: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -176,8 +176,8 @@ export async function deleteApiKey(key: string): Promise<{ apiKey: string }> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ apiKey: string }> = await response.json();
-    return res.data;
+    const res: { apiKey: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }

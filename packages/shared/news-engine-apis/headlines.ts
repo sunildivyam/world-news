@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Headline, SuccessResponse } from "../types";
+import { Headline } from "../types";
 import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchHeadline(
@@ -29,8 +29,8 @@ export async function fetchHeadline(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Headline> = await response.json();
-    return res.data;
+    const res: Headline = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -51,8 +51,8 @@ export async function fetchHeadlines(limit?: number): Promise<Headline[]> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Headline[]> = await response.json();
-    return res.data;
+    const res: Headline[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -76,8 +76,8 @@ export async function fetchHeadlinesByTenant(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Headline[]> = await response.json();
-    return res.data;
+    const res: Headline[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -101,8 +101,8 @@ export async function fetchHeadlinesByContentGenerated(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Headline[]> = await response.json();
-    return res.data;
+    const res: Headline[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -126,8 +126,8 @@ export async function fetchHeadlinesByCategory(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Headline[]> = await response.json();
-    return res.data;
+    const res: Headline[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -151,8 +151,8 @@ export async function fetchHeadlinesBySource(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Headline[]> = await response.json();
-    return res.data;
+    const res: Headline[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -176,8 +176,8 @@ export async function fetchHeadlinesByProvider(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Headline[]> = await response.json();
-    return res.data;
+    const res: Headline[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -218,8 +218,8 @@ export async function fetchHeadlinesByCountryAndCategory(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Headline[]> = await response.json();
-    return res.data;
+    const res: Headline[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -242,8 +242,8 @@ export async function createHeadline(headline: Headline): Promise<Headline> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Headline> = await response.json();
-    return res.data;
+    const res: Headline = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -269,8 +269,8 @@ export async function updateHeadline(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ id: string }> = await response.json();
-    return res.data;
+    const res: { id: string } = await response.json();
+    return res;
   } catch (err: any) {
     console.log(err?.message);
     throw new Error(err);
@@ -290,8 +290,8 @@ export async function deleteHeadline(id: string): Promise<{ id: string }> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ id: string }> = await response.json();
-    return res.data;
+    const res: { id: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -316,11 +316,11 @@ export async function createHeadlines(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{
+    const res: {
       insertedCount: number;
       insertedIds: string[];
-    }> = await response.json();
-    return res.data;
+    } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -337,10 +337,10 @@ export async function startNewsBatches(): Promise<{ success: boolean }> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{
+    const res: {
       success: boolean;
-    }> = await response.json();
-    return res.data;
+    } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }

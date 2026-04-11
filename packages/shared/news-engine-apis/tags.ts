@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Tag, SuccessResponse } from "../types";
+import { Tag } from "../types";
 import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchTag(
@@ -29,8 +29,8 @@ export async function fetchTag(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Tag> = await response.json();
-    return res.data;
+    const res: Tag = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -50,8 +50,8 @@ export async function fetchTags(): Promise<Tag[]> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Tag[]> = await response.json();
-    return res.data;
+    const res: Tag[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -74,8 +74,8 @@ export async function createTag(tag: Tag): Promise<Tag> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Tag> = await response.json();
-    return res.data;
+    const res: Tag = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -101,8 +101,8 @@ export async function updateTag(
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ name: string }> = await response.json();
-    return res.data;
+    const res: { name: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -121,8 +121,8 @@ export async function deleteTag(name: string): Promise<{ name: string }> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<{ name: string }> = await response.json();
-    return res.data;
+    const res: { name: string } = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -145,8 +145,8 @@ export async function createTags(tags: Tag[]): Promise<Tag[]> {
       throw new Error(response.statusText);
     }
 
-    const res: SuccessResponse<Tag[]> = await response.json();
-    return res.data;
+    const res: Tag[] = await response.json();
+    return res;
   } catch (err: any) {
     throw new Error(err);
   }

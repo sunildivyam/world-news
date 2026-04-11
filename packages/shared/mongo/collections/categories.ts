@@ -1,29 +1,35 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Category } from "../../types";
+import { AppError, Category } from "../../types";
 import { getCollections } from "../collections";
 import { InsertOneResult, UpdateResult } from "mongodb";
-import { error, success } from "../response";
+import { toDbFormat, toNormalFormat } from "../mongo-utils";
+
+const moduleError = new AppError("Categories Collection", "");
 
 export async function createCategory(category: Category) {
-  if (!category?.name) return error("Empty Category can not be created.");
+  if (!category?.name)
+    throw moduleError.set("Empty Category can not be created.", 400);
 
   try {
     const { categories } = await getCollections();
 
-    const result: InsertOneResult = await categories.insertOne(category);
+    const result: InsertOneResult = await categories.insertOne(
+      toDbFormat(category, true),
+    );
 
     if (!result.insertedId) {
-      return error("Failed to create Category");
+      throw moduleError.set("Failed to create Category", 500);
     }
 
-    return success({ ...category, id: result.insertedId });
+    return toNormalFormat({ ...category, _id: result.insertedId });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function updateCategory(name: string, updates: Partial<Category>) {
-  if (!name) return error("Empty Category name, can not be updated.");
+  if (!name)
+    throw moduleError.set("Empty Category name, can not be updated.", 400);
   try {
     const { categories } = await getCollections();
     const result: UpdateResult = await categories.updateOne(
@@ -32,33 +38,34 @@ export async function updateCategory(name: string, updates: Partial<Category>) {
     );
 
     if (result.modifiedCount === 0) {
-      return error("Failed to update Category", 500);
+      throw moduleError.set("Failed to update Category", 500);
     }
 
-    return success({ name });
+    return toNormalFormat({ name });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function deleteCategory(name: string) {
-  if (!name) return error("Empty Category name, can not be deleted.");
+  if (!name)
+    throw moduleError.set("Empty Category name, can not be deleted.", 400);
   try {
     const { categories } = await getCollections();
     const result = await categories.deleteOne({ name });
 
     if (result.deletedCount === 0) {
-      return error("Failed to delete Category", 404);
+      throw moduleError.set("Failed to delete Category", 404);
     }
 
-    return success({ name });
+    return toNormalFormat({ name });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function findCategory(name: string, label?: string) {
-  if (!name) return error("Empty Category name");
+  if (!name) throw moduleError.set("Empty Category name", 400);
 
   try {
     const { categories } = await getCollections();
@@ -74,17 +81,17 @@ export async function findCategory(name: string, label?: string) {
     const category = await categories.findOne(q);
 
     if (!category) {
-      return error("Category not found", 404);
+      throw moduleError.set("Category not found", 404);
     }
 
-    return success(category);
+    return toNormalFormat(category);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function findCategoryByLabel(label: string) {
-  if (!label) return error("Empty Category label");
+  if (!label) throw moduleError.set("Empty Category label", 400);
 
   try {
     const { categories } = await getCollections();
@@ -93,12 +100,12 @@ export async function findCategoryByLabel(label: string) {
     });
 
     if (!category) {
-      return error("Category not found", 404);
+      throw moduleError.set("Category not found", 404);
     }
 
-    return success(category);
+    return toNormalFormat(category);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
@@ -112,15 +119,15 @@ export async function findCategories(names?: string[]) {
 
     const result = await categories.find<Category>(filter).toArray();
 
-    return success(result);
+    return toNormalFormat(result);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
 export async function createCategories(categoriesArray: Category[]) {
   if (!categoriesArray || categoriesArray.length === 0)
-    return error("Empty categories array can not be created.");
+    throw moduleError.set("Empty categories array can not be created.", 400);
 
   try {
     const { categories } = await getCollections();
@@ -128,14 +135,14 @@ export async function createCategories(categoriesArray: Category[]) {
     const result = await categories.insertMany(categoriesArray);
 
     if (!result.insertedIds || result.insertedCount === 0) {
-      return error("Failed to create categories");
+      throw moduleError.set("Failed to create categories", 500);
     }
 
-    return success({
+    return toNormalFormat({
       insertedCount: result.insertedCount,
       insertedIds: Object.values(result.insertedIds),
     });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }

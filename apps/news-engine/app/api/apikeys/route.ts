@@ -6,7 +6,7 @@ import {
   findInactiveTenantApiKeys,
   validateApiKey,
 } from "@worldnews/shared/mongo/collections/apiKeys";
-import { error } from "@worldnews/shared/mongo/response";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 export async function GET(request: Request) {
   try {
@@ -16,25 +16,25 @@ export async function GET(request: Request) {
     const validate = searchParams.get("validate");
     const inactive = searchParams.get("inactive");
 
+    let result;
+
     if (validate === "true" && key) {
-      return await validateApiKey(key);
+      result = await validateApiKey(key);
     }
 
     if (tenantId) {
       if (inactive === "true") {
-        return await findInactiveTenantApiKeys(tenantId);
+        result = await findInactiveTenantApiKeys(tenantId);
       } else {
-        return await findTenantApiKeys(tenantId);
+        result = await findTenantApiKeys(tenantId);
       }
+    } else {
+      result = await findApiKey(key || "");
     }
 
-    if (key) {
-      return await findApiKey(key);
-    }
-
-    return error("Invalid query parameters", 400);
-  } catch (e: any) {
-    return error(e?.message || e, 500);
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }
 
@@ -42,13 +42,9 @@ export async function POST(request: Request) {
   try {
     const { tenantId } = await request.json();
 
-    if (!tenantId) {
-      return error("tenantId is required", 400);
-    }
-
     const result = await createApiKey(tenantId);
-    return result;
+    return apiSuccess(result);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    return apiError(err);
   }
 }
