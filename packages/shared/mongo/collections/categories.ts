@@ -132,7 +132,9 @@ export async function createCategories(categoriesArray: Category[]) {
   try {
     const { categories } = await getCollections();
 
-    const result = await categories.insertMany(categoriesArray);
+    const result = await categories.insertMany(categoriesArray, {
+      ordered: false,
+    });
 
     if (!result.insertedIds || result.insertedCount === 0) {
       throw moduleError.set("Failed to create categories", 500);

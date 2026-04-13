@@ -9,7 +9,7 @@ import { AppError } from "@worldnews/shared/types";
 export const fetchArticles = async (
   context: UserContext,
   options?: ArticleQueryParams,
-): Promise<ArticleCollection | AppError> => {
+): Promise<ArticleCollection> => {
   const data = await executeWithFailover((provider) => {
     return provider.fetchArticles(context, options);
   }, articleProviders);
@@ -20,7 +20,7 @@ export const fetchArticles = async (
 export const fetchRelatedArticles = async (
   context: UserContext,
   article: Article | null,
-): Promise<ArticleCollection | AppError> => {
+): Promise<ArticleCollection> => {
   const data = await executeWithFailover((provider) => {
     return provider.fetchRelatedArticles(context, article!);
   }, articleProviders);
@@ -31,7 +31,7 @@ export const fetchRelatedArticles = async (
 export const fetchArticle = async (
   context: UserContext,
   slug: string,
-): Promise<Article | AppError> => {
+): Promise<Article> => {
   const data = await executeWithFailover((provider) => {
     return provider.fetchArticle(context, slug);
   }, articleProviders);

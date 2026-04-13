@@ -1,0 +1,92 @@
+[
+  {
+    "name": "breaking",
+    "label": "Breaking",
+    "description": "Urgent, real-time updates on significant events as they unfold globally."
+  },
+  {
+    "name": "business",
+    "label": "Business",
+    "description": "In-depth coverage of markets, corporate developments, and economic trends."
+  },
+  {
+    "name": "crime",
+    "label": "Crime",
+    "description": "Reports on legal proceedings, law enforcement activities, and public safety."
+  },
+  {
+    "name": "domestic",
+    "label": "Domestic",
+    "description": "Local and national news focusing on internal affairs and community updates."
+  },
+  {
+    "name": "education",
+    "label": "Education",
+    "description": "Insights into academic institutions, teaching methodologies, and policy changes."
+  },
+  {
+    "name": "entertainment",
+    "label": "Entertainment",
+    "description": "The latest from the worlds of cinema, music, arts, and celebrity culture."
+  },
+  {
+    "name": "environment",
+    "label": "Environment",
+    "description": "Focusing on climate change, conservation efforts, and sustainable living."
+  },
+  {
+    "name": "food",
+    "label": "Food",
+    "description": "Exploring culinary trends, nutrition, recipes, and the global restaurant scene."
+  },
+  {
+    "name": "health",
+    "label": "Health",
+    "description": "Expert advice on physical well-being, mental health, and medical breakthroughs."
+  },
+  {
+    "name": "lifestyle",
+    "label": "Lifestyle",
+    "description": "Content centered on personal interests, fashion, home, and modern living."
+  },
+  {
+    "name": "politics",
+    "label": "Politics",
+    "description": "Analysis of government actions, election cycles, and international diplomacy."
+  },
+  {
+    "name": "science",
+    "label": "Science",
+    "description": "Discoveries in space exploration, biology, physics, and human innovation."
+  },
+  {
+    "name": "sports",
+    "label": "Sports",
+    "description": "Comprehensive coverage of athletic competitions, teams, and sporting events."
+  },
+  {
+    "name": "technology",
+    "label": "Technology",
+    "description": "News on software development, gadgets, AI, and digital transformation."
+  },
+  {
+    "name": "top",
+    "label": "Top",
+    "description": "A curated selection of the most important and trending stories of the day."
+  },
+  {
+    "name": "tourism",
+    "label": "Tourism",
+    "description": "Travel guides, destination spotlights, and updates on the hospitality industry."
+  },
+  {
+    "name": "world",
+    "label": "World",
+    "description": "Global perspectives on events shaping international relations and cultures."
+  },
+  {
+    "name": "other",
+    "label": "Other",
+    "description": "Miscellaneous topics and niche stories that fall outside standard categories."
+  }
+]

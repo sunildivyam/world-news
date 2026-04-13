@@ -103,5 +103,7 @@ export const config = {
   // matcher: [
   //   "/((?!_next|api|sitemaps|sitemap.xml|favicon.ico|not-found|robots.txt|.*\\..*).*)",
   // ],
-  matcher: ["/((?!_next|api|sitemaps|robots|not-founds|favicon.ico).*)"],
+  matcher: [
+    "/((?!_next|.well-known|api|sitemaps|robots|not-founds|favicon.ico).*)",
+  ],
 };

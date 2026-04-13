@@ -206,7 +206,7 @@ export async function createArticles(articlesArray: Article[]) {
   try {
     const { articles } = await getCollections();
 
-    const result = await articles.insertMany(articlesArray);
+    const result = await articles.insertMany(articlesArray, { ordered: false });
 
     if (!result.insertedIds || result.insertedCount === 0) {
       throw moduleError.set("Failed to create articles", 500);

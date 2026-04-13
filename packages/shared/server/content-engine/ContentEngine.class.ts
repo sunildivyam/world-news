@@ -173,7 +173,8 @@ export class ContentEngine {
     };
 
     // Assign Source
-    if (article.source) article.sourceId = await this.getOrAddSource(article.source);
+    if (article.source)
+      article.sourceId = await this.getOrAddSource(article.source);
 
     // Get Language Name
     const lang = await fetchLanguage(language);
@@ -220,7 +221,6 @@ export class ContentEngine {
       const result = await createArticle({
         ...generatedArticle,
         tenant: undefined,
-        source: undefined,
       });
 
       this.log(`Created and saved to DB, Article with id: ${result._id}`);

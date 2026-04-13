@@ -19,8 +19,9 @@ export default async function ArticlePage({
   // 1. Resolve params (Next.js 15+ requires awaiting params)
 
   // 2. Fetch primary article data
-  const articleRes = await fetchArticle(userContext, slug);
-
+  const articleRes = await fetchArticle(userContext, slug).catch(
+    (err: AppError) => err,
+  );
   // Handle Article Errors
   const isArticleError = AppError.isError(articleRes);
   const article = isArticleError ? null : (articleRes as Article);
@@ -30,7 +31,10 @@ export default async function ArticlePage({
   let relatedArticles = null;
   let relatedArticleError = null;
 
-  const relatedArticleRes = await fetchRelatedArticles(userContext, article);
+  const relatedArticleRes = await fetchRelatedArticles(
+    userContext,
+    article,
+  ).catch((err: AppError) => err);
 
   if (AppError.isError(relatedArticleRes)) {
     relatedArticleError = relatedArticleRes as AppError;

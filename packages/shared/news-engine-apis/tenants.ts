@@ -1,6 +1,35 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Tenant } from "../types";
+import { Category, Tenant } from "../types";
 import { newsEngineBaseApiUrl } from "./apiUrls";
+
+export async function fetchTenantCategories(
+  tenantId?: string,
+): Promise<Category[] | null> {
+  if (!tenantId) return null;
+
+  let query;
+  if (tenantId) {
+    query = `tenantId=${tenantId}`;
+  }
+
+  const url = `${newsEngineBaseApiUrl}/api/tenants/categories?${query}`;
+  console.log(url);
+  try {
+    const response = await fetch(url, {
+      next: { revalidate: 120 },
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) return null;
+      throw new Error(response.statusText);
+    }
+
+    const res: Category[] = await response.json();
+    return res;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+}
 
 export async function fetchTenant(
   tenantId?: string,

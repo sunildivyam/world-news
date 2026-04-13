@@ -29,7 +29,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const userCtx = await getUserContext();
-  const tenantConfig = await getTenantConfig(userCtx.tenantId || "");
+  const tenantConfig = userCtx.tenantCtx?.tenant?.settings!;
 
   return (
     <html lang={userCtx.language}>
@@ -41,7 +41,7 @@ export default async function RootLayout({
           color: tenantConfig?.theme.mode === "dark" ? "#fff" : "#000",
         }}
       >
-        <AppContextProvider value={{ userCtx, tenantConfig }}>
+        <AppContextProvider value={{ userCtx }}>
           <Header />
           <div
             className={`max-w-full mx-auto px-0 ${tenantConfig?.navigation.style === "smart" ? "md:py-22 px-0 py-14" : ""}`}

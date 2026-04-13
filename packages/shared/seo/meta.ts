@@ -1,9 +1,4 @@
-import {
-  PageTypeEnum,
-  TenantConfig,
-  TenantContext,
-  UserContext,
-} from "../types";
+import { PageTypeEnum, TenantConfig, UserContext } from "../types";
 import { Metadata } from "next";
 import { fetchArticle } from "../news-engine-apis/articles";
 import { fetchCategory } from "../news-engine-apis/categories";
@@ -12,10 +7,9 @@ import { fetchNewsEvent } from "../news-engine-apis/newsEvents";
 
 export async function generatePageMeta(
   userCtx: UserContext,
-  tenantCtx: TenantContext,
 ): Promise<Metadata> {
-  const { pageType, pageId } = userCtx;
-  const { branding } = tenantCtx.tenant?.settings as TenantConfig;
+  const { pageType, pageId, tenantCtx } = userCtx;
+  const { branding } = tenantCtx?.tenant?.settings as TenantConfig;
   const { displayName } = branding;
 
   const baseTitle = `${displayName} - World News`;

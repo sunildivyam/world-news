@@ -36,7 +36,7 @@ export default function NewsBatchesPage() {
 
     try {
       await deleteNewsBatch(id);
-      setNewsBatches(newsBatches.filter((batch) => batch.id !== id));
+      setNewsBatches(newsBatches.filter((batch) => batch._id !== id));
     } catch (err: any) {
       setError(err.message);
     }
@@ -72,10 +72,10 @@ export default function NewsBatchesPage() {
 
       <div className="grid gap-4">
         {newsBatches.map((batch, index) => (
-          <div key={batch.id || index} className="border p-4 rounded shadow">
+          <div key={batch._id || index} className="border p-4 rounded shadow">
             <div className="flex justify-between items-start">
               <div>
-                <h2 className="text-lg font-semibold">Batch ID: {batch.id}</h2>
+                <h2 className="text-lg font-semibold">Batch ID: {batch._id}</h2>
                 <p className="text-sm text-gray-600">
                   Tenants: {batch.tenants.join(", ")}
                 </p>
@@ -106,13 +106,13 @@ export default function NewsBatchesPage() {
               </div>
               <div className="flex gap-2">
                 <Link
-                  href={`/news-batches/${batch.id}/edit`}
+                  href={`/news-batches/${batch._id}/edit`}
                   className="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600"
                 >
                   Edit
                 </Link>
                 <button
-                  onClick={() => batch.id && handleDelete(batch.id)}
+                  onClick={() => batch._id && handleDelete(batch._id)}
                   className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
                 >
                   Delete

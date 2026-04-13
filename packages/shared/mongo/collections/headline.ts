@@ -271,7 +271,9 @@ export async function createHeadlines(headlinesArray: Headline[]) {
   try {
     const { headlines } = await getCollections();
 
-    const result = await headlines.insertMany(headlinesArray);
+    const result = await headlines.insertMany(headlinesArray, {
+      ordered: false,
+    });
 
     if (!result.insertedIds || result.insertedCount === 0) {
       throw moduleError.set("Failed to create headlines", 500);

@@ -1,3 +1,4 @@
+import { isLocalHost } from "@worldnews/shared";
 import {
   findTenantByDomain,
   findTenantById,
@@ -20,8 +21,10 @@ export async function resolveTenantContext(
   host: string,
   pathname: string,
 ): Promise<TenantContext | null> {
-  const segments = pathname.split("/").filter(Boolean);
-
+  if (isLocalHost(host)) {
+    const segments = pathname.split("/").filter(Boolean);
+    return await findTenantFromSegments(segments);
+  }
   // 1️⃣ custom domain
   const domainTenant = await findTenantByDomain(host);
   if (domainTenant) {
@@ -30,15 +33,14 @@ export async function resolveTenantContext(
     return tenantCtx;
   }
 
-  // 2️⃣ subdomain
-  const parts = host.split(".");
-  if (parts.length > 2) {
-    const subdomain = parts[0];
-    const tenant = await findTenantById(subdomain);
-    if (tenant) return await populateContextFromTenant(tenant);
-  }
-
-  return await findTenantFromSegments(segments);
+  return null;
+  // // 2️⃣ subdomain
+  // const parts = host.split(".");
+  // if (parts.length > 2) {
+  //   const subdomain = parts[0];
+  //   const tenant = await findTenantById(subdomain);
+  //   if (tenant) return await populateContextFromTenant(tenant);
+  // }
 
   // No tenant found in the url, means an invalid url
 

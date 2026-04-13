@@ -1,4 +1,5 @@
 import type { GeoContext } from "./GeoContext.interface";
+import { TenantContext } from "./TenantContext.interface";
 
 export interface UserContext {
   tenantId?: string;
@@ -10,4 +11,5 @@ export interface UserContext {
   geo?: GeoContext;
   pageType?: string;
   pageId?: string;
+  tenantCtx?: TenantContext;
 }

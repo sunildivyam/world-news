@@ -4,7 +4,8 @@ import { getCollections } from "../collections";
 import { randomBytes } from "crypto";
 import { InsertOneResult, UpdateResult } from "mongodb";
 import { toDbFormat, toNormalFormat } from "../mongo-utils";
-import { AppError } from "../../types";
+import { AppError, Category } from "../../types";
+import { findCategories } from "./categories";
 
 const moduleError = new AppError("Tenants Collection", "");
 
@@ -72,12 +73,11 @@ export async function deleteTenant(tenantId: string) {
 
 export async function findTenant(tenantId: string, domain?: string) {
   if (!tenantId) throw moduleError.set("Empty Tenant tenantId", 400);
-
   try {
     const { tenants } = await getCollections();
     const q = domain
       ? {
-          $and: [
+          $or: [
             { tenantId: tenantId.toLowerCase() },
             { domain: { $regex: `^${domain}`, $options: "i" } },
           ],
@@ -91,6 +91,31 @@ export async function findTenant(tenantId: string, domain?: string) {
     }
 
     return toNormalFormat(tenant);
+  } catch (err: any) {
+    throw moduleError.parse(err, 500);
+  }
+}
+
+export async function findTenantCategories(
+  tenantId: string,
+): Promise<Category[]> {
+  if (!tenantId) throw moduleError.set("Empty Tenant tenantId", 400);
+  try {
+    const { tenants } = await getCollections();
+    const q = { tenantId };
+
+    const tenant = await tenants.findOne(q);
+
+    if (!tenant) {
+      throw moduleError.set("Tenant not found", 404);
+    }
+
+    const categoryNames = tenant.category || [];
+    if (!categoryNames?.length) return [];
+
+    const categories = (await findCategories([...categoryNames])) || [];
+
+    return toNormalFormat(categories);
   } catch (err: any) {
     throw moduleError.parse(err, 500);
   }
@@ -133,7 +158,7 @@ export async function createTenants(tenants: Tenant[]) {
   try {
     const { tenants: collection } = await getCollections();
 
-    const result = await collection.insertMany(tenants);
+    const result = await collection.insertMany(tenants, { ordered: false });
 
     if (!result.insertedCount) {
       throw moduleError.set("Failed to create tenants", 500);

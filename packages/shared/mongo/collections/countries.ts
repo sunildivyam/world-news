@@ -266,9 +266,6 @@ export async function createCountries(countries: Country[]) {
     throw moduleError.set("Empty countries array can not be created.", 400);
 
   try {
-    // Create indices if not created already
-    await createCountriesIndices();
-
     const { countries: collection } = await getCollections();
     countries = toDbFormat(countries, true);
     const result = await collection.insertMany(countries, { ordered: false }); // ordered: false ignores duplicates

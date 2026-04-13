@@ -15,5 +15,9 @@ export const TenantIndexes: IndexDescription[] = [
   },
 
   // Text search for admin panels
-  { key: { name: "text", description: "text" }, name: "idx_tenant_search" },
+  {
+    key: { name: "text", description: "text" },
+    name: "idx_tenant_search",
+    language_override: "dummy_field", // Tells Mongo to ignore the 'language' array
+  },
 ];

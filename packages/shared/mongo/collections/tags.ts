@@ -122,7 +122,7 @@ export async function createTags(tags: Tag[]) {
   try {
     const { tags: collection } = await getCollections();
 
-    const result = await collection.insertMany(tags);
+    const result = await collection.insertMany(tags, { ordered: false });
 
     if (!result.insertedCount) {
       throw moduleError.set("Failed to create tags", 500);

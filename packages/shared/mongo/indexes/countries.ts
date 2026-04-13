@@ -16,6 +16,6 @@ export const countryIndexConfig: IndexDescription[] = [
     // Full-text search capability for the country name
     key: { name: "text" },
     name: "idx_name_text",
-    default_language: "english",
+    language_override: "dummy_field", // Tells Mongo to ignore the 'language' array
   },
 ];

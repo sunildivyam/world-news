@@ -1,26 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { setCorsForAllowedOrigins } from "./lib/cros-origin/cross-origins";
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Clone the response
-  const response = NextResponse.next();
-
-  // Get the allowed origin from environment variable
-  const allowedOrigin = process.env.HEADLINE_ENGINE_BASE?.replace(/\/$/, ""); // Remove trailing slash if present
-
-  // Set CORS headers
-  if (allowedOrigin) {
-    response.headers.set("Access-Control-Allow-Origin", allowedOrigin);
-  }
-
-  response.headers.set(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS",
-  );
-  response.headers.set(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization",
-  );
-  response.headers.set("Access-Control-Allow-Credentials", "true");
+  let response = NextResponse.next();
+  const origin = request.headers.get("origin");
+  // set cors
+  response = await setCorsForAllowedOrigins(origin || "", response);
 
   // Handle preflight requests
   if (request.method === "OPTIONS") {

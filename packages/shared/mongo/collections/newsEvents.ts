@@ -130,7 +130,7 @@ export async function createNewsEvents(newsEvents: NewsEvent[]) {
   try {
     const { newsEvents: collection } = await getCollections();
 
-    const result = await collection.insertMany(newsEvents);
+    const result = await collection.insertMany(newsEvents, { ordered: false });
 
     if (!result.insertedCount) {
       throw moduleError.set("Failed to create newsEvents", 500);

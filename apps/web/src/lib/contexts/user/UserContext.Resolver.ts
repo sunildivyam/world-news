@@ -33,6 +33,7 @@ export async function resolveUserContext(
       headers.get("x-session-id") || cookies.get("x-session-id")?.value,
     tenantId: tenantCtx?.tenant?.tenantId,
     domain: tenantCtx?.domain,
+    tenantCtx: tenantCtx || undefined,
     geo: {
       country:
         routeSegmentsCtx.country ?? geoCtx.country ?? tenantCtx?.geo.country,

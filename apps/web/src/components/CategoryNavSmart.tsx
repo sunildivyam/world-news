@@ -5,19 +5,34 @@ import NoPrefetchLink from "@/components/NoPrefetchLink";
 import { usePathname } from "next/navigation";
 import { AppContext } from "./AppContext.Provider";
 import { SectionError } from "./SectionError";
-import { AppError } from "@worldnews/shared/types";
-import { categories } from "@/app-constants/categories.constants";
+import { AppError, Category, TenantConfig } from "@worldnews/shared/types";
 import { resolveUrl } from "@/lib/contexts/url/Url.Resolver";
 import { PageTypeEnum } from "@worldnews/shared/types";
 import TenantLogo from "./TenantLogo";
+import { fetchTenantCategories } from "@worldnews/shared/news-engine-apis";
 
 export default function CategoryNavSmart() {
-  const { userCtx, tenantConfig } = useContext(AppContext) || {};
+  const { userCtx } = useContext(AppContext) || {};
+  const [tenantConfig, setTenantConfig] = useState<TenantConfig | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+
   const pathname = usePathname();
 
   const [visible, setVisible] = useState(true);
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
+
+  useEffect(() => {
+    setTenantConfig(userCtx?.tenantCtx?.tenant?.settings!);
+
+    fetchTenantCategories(userCtx?.tenantId)
+      .then((cats: Category[] | null) => {
+        setCategories(cats || []);
+      })
+      .catch(() => {
+        setCategories([]);
+      });
+  }, [userCtx]);
 
   const isActive = (value: string) => pathname?.includes(value);
 
@@ -77,14 +92,14 @@ export default function CategoryNavSmart() {
               const catUrl = resolveUrl(
                 userCtx,
                 PageTypeEnum.category,
-                cat.value,
+                cat.name,
               );
               return (
                 <NoPrefetchLink
-                  key={cat.value}
+                  key={cat.name}
                   href={catUrl}
                   className={`text-sm font-medium transition ${
-                    isActive(cat.value)
+                    isActive(cat.name)
                       ? "text-red-600 border-b-2 border-red-600"
                       : "text-gray-600 hover:text-red-600"
                   }`}
@@ -103,14 +118,14 @@ export default function CategoryNavSmart() {
               const catUrl = resolveUrl(
                 userCtx,
                 PageTypeEnum.category,
-                cat.value,
+                cat.name,
               );
               return (
                 <NoPrefetchLink
-                  key={cat.value}
+                  key={cat.name}
                   href={catUrl}
                   className={`text-sm whitespace-nowrap ${
-                    isActive(cat.value)
+                    isActive(cat.name)
                       ? "text-red-600 font-semibold"
                       : "text-gray-600"
                   }`}

@@ -112,7 +112,7 @@ export async function createNewsBatches(newsBatches: NewsBatch[]) {
   try {
     const { newsBatches: collection } = await getCollections();
 
-    const result = await collection.insertMany(newsBatches);
+    const result = await collection.insertMany(newsBatches, { ordered: false });
 
     if (!result.insertedCount) {
       throw moduleError.set("Failed to create news batches", 500);

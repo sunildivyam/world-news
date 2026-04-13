@@ -1,0 +1,223 @@
+[
+  {
+    "tenantId": "annuadvent",
+    "name": "AnnuAdvent",
+    "primaryLanguage": "hi",
+    "primaryCountry": "in",
+    "createdDate": "2026-03-25T15:08:08.795Z",
+    "updatedDate": "2026-03-25T15:08:08.795Z",
+    "isActive": true,
+    "domain": "www.annuadvent.com",
+    "settings": {
+      "branding": {
+        "displayName": "AnnuAdvent",
+        "logoUrl": "https://res.cloudinary.com/du3bpaesk/image/upload/v1773734733/logo-a-70-square_qjmvgm.png",
+        "faviconUrl": ""
+      },
+      "theme": {
+        "primaryColor": "#0066eb",
+        "secondaryColor": "#00c60a",
+        "fontFamily": "",
+        "mode": "light"
+      },
+      "layout": {
+        "type": "magazine",
+        "header": "centered",
+        "footer": "minimal"
+      },
+      "navigation": {
+        "style": "smart"
+      },
+      "homepage": {
+        "sections": [
+          {
+            "type": "trending"
+          },
+          {
+            "type": "hero"
+          },
+          {
+            "type": "category",
+            "config": {
+              "category": "politics"
+            }
+          },
+          {
+            "type": "latest"
+          }
+        ]
+      },
+      "features": {
+        "enableAds": true,
+        "enablePersonalization": true,
+        "enableComments": true
+      }
+    },
+    "category": [
+      "breaking",
+      "business",
+      "crime",
+      "domestic",
+      "education",
+      "entertainment",
+      "environment",
+      "food",
+      "health",
+      "lifestyle",
+      "politics",
+      "science",
+      "sports",
+      "technology",
+      "top",
+      "tourism",
+      "world",
+      "other"
+    ],
+    "country": [
+      "in",
+      "us"
+    ],
+    "language": [
+      "en",
+      "hi"
+    ]
+  },
+  {
+    "tenantId": "globalnewsA",
+    "name": "Global News A",
+    "primaryLanguage": "hi",
+    "primaryCountry": "in",
+    "createdDate": "2026-03-25T15:10:14.980Z",
+    "updatedDate": "2026-03-25T15:10:14.980Z",
+    "isActive": false,
+    "domain": "www.globalnewsA.com",
+    "settings": {
+      "branding": {
+        "displayName": "Global News A",
+        "logoUrl": "https://rapidapi-prod-fe-static.s3.amazonaws.com/theming/Rapid_Logo_Primary.png",
+        "faviconUrl": ""
+      },
+      "theme": {
+        "primaryColor": "#0066eb",
+        "secondaryColor": "#00c60a",
+        "fontFamily": "",
+        "mode": "dark"
+      },
+      "layout": {
+        "type": "magazine",
+        "header": "centered",
+        "footer": "minimal"
+      },
+      "navigation": {
+        "style": "standard"
+      },
+      "homepage": {
+        "sections": [
+          {
+            "type": "trending"
+          },
+          {
+            "type": "hero"
+          },
+          {
+            "type": "category",
+            "config": {
+              "category": "politics"
+            }
+          },
+          {
+            "type": "latest"
+          }
+        ]
+      },
+      "features": {
+        "enableAds": true,
+        "enablePersonalization": true,
+        "enableComments": true
+      }
+    },
+    "category": [
+      "breaking",
+      "business",
+      "crime",
+      "domestic",
+      "education",
+      "entertainment"
+    ],
+    "country": [
+      "in",
+      "us"
+    ],
+    "language": [
+      "en",
+      "hi"
+    ]
+  },
+  {
+    "tenantId": "globalnews",
+    "name": "Global News",
+    "primaryLanguage": "en",
+    "primaryCountry": "us",
+    "createdDate": "2026-03-25T15:11:34.674Z",
+    "updatedDate": "2026-03-25T15:11:34.674Z",
+    "isActive": false,
+    "domain": "www.globalnews.com",
+    "settings": {
+      "branding": {
+        "displayName": "Global News",
+        "logoUrl": "https://statics.moonshot.cn/kimi-web-seo/assets/kimi-logo-CegIMkbU.png",
+        "faviconUrl": ""
+      },
+      "theme": {
+        "primaryColor": "#ff5511",
+        "secondaryColor": "#1111ff",
+        "fontFamily": "",
+        "mode": "light"
+      },
+      "layout": {
+        "type": "standard",
+        "header": "default",
+        "footer": "default"
+      },
+      "navigation": {
+        "style": "standard"
+      },
+      "homepage": {
+        "sections": [
+          {
+            "type": "hero"
+          },
+          {
+            "type": "trending"
+          },
+          {
+            "type": "category",
+            "config": {
+              "category": "technology"
+            }
+          },
+          {
+            "type": "latest"
+          }
+        ]
+      },
+      "features": {
+        "enableAds": true,
+        "enablePersonalization": true,
+        "enableComments": true
+      }
+    },
+    "category": [
+      "entertainment",
+      "business"
+    ],
+    "country": [
+      "ca",
+      "us"
+    ],
+    "language": [
+      "en",
+      "ca"
+    ]
+  }
+]

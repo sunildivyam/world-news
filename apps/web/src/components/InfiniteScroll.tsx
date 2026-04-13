@@ -76,7 +76,7 @@ export default function InfiniteScroll({ initialCursor, category }: Props) {
 
   return (
     <>
-      <NewsGrid articles={articles} className="md:grid-cols-2 lg:grid-cols-2" />
+      <NewsGrid articles={articles} className="md:grid-cols-2 lg:grid-cols-3" />
 
       {loading && (
         <div className="text-center py-8 text-gray-500">

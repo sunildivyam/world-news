@@ -151,7 +151,7 @@ export async function createLanguages(languages: Language[]) {
   try {
     const { languages: collection } = await getCollections();
 
-    const result = await collection.insertMany(languages);
+    const result = await collection.insertMany(languages, { ordered: false });
 
     if (!result.insertedCount) {
       throw moduleError.set("Failed to create languages", 500);

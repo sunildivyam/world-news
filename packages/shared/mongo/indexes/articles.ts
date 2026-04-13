@@ -29,5 +29,6 @@ export const ArticleIndexes: IndexDescription[] = [
     key: { title: "text", description: "text" },
     name: "idx_art_search_text",
     weights: { title: 10, description: 5 },
+    language_override: "dummy_field", // Tells Mongo to ignore the 'language' array
   },
 ];

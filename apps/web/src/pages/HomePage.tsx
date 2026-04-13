@@ -10,13 +10,15 @@ import type { TenantConfig } from "@worldnews/shared/types";
 
 export default async function HomePage({
   userContext,
-  tenantConfig,
 }: {
   userContext: UserContext;
-  tenantConfig: TenantConfig;
 }) {
+  const tenantConfig: TenantConfig = userContext?.tenantCtx?.tenant?.settings!;
+
   // 2. Perform the fetch directly
-  const articlesRes = await fetchArticles(userContext, {});
+  const articlesRes = await fetchArticles(userContext, {}).catch(
+    (err: AppError) => err,
+  );
 
   // 3. Handle Errors immediately without state
   if (AppError.isError(articlesRes)) {
@@ -57,7 +59,7 @@ export default async function HomePage({
           {rest.length > 0 && (
             <NewsGrid
               articles={rest}
-              className="md:grid-cols-2 lg:grid-cols-2"
+              className="md:grid-cols-2 lg:grid-cols-3"
             />
           )}
 

@@ -133,7 +133,9 @@ export async function createArticleSources(articleSources: ArticleSource[]) {
   try {
     const { articleSources: collection } = await getCollections();
 
-    const result = await collection.insertMany(articleSources);
+    const result = await collection.insertMany(articleSources, {
+      ordered: false,
+    });
 
     if (!result.insertedCount) {
       throw moduleError.set("Failed to create ArticleSources", 500);

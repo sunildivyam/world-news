@@ -7,8 +7,8 @@ import { AppError } from "@worldnews/shared/types";
 import { ArticleQueryParams } from "@worldnews/shared/types";
 import { ArticleCollection } from "@worldnews/shared/types";
 import LocalisedTitle from "@/components/LocalisedTitle";
-import { categories } from "@/app-constants/categories.constants";
 import { UserContext } from "@worldnews/shared/types";
+import { fetchTenantCategories } from "@worldnews/shared/news-engine-apis";
 
 export default async function CategoryPage({
   userContext,
@@ -20,7 +20,13 @@ export default async function CategoryPage({
   // 1. Await params (Required in Next.js 15)
 
   // 2. Initial Setup
-  const validCategory = categories.find((c) => c.value === slug);
+  const categories = await fetchTenantCategories(userContext.tenantId).catch(
+    (err) => {
+      return null;
+    },
+  );
+
+  const validCategory = categories?.find((c) => c.name === slug);
 
   // 3. Handle Invalid Category immediately
   if (!validCategory) {
@@ -33,7 +39,10 @@ export default async function CategoryPage({
     category: [slug],
   };
 
-  const articlesRes = await fetchArticles(userContext, fetchOptions);
+  const articlesRes = await fetchArticles(userContext, fetchOptions).catch(
+    (err: AppError) => err,
+  );
+;
 
   // 5. Check for Fetch Errors
   if (AppError.isError(articlesRes)) {

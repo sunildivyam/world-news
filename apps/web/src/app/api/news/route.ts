@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchArticles } from "@/lib/news-service";
 import { getUserContext } from "@/lib/contexts/user/UserContext.service";
+import { AppError } from "@worldnews/shared";
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,7 +15,7 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json(data);
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
       { message: "Failed to fetch news", error: error },
       { status: 500 },
