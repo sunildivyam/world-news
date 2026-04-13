@@ -140,10 +140,12 @@ export async function findTenantByDomain(domain: string) {
   }
 }
 
-export async function findTenants() {
+export async function findTenants(isActive: boolean = false) {
   try {
     const { tenants } = await getCollections();
-    const result = await tenants.find<Tenant>({}).toArray();
+    const result = await tenants
+      .find<Tenant>(isActive ? { isActive } : {})
+      .toArray();
 
     return toNormalFormat(result);
   } catch (err: any) {

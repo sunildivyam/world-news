@@ -65,8 +65,11 @@ export async function fetchTenant(
   }
 }
 
-export async function fetchTenants(): Promise<Tenant[]> {
-  const url = `${newsEngineBaseApiUrl}/api/tenants`;
+export async function fetchTenants(
+  isActive: boolean = false,
+): Promise<Tenant[]> {
+  const q = isActive ? `?isActive=${true}` : "";
+  const url = `${newsEngineBaseApiUrl}/api/tenants${q}`;
   console.log(url);
 
   try {

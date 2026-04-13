@@ -13,6 +13,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const tenantId = searchParams.get("tenantId");
     const domain = searchParams.get("domain");
+    const isActive = searchParams.get("isActive");
 
     let result;
     if (tenantId && domain) {
@@ -21,6 +22,8 @@ export async function GET(request: Request) {
       result = await findTenant(tenantId.toLowerCase());
     } else if (domain) {
       result = await findTenantByDomain(domain);
+    } else if (isActive) {
+      result = await findTenants(true);
     } else {
       result = await findTenants();
     }
