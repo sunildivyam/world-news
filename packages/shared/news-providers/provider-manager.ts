@@ -20,6 +20,10 @@ export async function executeWithFailover<T>(
   articleProviders: ArticleProvider[],
 ): Promise<T> {
   const lastError: AppError = new AppError("Provider Manager", "");
+  if (process.env.IS_BUILD_STEP) {
+    console.log("Skipping pre render, during build");
+    throw lastError;
+  }
 
   for (const provider of articleProviders) {
     try {

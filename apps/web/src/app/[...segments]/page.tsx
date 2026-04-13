@@ -6,7 +6,6 @@ import StaticPage from "@/pages/StaticPage";
 import EventPage from "@/pages/EventPage";
 import TagPage from "@/pages/TagPage";
 import ArticlePage from "@/pages/ArticlePage";
-import { getTenantConfig } from "@/lib/contexts/tenant/Tenant.validators";
 import { generatePageMeta } from "@worldnews/shared/seo";
 import { resolveTenantContext } from "@/lib/contexts/tenant/Tenant.Resolver";
 import { headers } from "next/headers";

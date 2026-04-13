@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
@@ -28,6 +30,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Skip at build time while pre rendering, send every request to not_found
+  if (process.env.IS_BUILD_STEP) {
+    return <div>Skipping pre rendering during build...</div>;
+  }
+
   const userCtx = await getUserContext();
   const tenantConfig = userCtx.tenantCtx?.tenant?.settings!;
 

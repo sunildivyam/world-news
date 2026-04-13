@@ -20,7 +20,7 @@ export default async function CategoryPage({
   // 1. Await params (Required in Next.js 15)
 
   // 2. Initial Setup
-  const categories = await fetchTenantCategories(userContext.tenantId).catch(
+  const categories = await fetchTenantCategories(userContext?.tenantId).catch(
     (err) => {
       return null;
     },
@@ -42,8 +42,6 @@ export default async function CategoryPage({
   const articlesRes = await fetchArticles(userContext, fetchOptions).catch(
     (err: AppError) => err,
   );
-;
-
   // 5. Check for Fetch Errors
   if (AppError.isError(articlesRes)) {
     return <SectionError error={articlesRes as AppError} />;
