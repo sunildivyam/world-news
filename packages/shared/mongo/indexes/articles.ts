@@ -13,7 +13,7 @@ export const ArticleIndexes: IndexDescription[] = [
   // Compound Index for the Main Feed:
   // Filtering by tenant + language while sorting by date
   {
-    key: { tenantId: 1, language: 1, publishedAt: -1 },
+    key: { tenantId: 1, "geo.country": 1, language: 1, publishedAt: -1 },
     name: "idx_art_feed_optimized",
   },
 

@@ -1,14 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  listCountriesIndices,
-  createCountriesIndices,
-} from "@worldnews/shared/mongo/collections/countries";
+import { listIndexes, createIndexes } from "@worldnews/shared/mongo/indexes";
 import { apiError, apiSuccess } from "@/lib/api-response";
 
 export const revalidate = 120;
 export async function GET(request: Request) {
   try {
-    const result = await listCountriesIndices();
+    const result = await listIndexes();
     return apiSuccess(result);
   } catch (err: any) {
     return apiError(err);
@@ -17,7 +14,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const result = await createCountriesIndices();
+    const result = await createIndexes();
 
     return apiSuccess(result);
   } catch (err: any) {

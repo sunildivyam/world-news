@@ -5,7 +5,7 @@ export const TenantIndexes: IndexDescription[] = [
   { key: { tenantId: 1 }, name: "idx_tenant_id_unique", unique: true },
 
   // Domain lookups (for multi-tenant routing)
-  { key: { domain: 1 }, name: "idx_tenant_domain", sparse: true },
+  { key: { domain: 1 }, name: "idx_tenant_domain", sparse: true, unique: true },
   { key: { subdomain: 1 }, name: "idx_tenant_subdomain", sparse: true },
 
   // Filtering by status and location

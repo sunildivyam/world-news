@@ -1,6 +1,6 @@
 import { IndexDescription } from "mongodb";
 
-export const countriesIndexConfig: IndexDescription[] = [
+export const countryIndexConfig: IndexDescription[] = [
   {
     // High-speed lookup for country codes (ISO)
     key: { code: 1 },

@@ -10,60 +10,6 @@ function addLanguage(code: string, languages: string[]) {
   return languages?.includes(code) ? [...languages] : [...languages, code];
 }
 
-export async function createCountriesIndices(): Promise<string[]> {
-  try {
-    const { countries } = await getCollections();
-
-    // 1. Primary Key (_id)
-    // MongoDB creates this automatically. No action needed.
-    // Search: country by _id
-
-    // 2. Unique Index for 'code' (e.g., "IN", "US")
-    // Search: country by code
-    // This also handles search by [codes] using { code: { $in: ["IN", "US"] } }
-    await countries.createIndex(
-      { code: 1 },
-      { unique: true, name: "unique_country_code" },
-    );
-
-    // 3. Text Index for 'name'
-    // Search: country by name (supports fuzzy/partial matching)
-    await countries.createIndex(
-      { name: "text" },
-      { name: "country_name_text" },
-    );
-
-    // 4. Regular Index for 'name' (Optional but recommended)
-    // Use this for exact matches or prefix sorting (A-Z)
-    await countries.createIndex({ name: 1 }, { name: "country_name_sort" });
-    // Once all indexes are created, return their names.
-    const indexes = await countries.listIndexes().toArray();
-    // Map the results to just get the 'name' property
-    const indexNames = indexes.map<string>(
-      (index: any) => index.name as string,
-    );
-    return indexNames;
-  } catch (error: any) {
-    throw moduleError.parse(error, 500);
-  }
-}
-
-export async function listCountriesIndices(): Promise<string[]> {
-  try {
-    const { countries } = await getCollections();
-
-    const indexes = await countries.listIndexes().toArray();
-    // Map the results to just get the 'name' property
-    const indexNames = indexes.map<string>(
-      (index: any) => index.name as string,
-    );
-
-    return indexNames;
-  } catch (error) {
-    throw moduleError.parse(error, 500);
-  }
-}
-
 export async function createCountry(country: Country): Promise<Country> {
   if (!country?.code)
     throw moduleError.set("Can not create an empty country", 400);
