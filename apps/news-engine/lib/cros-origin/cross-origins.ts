@@ -5,13 +5,19 @@ import { NextResponse } from "next/server";
 
 let cachedOrigins: string[] = [];
 const localWebPort = "3000";
-const localhosts = getLocalHostNames().map((str) => `${str}:${localWebPort}`);
+const localHeadlineEnginePort = "3002";
+const localhostsWeb = getLocalHostNames().map(
+  (str) => `${str}:${localWebPort}`,
+);
+const localhostsHeadlineEngine = getLocalHostNames().map(
+  (str) => `${str}:${localHeadlineEnginePort}`,
+);
 
 async function getAllowedOrigins(): Promise<string[]> {
   if (cachedOrigins?.length) return cachedOrigins;
-  cachedOrigins = [...localhosts];
+  cachedOrigins = [...localhostsWeb, ...localhostsHeadlineEngine];
   if (process.env.HEADLINE_ENGINE_BASE) {
-    cachedOrigins.push(process.env.HEADLINE_ENGINE_BASE);
+    cachedOrigins.push(new URL(process.env.HEADLINE_ENGINE_BASE).host);
   }
 
   try {
@@ -34,6 +40,7 @@ export async function setCorsForAllowedOrigins(
   if (!origin) return response;
 
   const allowedOrigins = await getAllowedOrigins();
+  console.log(allowedOrigins);
   if (!allowedOrigins?.length) return response;
 
   // 1. Check if the origin is in our allowed list or is a local environment
