@@ -36,6 +36,7 @@ export default async function RootLayout({
   }
 
   const userCtx = await getUserContext();
+
   const tenantConfig = userCtx.tenantCtx?.tenant?.settings!;
 
   return (

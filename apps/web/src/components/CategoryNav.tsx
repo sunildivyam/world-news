@@ -48,7 +48,10 @@ export default function CategoryNav() {
       <div className="max-w-7xl mx-auto px-4 py-4">
         {/* Top Bar */}
         <div className="flex items-center justify-between">
-          <TenantLogo />
+          <TenantLogo
+            displayName={tenantConfig?.branding.displayName || ""}
+            logoUrl={tenantConfig?.branding.logoUrl || ""}
+          />
           {/* Desktop Menu */}
           <div className="hidden md:flex gap-6 flex-wrap">
             {categories.map((cat) => {
