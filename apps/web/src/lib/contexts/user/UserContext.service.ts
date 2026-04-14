@@ -6,6 +6,7 @@ import { NextResponse } from "next/server";
 
 export const getUserContext = async (): Promise<UserContext> => {
   const h = await headers();
+  const tCtx = h.get("x-user-tenant_ctx");
   return {
     tenantId: h.get("x-user-tenant-id") ?? undefined,
     domain: h.get("x-user-domain") ?? undefined,
@@ -14,6 +15,7 @@ export const getUserContext = async (): Promise<UserContext> => {
     pageType: h.get("x-user-page-type") ?? undefined,
     pageId: h.get("x-user-page-id") ?? undefined,
     geo: { ...(await getGeoContext()) },
+    tenantCtx: tCtx ? JSON.parse(tCtx) : undefined,
   } as UserContext;
 };
 
@@ -32,5 +34,6 @@ export const setResponseHeadersWithUserContext = (
   res.headers.set("x-user-language", userCtx.language ?? "");
   res.headers.set("x-user-page-type", userCtx.pageType ?? "");
   res.headers.set("x-user-page-id", userCtx.pageId ?? "");
+  res.headers.set("x-user-tenant_ctx", JSON.stringify(userCtx.tenantCtx) ?? "");
   pathname && res.headers.set("x-pathname", pathname);
 };

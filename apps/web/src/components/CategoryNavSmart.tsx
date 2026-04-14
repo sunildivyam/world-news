@@ -85,7 +85,10 @@ export default function CategoryNavSmart() {
         {/* Top Row */}
         <div className="flex items-center justify-between">
           {/* <div className="font-bold text-lg">WorldNews</div> */}
-          <TenantLogo />
+          <TenantLogo
+            displayName={tenantConfig?.branding.displayName || ""}
+            logoUrl={tenantConfig?.branding.logoUrl || ""}
+          />
 
           <div className="hidden md:flex gap-4 flex-wrap mt-4 mb-4">
             {categories.map((cat) => {
