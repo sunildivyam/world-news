@@ -70,15 +70,13 @@ STRICT OUTPUT RULES (VERY IMPORTANT):
    - Output MUST be in ${language || "en"}
 
 8. INVALID OUTPUT CONDITIONS (DO NOT DO):
-   - Multiple titles ❌
-   - Multiple summaries ❌
-   - Multiple keywords/tags ❌
-   - title inside list ❌
-   - text outside JSON ❌
+   - Multiple titles
+   - Multiple summaries
+   - Multiple keywords/tags
+   - title inside list
+   - text outside JSON
 
----------------------
-
-Return ONLY JSON.
+   Return ONLY JSON.
 `;
 };
 

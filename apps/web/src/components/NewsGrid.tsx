@@ -12,7 +12,7 @@ export default function NewsGrid({ articles, className }: Props) {
     <div className={cNames}>
       {articles.map((article, index) => (
         <NewsCard
-          key={article._id || article.slug || article.title + index}
+          key={(article._id || article.slug || article.title) + index}
           article={article}
         />
       ))}

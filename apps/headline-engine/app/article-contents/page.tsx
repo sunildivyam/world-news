@@ -17,7 +17,7 @@ export default function ContentDashboard() {
 
   useEffect(() => {
     fetchStatus();
-    const interval = setInterval(fetchStatus, 5000);
+    const interval = setInterval(fetchStatus, 20000);
     return () => clearInterval(interval);
   }, []);
 

@@ -52,14 +52,14 @@ export async function getAllCountries(
   }
 }
 
-export async function updateCountry(id: string, country: Partial<Country>) {
+export async function updateCountry(id: string, updates: Partial<Country>) {
   try {
     const { countries } = await getCollections();
     // Clean the object
-    country = toDbFormat(country, true);
+
     const result = await countries.updateOne(
       { _id: new ObjectId(id) },
-      { $set: country },
+      { $set: toDbFormat(updates, true) },
     );
 
     if (result.matchedCount === 0) {
@@ -268,7 +268,9 @@ export async function createCountries(countries: Country[]) {
   try {
     const { countries: collection } = await getCollections();
     countries = toDbFormat(countries, true);
-    const result = await collection.insertMany(countries, { ordered: false }); // ordered: false ignores duplicates
+    const result = await collection.insertMany(toDbFormat(countries, true), {
+      ordered: false,
+    }); // ordered: false ignores duplicates
 
     if (!result.insertedCount) {
       throw moduleError.set("Failed to create countries", 500);

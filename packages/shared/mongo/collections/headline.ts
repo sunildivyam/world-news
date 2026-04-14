@@ -36,17 +36,9 @@ export async function updateHeadline(id: string, updates: Partial<Headline>) {
   try {
     const { headlines } = await getCollections();
 
-    // 2. Clean the updates object
-    const { _id, ...finalUpdates } = updates as any;
-
-    // 3. Prevent 400 error if there's nothing to update
-    if (Object.keys(finalUpdates).length === 0) {
-      return toNormalFormat({ id, note: "Nothing to update" });
-    }
-
     const result: UpdateResult = await headlines.updateOne(
       { _id: new ObjectId(id) },
-      { $set: finalUpdates },
+      { $set: toDbFormat(updates, true) },
     );
 
     if (result.matchedCount === 0) {
@@ -271,9 +263,12 @@ export async function createHeadlines(headlinesArray: Headline[]) {
   try {
     const { headlines } = await getCollections();
 
-    const result = await headlines.insertMany(headlinesArray, {
-      ordered: false,
-    });
+    const result = await headlines.insertMany(
+      toDbFormat(headlinesArray, true),
+      {
+        ordered: false,
+      },
+    );
 
     if (!result.insertedIds || result.insertedCount === 0) {
       throw moduleError.set("Failed to create headlines", 500);
@@ -284,6 +279,10 @@ export async function createHeadlines(headlinesArray: Headline[]) {
       insertedIds: Object.values(result.insertedIds),
     });
   } catch (err: any) {
+    if (err.code === 11000) {
+      console.log("Duplicate headlines found, so skipping them");
+    }
+
     throw moduleError.parse(err, 500);
   }
 }

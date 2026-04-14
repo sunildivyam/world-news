@@ -39,7 +39,7 @@ export async function updateArticle(slug: string, updates: Partial<Article>) {
     const { articles } = await getCollections();
     const result: UpdateResult = await articles.updateOne(
       { slug },
-      { $set: updates },
+      { $set: toDbFormat(updates, true) },
     );
 
     if (result.modifiedCount === 0) {
@@ -206,7 +206,9 @@ export async function createArticles(articlesArray: Article[]) {
   try {
     const { articles } = await getCollections();
 
-    const result = await articles.insertMany(articlesArray, { ordered: false });
+    const result = await articles.insertMany(toDbFormat(articlesArray, true), {
+      ordered: false,
+    });
 
     if (!result.insertedIds || result.insertedCount === 0) {
       throw moduleError.set("Failed to create articles", 500);

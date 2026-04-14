@@ -40,7 +40,7 @@ export async function setCorsForAllowedOrigins(
   if (!origin) return response;
 
   const allowedOrigins = await getAllowedOrigins();
-  console.log(allowedOrigins);
+
   if (!allowedOrigins?.length) return response;
 
   // 1. Check if the origin is in our allowed list or is a local environment

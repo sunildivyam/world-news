@@ -41,7 +41,7 @@ export async function updateTenant(tenantId: string, updates: Partial<Tenant>) {
     const { tenants } = await getCollections();
     const result: UpdateResult = await tenants.updateOne(
       { tenantId },
-      { $set: updates },
+      { $set: toDbFormat(updates, true) },
     );
 
     if (result.modifiedCount === 0) {
@@ -160,7 +160,9 @@ export async function createTenants(tenants: Tenant[]) {
   try {
     const { tenants: collection } = await getCollections();
 
-    const result = await collection.insertMany(tenants, { ordered: false });
+    const result = await collection.insertMany(toDbFormat(tenants, true), {
+      ordered: false,
+    });
 
     if (!result.insertedCount) {
       throw moduleError.set("Failed to create tenants", 500);

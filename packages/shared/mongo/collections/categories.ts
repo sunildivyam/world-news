@@ -34,7 +34,7 @@ export async function updateCategory(name: string, updates: Partial<Category>) {
     const { categories } = await getCollections();
     const result: UpdateResult = await categories.updateOne(
       { name },
-      { $set: updates },
+      { $set: toDbFormat(updates, true) },
     );
 
     if (result.modifiedCount === 0) {
@@ -132,9 +132,12 @@ export async function createCategories(categoriesArray: Category[]) {
   try {
     const { categories } = await getCollections();
 
-    const result = await categories.insertMany(categoriesArray, {
-      ordered: false,
-    });
+    const result = await categories.insertMany(
+      toDbFormat(categoriesArray, true),
+      {
+        ordered: false,
+      },
+    );
 
     if (!result.insertedIds || result.insertedCount === 0) {
       throw moduleError.set("Failed to create categories", 500);

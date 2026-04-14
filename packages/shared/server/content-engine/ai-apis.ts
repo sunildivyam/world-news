@@ -34,6 +34,7 @@ export async function generateAIContent(
 
     return null;
   } catch (err: any) {
+    console.log(`Failed all retries: ${retry}`);
     retry = 0;
     throw new Error(err);
   }
@@ -50,17 +51,24 @@ async function fetchAiContent(url: string, body: any) {
   });
 
   if (!response.ok) {
+    console.log(`content fetch failed: ${response.statusText}`);
+    console.log(JSON.stringify(body));
     throw new Error(response.statusText);
   }
 
   const res = await response.json();
   const content: ArticleContent = JSON.parse(res.response);
-  console.log(content);
+  console.log(`Content generated- ${url}`);
   return content;
 }
 
 function normalizeAIResponse(arr: ArticleContent): ArticleContent | null {
   console.log("Normalizing content");
+  if (!Array.isArray(arr)) {
+    console.log(`Content not an array`, arr);
+    return null;
+  }
+
   const seen: any = {
     title: false,
     summary: false,

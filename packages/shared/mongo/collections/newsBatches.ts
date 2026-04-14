@@ -53,15 +53,12 @@ export async function getAllNewsBatches() {
   }
 }
 
-export async function updateNewsBatch(
-  id: string,
-  newsBatch: Partial<NewsBatch>,
-) {
+export async function updateNewsBatch(id: string, updates: Partial<NewsBatch>) {
   try {
     const { newsBatches } = await getCollections();
     const result = await newsBatches.updateOne(
       { _id: new ObjectId(id) },
-      { $set: newsBatch },
+      { $set: toDbFormat(updates, true) },
     );
 
     if (result.matchedCount === 0) {
@@ -112,7 +109,9 @@ export async function createNewsBatches(newsBatches: NewsBatch[]) {
   try {
     const { newsBatches: collection } = await getCollections();
 
-    const result = await collection.insertMany(newsBatches, { ordered: false });
+    const result = await collection.insertMany(toDbFormat(newsBatches, true), {
+      ordered: false,
+    });
 
     if (!result.insertedCount) {
       throw moduleError.set("Failed to create news batches", 500);

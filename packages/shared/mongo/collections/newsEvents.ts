@@ -37,7 +37,7 @@ export async function updateNewsEvent(
     const { newsEvents } = await getCollections();
     const result: UpdateResult = await newsEvents.updateOne(
       { name },
-      { $set: updates },
+      { $set: toDbFormat(updates, true) },
     );
 
     if (result.modifiedCount === 0) {
@@ -130,7 +130,9 @@ export async function createNewsEvents(newsEvents: NewsEvent[]) {
   try {
     const { newsEvents: collection } = await getCollections();
 
-    const result = await collection.insertMany(newsEvents, { ordered: false });
+    const result = await collection.insertMany(toDbFormat(newsEvents, true), {
+      ordered: false,
+    });
 
     if (!result.insertedCount) {
       throw moduleError.set("Failed to create newsEvents", 500);

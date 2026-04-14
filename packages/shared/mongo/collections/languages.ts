@@ -39,7 +39,7 @@ export async function updateLanguage(code: string, updates: Partial<Language>) {
     const { languages } = await getCollections();
     const result: UpdateResult = await languages.updateOne(
       { code },
-      { $set: updates },
+      { $set: toDbFormat(updates, true) },
     );
 
     if (result.modifiedCount === 0) {
@@ -119,9 +119,7 @@ export async function findLanguageByCode2(code2: string) {
   try {
     const { languages } = await getCollections();
 
-    const language = await languages.findOne({
-      code2: { $regex: code2, $options: "i" },
-    });
+    const language = await languages.findOne({ code2 });
 
     if (!language) {
       throw moduleError.set("Language not found", 404);
@@ -151,7 +149,9 @@ export async function createLanguages(languages: Language[]) {
   try {
     const { languages: collection } = await getCollections();
 
-    const result = await collection.insertMany(languages, { ordered: false });
+    const result = await collection.insertMany(toDbFormat(languages, true), {
+      ordered: false,
+    });
 
     if (!result.insertedCount) {
       throw moduleError.set("Failed to create languages", 500);

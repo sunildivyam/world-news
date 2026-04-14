@@ -46,7 +46,7 @@ export async function updateApiKey(key: string, updates: Partial<ApiKey>) {
     const { apiKeys } = await getCollections();
     const result: UpdateResult = await apiKeys.updateOne(
       { key },
-      { $set: updates },
+      { $set: toDbFormat(updates, true) },
     );
 
     if (result.modifiedCount === 0) {

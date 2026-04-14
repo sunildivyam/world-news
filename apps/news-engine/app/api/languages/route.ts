@@ -20,9 +20,7 @@ export async function GET(request: Request) {
     let result;
     if (code2) {
       result = await findLanguageByCode2(code2.toLowerCase());
-    }
-
-    if (code && name) {
+    } else if (code && name) {
       result = await findLanguage(code.toLowerCase(), name);
     } else if (code) {
       result = await findLanguage(code.toLowerCase());

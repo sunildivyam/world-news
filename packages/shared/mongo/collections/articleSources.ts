@@ -37,7 +37,7 @@ export async function updateArticleSource(
     const { articleSources } = await getCollections();
     const result: UpdateResult = await articleSources.updateOne(
       { slug },
-      { $set: updates },
+      { $set: toDbFormat(updates, true) },
     );
 
     if (result.modifiedCount === 0) {
@@ -133,9 +133,12 @@ export async function createArticleSources(articleSources: ArticleSource[]) {
   try {
     const { articleSources: collection } = await getCollections();
 
-    const result = await collection.insertMany(articleSources, {
-      ordered: false,
-    });
+    const result = await collection.insertMany(
+      toDbFormat(articleSources, true),
+      {
+        ordered: false,
+      },
+    );
 
     if (!result.insertedCount) {
       throw moduleError.set("Failed to create ArticleSources", 500);

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { headlineProviders } from "../news-providers";
 import {
   createHeadlines,
@@ -5,13 +6,7 @@ import {
   updateNewsBatch,
 } from "../news-engine-apis";
 import { executeWithFailover } from "../news-providers/provider-manager";
-import {
-  AppError,
-  Article,
-  ArticleCollection,
-  Headline,
-  NewsBatch,
-} from "../types";
+import { Article, ArticleCollection, Headline, NewsBatch } from "../types";
 
 export class NewsBatchEngine {
   newsBatches: NewsBatch[] = [];
@@ -37,15 +32,16 @@ export class NewsBatchEngine {
     tenants: string[],
   ): Promise<ArticleCollection> {
     let providerName = "";
-    const articleCollection = await executeWithFailover<
-      ArticleCollection
-    >(async (provider) => {
-      providerName = provider.name;
-      return await provider.fetchArticles(
-        { geo: { country: country } },
-        { category: [category] },
-      );
-    }, headlineProviders);
+    const articleCollection = await executeWithFailover<ArticleCollection>(
+      async (provider) => {
+        providerName = provider.name;
+        return await provider.fetchArticles(
+          { geo: { country: country } },
+          { category: [category] },
+        );
+      },
+      headlineProviders,
+    );
 
     const articles = (articleCollection as ArticleCollection).articles;
     // send them to deduplication service
@@ -115,8 +111,12 @@ export class NewsBatchEngine {
       for (const c of country) {
         const { category } = batch;
         for (const cat of category) {
-          // call news api with for each country and category
-          await this.getArticles(c, cat, tenants);
+          try {
+            // call news api with for each country and category
+            await this.getArticles(c, cat, tenants);
+          } catch (error: any) {
+            console.log(`${c} | ${cat} | ${error}`);
+          }
         }
 
         console.log(`Finished for: ${country}`);

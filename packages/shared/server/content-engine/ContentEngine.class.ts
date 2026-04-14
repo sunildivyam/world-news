@@ -89,6 +89,7 @@ export class ContentEngine {
     aiContent: ArticleContent | null,
     tenantDomain: string,
   ): Article | null {
+    console.log(`populating Ai content `);
     if (!aiContent) return null;
 
     let nArticle = {
@@ -131,13 +132,24 @@ export class ContentEngine {
   }
 
   private async getOrAddSource(articleSource: ArticleSource): Promise<string> {
-    const source = await fetchArticleSource(articleSource.slug);
-    if (source) {
-      return source._id!;
-    }
+    try {
+      const source = await fetchArticleSource(articleSource.slug).catch(
+        (err: any) => {
+          this.log(`${articleSource.slug} does not exist, so creating it`);
+          return null;
+        },
+      );
 
-    const result = await createArticleSource(articleSource);
-    return result._id!;
+      if (source) {
+        return source._id!;
+      }
+
+      const result = await createArticleSource(articleSource);
+      return result._id!;
+    } catch (error: any) {
+      this.log("Error Adding Source" + error?.message);
+      return "";
+    }
   }
 
   private async generateArticle(
@@ -146,52 +158,62 @@ export class ContentEngine {
     language: string,
     tenantDomain: string,
   ): Promise<Article | null> {
-    let article: Article | null = {
-      headlineId: headline._id,
-      slug: "",
-      title: "",
-      description: "",
-      author: "",
-      category: headline.category,
-      geo: { ...headline.geo } as ArticleGeo,
-      language,
-      keywords: [...(headline.keywords || [])],
-      tags: [...(headline.tags || [])],
-      tenantId,
-      sourceId: headline.source?._id || "", // if source exists else add it to sources
-      url: "", // generate article's canonical url
-      imageUrl: headline.imageUrl,
-      videoUrl: headline.videoUrl,
-      content: [],
-      analytics: headline.analytics ? { ...headline.analytics } : undefined, // {} as ArticleAnalytics, // Generate Article's analytics
-      publishedAt: undefined,
-      updatedAt: undefined,
-      createdAt: undefined,
-      // non db properties. These can be populated on demand
-      tenant: undefined,
-      source: headline.source ? { ...headline.source } : undefined,
-    };
+    try {
+      let article: Article | null = {
+        headlineId: headline._id,
+        slug: "",
+        title: "",
+        description: "",
+        author: "",
+        category: headline.category,
+        geo: { ...headline.geo } as ArticleGeo,
+        language,
+        keywords: [...(headline.keywords || [])],
+        tags: [...(headline.tags || [])],
+        tenantId,
+        sourceId: headline.source?._id || "", // if source exists else add it to sources
+        url: "", // generate article's canonical url
+        imageUrl: headline.imageUrl,
+        videoUrl: headline.videoUrl,
+        content: [],
+        analytics: headline.analytics ? { ...headline.analytics } : undefined, // {} as ArticleAnalytics, // Generate Article's analytics
+        publishedAt: undefined,
+        updatedAt: undefined,
+        createdAt: undefined,
+        // non db properties. These can be populated on demand
+        tenant: undefined,
+        source: headline.source ? { ...headline.source } : undefined,
+      };
 
-    // Assign Source
-    if (article.source)
-      article.sourceId = await this.getOrAddSource(article.source);
+      // Assign Source
+      if (article.source)
+        article.sourceId = await this.getOrAddSource(article.source);
 
-    // Get Language Name
-    const lang = await fetchLanguage(language);
-    // call AI endpoint
-    const prompt = getPrompt(headline, lang?.name || language);
-    this.log(JSON.stringify(prompt, null, "\t"));
-    const aiContent: ArticleContent | null = await generateAIContent(prompt);
+      // Get Language Name
+      const lang = await fetchLanguage(language).catch((err) => {
+        this.log(`${language} not found in DB`);
+        return null;
+      });
+      // call AI endpoint
+      const prompt = getPrompt(headline, lang?.name || language);
+      // this.log(JSON.stringify(prompt, null, "\t"));
+      this.log(
+        `Getting started Generating content for Prompt for :${language} | ${headline.title}`,
+      );
+      const aiContent: ArticleContent | null = await generateAIContent(prompt);
 
-    // populate article from aiContent
-
-    article = this.populateArticleWithAiContent(
-      article,
-      aiContent,
-      tenantDomain,
-    );
-
-    return article;
+      // populate article from aiContent
+      article = this.populateArticleWithAiContent(
+        article,
+        aiContent,
+        tenantDomain,
+      );
+      console.log("AI content populated");
+      return article;
+    } catch (error: any) {
+      this.log("generateArticle() | " + error?.message);
+      return null;
+    }
   }
 
   private async generateContents(
@@ -201,12 +223,16 @@ export class ContentEngine {
     tenantDomain: string,
   ) {
     for (const l of language) {
+      if (this.cancel) {
+        break;
+      }
       const generatedArticle = await this.generateArticle(
         headline,
         tenantId,
         l,
         tenantDomain,
       );
+
       if (!generatedArticle) {
         this.log(
           `FAILED: Article Generation in language: ${l} and for headline: ${headline?.title}`,
@@ -221,21 +247,29 @@ export class ContentEngine {
       const result = await createArticle({
         ...generatedArticle,
         tenant: undefined,
+      }).catch((err) => {
+        this.log(
+          `Saving to DB failed, Article with id: ${generatedArticle.title}, ${err.message}`,
+        );
+        return null;
       });
+      if (result) {
+        this.log(`Created and saved to DB, Article with id: ${result._id}`);
+        // Update progress
+        this.progress.articles.push({
+          id: result._id || "",
+          title: result.title,
+          tenantId: result.tenantId,
+          language: result.language,
+        });
+        this.onProgress?.(this.progress);
 
-      this.log(`Created and saved to DB, Article with id: ${result._id}`);
-      // Update progress
-      this.progress.articles.push({
-        id: result._id || "",
-        title: result.title,
-        tenantId: result.tenantId,
-        language: result.language,
-      });
-      this.onProgress?.(this.progress);
-
-      // Mark Content generated for current tenant
-      await this.updateHeadlineProgress(headline!, undefined, l);
+        // Mark Content generated for current tenant
+        await this.updateHeadlineProgress(headline!, undefined, l);
+      }
     }
+
+    return;
   }
 
   private async updateHeadlineProgress(
@@ -273,6 +307,7 @@ export class ContentEngine {
     this.log("Started");
     let headline: Headline | null = await this.readHeadline();
     this.log(`Headline fetched: ${headline?.title}`);
+
     while (!this.cancel && headline) {
       // Update progress
       this.progress.headlines.push({
@@ -303,15 +338,18 @@ export class ContentEngine {
         );
         // Mark Content generated for current tenant
         await this.updateHeadlineProgress(headline!, tId);
+        if (this.cancel) {
+          break;
+        }
       }
 
       // Once all articles for all tenants and languages are generated for a headline,
       // Mark it contentGenerated and read next headline
-      console.log(headline._id!);
-      const uResult = await updateHeadline(headline._id!, {
+
+      await updateHeadline(headline._id!, {
         contentGeneratedAt: new Date(),
       });
-      console.log(uResult);
+
       // Read next headline
       headline = await this.readHeadline();
       this.log(`Finished`);

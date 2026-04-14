@@ -30,7 +30,7 @@ export async function updateTag(name: string, updates: Partial<Tag>) {
     const { tags } = await getCollections();
     const result: UpdateResult = await tags.updateOne(
       { name },
-      { $set: updates },
+      { $set: toDbFormat(updates, true) },
     );
 
     if (result.modifiedCount === 0) {
@@ -122,7 +122,9 @@ export async function createTags(tags: Tag[]) {
   try {
     const { tags: collection } = await getCollections();
 
-    const result = await collection.insertMany(tags, { ordered: false });
+    const result = await collection.insertMany(toDbFormat(tags, true), {
+      ordered: false,
+    });
 
     if (!result.insertedCount) {
       throw moduleError.set("Failed to create tags", 500);
