@@ -1,5 +1,5 @@
 // Global Home - sitemap.xml
-import { PageTypeEnum } from "@worldnews/shared";
+import { Article, ArticleCollection, PageTypeEnum } from "@worldnews/shared";
 import {
   fetchCategories,
   fetchCountries,
@@ -19,13 +19,21 @@ export async function GET(
   const domain = tenant?.domain;
   const countries = await fetchCountries(tenant?.country);
   const cats = await fetchCategories(tenant?.category);
-  const articles = await fetchLatestArticles({
-    tenantId: tenantId,
-    hours: 10 * 24,
-    limit: 5000,
-    page: 1,
-    fields: ["slug", "title", "description"],
-  }); // 10 Days
+  const articlesCollection: ArticleCollection | null =
+    await fetchLatestArticles({
+      tenantId: tenantId,
+      hours: 10 * 24,
+      limit: 1000,
+      page: 1,
+      fields: ["slug", "title", "description", "url"],
+    }).catch((err) => {
+      return null;
+    }); // 10 Days
+
+  let articles: Article[] = [];
+  if (articlesCollection) {
+    articles = articlesCollection.articles;
+  }
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

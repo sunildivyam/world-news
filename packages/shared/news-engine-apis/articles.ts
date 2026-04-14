@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Article, LatestArticlesQueryParams } from "../types";
+import {
+  Article,
+  ArticleCollection,
+  LatestArticlesQueryParams,
+} from "../types";
 import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchArticle(
@@ -230,7 +234,7 @@ export async function createArticles(articles: Article[]): Promise<Article[]> {
 
 export async function fetchLatestArticles(
   params?: LatestArticlesQueryParams,
-): Promise<Article[]> {
+): Promise<ArticleCollection> {
   const {
     id,
     slug,
@@ -271,11 +275,10 @@ export async function fetchLatestArticles(
     });
 
     if (!response.ok) {
-      if (response.status === 404) return [];
       throw new Error(response.statusText);
     }
 
-    const res: Article[] = await response.json();
+    const res: ArticleCollection = await response.json();
     return res;
   } catch (err: any) {
     throw new Error(err);
