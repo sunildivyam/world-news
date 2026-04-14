@@ -308,7 +308,7 @@ export async function findLatest(params?: LatestArticlesQueryParams) {
 
       const result = await query.toArray();
       const response: ArticleCollection = {
-        articles: result,
+        articles: toNormalFormat(result),
         totalResults: 0,
         nextPage: page ? page + 1 : 2,
       };

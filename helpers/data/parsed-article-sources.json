@@ -2358,5 +2358,281 @@
     "priority": 1392965,
     "createdAt": "2026-03-30T05:40:58.332Z",
     "updatedAt": "2026-03-30T05:40:58.332Z"
+  },
+  {
+    "slug": "indianexpress",
+    "name": "The Indian Express",
+    "url": "https://indianexpress.com",
+    "iconUrl": "https://n.bytvi.com/indianexpress.png"
+  },
+  {
+    "slug": "indiatvnews",
+    "name": "India Tv",
+    "url": "https://www.indiatvnews.com",
+    "iconUrl": "https://n.bytvi.com/indiatvnews.png"
+  },
+  {
+    "slug": "ndtv",
+    "name": "Ndtv",
+    "url": "http://www.ndtv.com",
+    "iconUrl": "https://n.bytvi.com/ndtv.png"
+  },
+  {
+    "slug": "bitcoinworld",
+    "name": "Home - Bitcoinworld.co.in",
+    "url": "https://bitcoinworld.co.in",
+    "iconUrl": "https://n.bytvi.com/bitcoinworld.jpg"
+  },
+  {
+    "slug": "suspensecrime",
+    "name": "Suspense Crime",
+    "url": "https://suspensecrime.com",
+    "iconUrl": "https://n.bytvi.com/suspensecrime.jpg"
+  },
+  {
+    "slug": "abplive",
+    "name": "Abp News",
+    "url": "http://abplive.com",
+    "iconUrl": "https://n.bytvi.com/abplive.jpg"
+  },
+  {
+    "slug": "business-standard",
+    "name": "Business Standard",
+    "url": "https://www.business-standard.com",
+    "iconUrl": "https://n.bytvi.com/business-standard.png"
+  },
+  {
+    "slug": "gujarati_news18",
+    "name": "News18 Gujarati",
+    "url": "https://gujarati.news18.com",
+    "iconUrl": "https://n.bytvi.com/gujarati_news18.jpg"
+  },
+  {
+    "slug": "tv9telugu",
+    "name": "Tv9 Telugu",
+    "url": "https://tv9telugu.com",
+    "iconUrl": "https://n.bytvi.com/tv9telugu.png"
+  },
+  {
+    "slug": "devdiscourse",
+    "name": "Devdiscourse",
+    "url": "https://www.devdiscourse.com",
+    "iconUrl": "https://n.bytvi.com/devdiscourse.jpg"
+  },
+  {
+    "slug": "jagran",
+    "name": "Jagran",
+    "url": "https://www.jagran.com",
+    "iconUrl": "https://n.bytvi.com/jagran.jpg"
+  },
+  {
+    "slug": "aajkaal",
+    "name": "Aajkaal",
+    "url": "https://www.aajkaal.in",
+    "iconUrl": "https://n.bytvi.com/aajkaal.jpeg"
+  },
+  {
+    "slug": "economictimes_indiatimes",
+    "name": "The Economic Times",
+    "url": "https://economictimes.indiatimes.com",
+    "iconUrl": "https://n.bytvi.com/economictimes_indiatimes.png"
+  },
+  {
+    "slug": "gyanhigyan",
+    "name": "Gyanhigyan",
+    "url": "https://gyanhigyan.com",
+    "iconUrl": "https://n.bytvi.com/gyanhigyan.png"
+  },
+  {
+    "slug": "newsable_asianetnews",
+    "name": "Asianet Newsable",
+    "url": "https://newsable.asianetnews.com",
+    "iconUrl": "https://n.bytvi.com/newsable_asianetnews.jpg"
+  },
+  {
+    "slug": "livemint",
+    "name": "Mint",
+    "url": "https://www.livemint.com",
+    "iconUrl": "https://n.bytvi.com/livemint.png"
+  },
+  {
+    "slug": "thenewsmill",
+    "name": "The News Mill",
+    "url": "https://thenewsmill.com",
+    "iconUrl": "https://n.bytvi.com/thenewsmill.jpg"
+  },
+  {
+    "slug": "dtnext",
+    "name": "Dt Next",
+    "url": "https://www.dtnext.in",
+    "iconUrl": "https://n.bytvi.com/dtnext.png"
+  },
+  {
+    "slug": "freepressjournal",
+    "name": "The Free Press Journal",
+    "url": "https://www.freepressjournal.in",
+    "iconUrl": "https://n.bytvi.com/freepressjournal.png"
+  },
+  {
+    "slug": "jantaserishta",
+    "name": "Janta Se Rishta",
+    "url": "https://jantaserishta.com",
+    "iconUrl": "https://n.bytvi.com/jantaserishta.jpg"
+  },
+  {
+    "slug": "thehindu",
+    "name": "The Hindu",
+    "url": "https://www.thehindu.com",
+    "iconUrl": "https://n.bytvi.com/thehindu.png"
+  },
+  {
+    "slug": "siasat",
+    "name": "Siasat.com",
+    "url": "https://www.siasat.com",
+    "iconUrl": "https://n.bytvi.com/siasat.png"
+  },
+  {
+    "slug": "tv9bangla",
+    "name": "Tv9 Bangla News",
+    "url": "https://tv9bangla.com",
+    "iconUrl": "https://n.bytvi.com/tv9bangla.png"
+  },
+  {
+    "slug": "punjabitribune",
+    "name": "Punjabitribuneonline",
+    "url": "https://www.punjabitribuneonline.com",
+    "iconUrl": "https://n.bytvi.com/punjabitribune.jpg"
+  },
+  {
+    "slug": "etvbharat",
+    "name": "Etv Bharat",
+    "url": "https://www.etvbharat.com",
+    "iconUrl": "https://n.bytvi.com/etvbharat.png"
+  },
+  {
+    "slug": "theprint_hi",
+    "name": "Theprint Hindi",
+    "url": "https://hindi.theprint.in",
+    "iconUrl": "https://n.bytvi.com/theprint_hi.jpg"
+  },
+  {
+    "slug": "prabhatkhabar",
+    "name": "Prabhat Khabar",
+    "url": "https://www.prabhatkhabar.com",
+    "iconUrl": "https://n.bytvi.com/prabhatkhabar.png"
+  },
+  {
+    "slug": "english_jagran",
+    "name": "Jagran English",
+    "url": "https://english.jagran.com",
+    "iconUrl": "https://n.bytvi.com/english_jagran.png"
+  },
+  {
+    "slug": "toi",
+    "name": "The Times Of India",
+    "url": "https://timesofindia.indiatimes.com",
+    "iconUrl": "https://n.bytvi.com/toi.png"
+  },
+  {
+    "slug": "jagranjosh",
+    "name": "Jagran Josh",
+    "url": "https://www.jagranjosh.com",
+    "iconUrl": "https://n.bytvi.com/jagranjosh.png"
+  },
+  {
+    "slug": "india",
+    "name": "India",
+    "url": "https://www.india.com",
+    "iconUrl": "https://n.bytvi.com/india.png"
+  },
+  {
+    "slug": "hindustantimes",
+    "name": "Hindustan Times",
+    "url": "http://www.hindustantimes.com",
+    "iconUrl": "https://n.bytvi.com/hindustantimes.png"
+  },
+  {
+    "slug": "news18",
+    "name": "News 18",
+    "url": "https://www.news18.com",
+    "iconUrl": "https://n.bytvi.com/news18.png"
+  },
+  {
+    "slug": "telugu_samayam",
+    "name": "Samayam Telugu",
+    "url": "https://telugu.samayam.com",
+    "iconUrl": "https://n.bytvi.com/telugu_samayam.png"
+  },
+  {
+    "slug": "mathrubhumi_in",
+    "name": "Mathrubhumi",
+    "url": "https://www.mathrubhumi.com",
+    "iconUrl": "https://n.bytvi.com/mathrubhumi_in.png"
+  },
+  {
+    "slug": "tamil_news18",
+    "name": "Tamil News 18",
+    "url": "https://tamil.news18.com",
+    "iconUrl": "https://n.bytvi.com/tamil_news18.png"
+  },
+  {
+    "slug": "newsx",
+    "name": "Newsx",
+    "url": "https://www.newsx.com",
+    "iconUrl": "https://n.bytvi.com/newsx.jpg"
+  },
+  {
+    "slug": "cnbctv18",
+    "name": "Cnbctv18",
+    "url": "https://www.cnbctv18.com",
+    "iconUrl": "https://n.bytvi.com/cnbctv18.jpg"
+  },
+  {
+    "slug": "indiastrategic_in",
+    "name": "India Strategic",
+    "url": "https://www.indiastrategic.in",
+    "iconUrl": "https://n.bytvi.com/indiastrategic_in.png"
+  },
+  {
+    "slug": "hindinews18",
+    "name": "News 18 Hindi",
+    "url": "https://hindi.news18.com",
+    "iconUrl": "https://n.bytvi.com/hindinews18.png"
+  },
+  {
+    "slug": "andhrabhoomi",
+    "name": "Andhrabhoomi",
+    "url": "http://www.andhrabhoomi.net",
+    "iconUrl": "https://n.bytvi.com/andhrabhoomi.png"
+  },
+  {
+    "slug": "dinamalar",
+    "name": "Dinamalar",
+    "url": "https://www.dinamalar.com",
+    "iconUrl": "https://n.bytvi.com/dinamalar.png"
+  },
+  {
+    "slug": "ahinsaexpress_in",
+    "name": "Ahinsa Express",
+    "url": "https://www.ahinsaexpress.in",
+    "iconUrl": "https://n.bytvi.com/ahinsaexpress_in.png"
+  },
+  {
+    "slug": "thecsrjournal",
+    "name": "The Csr Journal",
+    "url": "https://thecsrjournal.in",
+    "iconUrl": "https://n.bytvi.com/thecsrjournal.png"
+  },
+  {
+    "slug": "zeenews",
+    "name": "Zee News",
+    "url": "http://zeenews.india.com",
+    "iconUrl": "https://n.bytvi.com/zeenews.png"
+  },
+  {
+    "slug": "dnaindia",
+    "name": "Dna",
+    "url": "https://www.dnaindia.com",
+    "iconUrl": "https://n.bytvi.com/dnaindia.png"
   }
 ]
