@@ -1,42 +1,60 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { Country } from "@worldnews/shared";
+import { apiSuccess, apiError } from "@/lib/api-response";
 import {
   createCountry,
+  createCountries,
   findCountry,
   findCountryByName,
   getAllCountries,
+  findCountryById,
 } from "@worldnews/shared/mongo/collections/countries";
-import { error } from "@worldnews/shared/mongo/response";
 
 export const revalidate = 120;
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
     const code = searchParams.get("code");
     const name = searchParams.get("name");
-
-    if (code && name) {
-      return await findCountry(code.toLowerCase(), name);
+    const codes = searchParams.get("codes");
+    let response;
+    if (id) {
+      response = await findCountryById(id);
+    } else if (code && name) {
+      response = await findCountry(code.toLowerCase(), name);
     } else if (code) {
-      return await findCountry(code.toLowerCase());
+      response = await findCountry(code.toLowerCase());
     } else if (name) {
-      return await findCountryByName(name);
+      response = await findCountryByName(name);
+    } else if (codes) {
+      response = await getAllCountries(codes.split(","));
     } else {
-      return await getAllCountries();
+      response = await getAllCountries();
     }
-  } catch (e: any) {
-    return error(e?.message || e, 500);
+
+    return apiSuccess(response);
+  } catch (err: any) {
+    return apiError(err);
   }
 }
 
 export async function POST(request: Request) {
   try {
-    const country: Country = await request.json();
+    const body = await request.json();
 
-    const result = await createCountry(country);
-    return result;
+    // Check if it's an array for bulk insert
+    let response;
+
+    if (Array.isArray(body)) {
+      response = await createCountries(body);
+    } else {
+      // Single country insert
+      response = await createCountry(body);
+    }
+
+    return apiSuccess(response);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    return apiError(err);
   }
 }

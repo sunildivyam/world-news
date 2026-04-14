@@ -2,12 +2,10 @@ import type { ArticleAnalytics } from "./ArticleAnalytics.interface";
 import type { ArticleContent } from "./ArticleContent.type";
 import type { ArticleGeo } from "./ArticleGeo.interface";
 import type { ArticleSource } from "./ArticleSource.interface";
-import type { OriginalArticle } from "./OriginalArticle.interface";
-import type { Tenant } from "./Tenant.interface";
+import { Tenant } from "./Tenant.interface";
 
 export interface Article {
-  // metadata fields
-  id: string;
+  _id?: string;
   slug: string;
   title: string;
   description: string;
@@ -17,16 +15,18 @@ export interface Article {
   language: string;
   keywords: string[];
   tags: string[];
-  publishTZ: string;
-  publishDate: Date | string;
-  updateDate: Date | string;
-  // optional fields
-  tenant?: Tenant; // TODO: later make this mandatory
+  tenantId: string;
+  sourceId: string;
+  url: string; // article's full url with tenant's https://domain/country/region/city/article-slug-id
   imageUrl?: string;
   videoUrl?: string;
   content?: ArticleContent;
-  source?: ArticleSource;
-  orginal?: OriginalArticle;
-  // Analytical fields
   analytics?: ArticleAnalytics;
+  publishedAt?: Date | string;
+  updatedAt?: Date | string;
+  createdAt?: Date | string;
+  // non db properties. These can be populated on demand
+  tenant?: Tenant;
+  source?: ArticleSource;
+  headlineId?: string; // reference to original headline
 }

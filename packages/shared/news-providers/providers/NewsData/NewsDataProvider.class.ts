@@ -1,0 +1,148 @@
+import {
+  ArticleQueryParams,
+  UserContext,
+  Article,
+  ArticleSource,
+  ArticleCollection,
+  SentimentMetrics,
+  SentimentEnum,
+} from "../../../types";
+import { BaseArticleProvider } from "../BaseArticleProvider.class";
+import { ApiArticle, ApiArticlesResponse } from "./NewsData.interface";
+import { getRandomIntInclusive } from "../../../utils/common";
+import { geoService } from "../../../server";
+
+export class NewsdataProvider extends BaseArticleProvider {
+  name: string = "NewsData";
+  baseUrl: string = process.env.NEWSDATA_API_URL ?? "";
+  apiKey: string = process.env.NEWSDATA_API_KEY ?? "";
+
+  private parseSentimentMetric(rawArticle: ApiArticle) {
+    const label = Object.keys(SentimentEnum).includes(rawArticle.sentiment)
+      ? (rawArticle.sentiment as SentimentEnum)
+      : SentimentEnum.neutral;
+    let score = 0;
+
+    try {
+      score = parseFloat(rawArticle.sentiment_stats);
+    } catch (error) {}
+
+    const sentiment: SentimentMetrics = { label, score };
+
+    return sentiment;
+  }
+
+  public setQueryParams(
+    apiKey: string,
+    userContext: UserContext,
+    articleQueryParams: ArticleQueryParams,
+  ): URLSearchParams {
+    const { geo } = userContext || {};
+    const { country, language } = geo || {};
+    const { articleId, pageSize, nextPage, keywords, category } =
+      articleQueryParams;
+
+    const sp = new URLSearchParams();
+    sp.set("apikey", apiKey);
+
+    if (articleId) {
+      // Fetches Single article By Id
+      sp.set("id", articleId);
+    } else {
+      // Fetch 1 page of articles (latest or by other search params)
+      // Dynamic Params
+      if (country) sp.set("country", country);
+      if (language) sp.set("language", language);
+      if (category?.length) sp.set("category", category.join(","));
+      if (keywords?.length) sp.set("q", keywords.join(","));
+      if (nextPage) sp.set("page", nextPage as string);
+      if (pageSize) sp.set("size", pageSize ? pageSize.toString() : "" + 10);
+      sp.set("removeduplicate", "1");
+      sp.set(
+        "excludefield",
+        "ai_summary,ai_org,ai_region,sentiment_stats,ai_tag,sentiment,content,video_url",
+      );
+      sp.set("sort", "pubdateasc");
+      sp.set("image", "1");
+    }
+
+    return sp;
+  }
+
+  async parseArticle(rawArticle: ApiArticle): Promise<Article | null> {
+    if (!rawArticle) return null;
+    const article: Article = {
+      _id: rawArticle.article_id,
+      slug: rawArticle.article_id,
+      tenantId: "",
+      sourceId: rawArticle.source_id,
+      url: rawArticle.link,
+      tenant: undefined,
+      title: rawArticle.title,
+      description: rawArticle.description,
+      author: (rawArticle.creator?.length && rawArticle.creator[0]) || "",
+      category: (rawArticle.category?.length && rawArticle.category[0]) || "",
+      geo: {
+        country: await geoService.getCountryCode(
+          (rawArticle.country?.length && rawArticle.country[0]) || "",
+        ),
+      },
+      language: await geoService.getLanguageCode(rawArticle.language),
+      keywords: rawArticle.keywords,
+      tags: [],
+      publishedAt: rawArticle.pubDate,
+      updatedAt: rawArticle.pubDate,
+      imageUrl: rawArticle.image_url,
+      videoUrl: rawArticle.video_url,
+      content: undefined,
+      analytics: {
+        sentiment: this.parseSentimentMetric(rawArticle),
+        priority: 0,
+        popularity: getRandomIntInclusive(0, 100),
+        trend: {
+          velocity: getRandomIntInclusive(0, 100),
+          momentum: getRandomIntInclusive(0, 100),
+          isBreaking: false,
+        },
+        engagement: {
+          views: 0,
+          shares: 0,
+          comments: 0,
+        },
+      },
+      source: {
+        _id: rawArticle.source_id,
+        slug: rawArticle.source_id,
+        name: rawArticle.source_name,
+        description: undefined,
+        url: rawArticle.source_url,
+        iconUrl: rawArticle.source_icon,
+        imageUrl: undefined,
+        category: undefined,
+        language: undefined,
+      } as ArticleSource,
+    };
+
+    return article;
+  }
+
+  async parseArticleCollection(
+    rawArticleCollection: ApiArticlesResponse,
+  ): Promise<ArticleCollection> {
+    const { totalResults, results, nextPage } = rawArticleCollection;
+
+    const articles = (
+      await Promise.all(
+        results.map(async (a: any) => await this.parseArticle(a)),
+      )
+    ).filter((a) => a !== null);
+
+    const articleCollection: ArticleCollection = {
+      articles,
+      totalResults,
+      nextPage: nextPage!,
+    };
+
+    return articleCollection;
+  }
+}

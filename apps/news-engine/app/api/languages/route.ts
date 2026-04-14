@@ -2,12 +2,13 @@
 import { Language } from "@worldnews/shared";
 import {
   createLanguage,
+  createLanguages,
   findLanguage,
   findLanguageByCode2,
   findLanguageByName,
   findLanguages,
 } from "@worldnews/shared/mongo/collections/languages";
-import { error } from "@worldnews/shared/mongo/response";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 export async function GET(request: Request) {
   try {
@@ -16,31 +17,39 @@ export async function GET(request: Request) {
     const name = searchParams.get("name");
     const code2 = searchParams.get("code2");
 
+    let result;
     if (code2) {
-      return await findLanguageByCode2(code2.toLowerCase());
+      result = await findLanguageByCode2(code2.toLowerCase());
+    } else if (code && name) {
+      result = await findLanguage(code.toLowerCase(), name);
+    } else if (code) {
+      result = await findLanguage(code.toLowerCase());
+    } else if (name) {
+      result = await findLanguageByName(name);
+    } else {
+      result = await findLanguages();
     }
 
-    if (code && name) {
-      return await findLanguage(code.toLowerCase(), name);
-    } else if (code) {
-      return await findLanguage(code.toLowerCase());
-    } else if (name) {
-      return await findLanguageByName(name);
-    } else {
-      return await findLanguages();
-    }
-  } catch (e: any) {
-    return error(e?.message || e, 500);
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }
 
 export async function POST(request: Request) {
   try {
-    const language: Language = await request.json();
+    const body = await request.json();
 
-    const result = await createLanguage(language);
-    return result;
+    // Check if it's an array for bulk insert
+    if (Array.isArray(body)) {
+      const result = await createLanguages(body);
+      return apiSuccess(result);
+    } else {
+      // Single language insert
+      const result = await createLanguage(body);
+      return apiSuccess(result);
+    }
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    return apiError(err);
   }
 }

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { apiError, apiSuccess } from "@/lib/api-response";
 import { GeoContext } from "@worldnews/shared";
 import { updateCountryByGeo } from "@worldnews/shared/mongo/collections/countries";
-import { error } from "@worldnews/shared/mongo/response";
 
 export async function POST(request: Request) {
   try {
@@ -10,8 +10,8 @@ export async function POST(request: Request) {
     const { country, region, city, language } = geoCtx;
 
     const result = await updateCountryByGeo(country, region, city, language);
-    return result;
+    return apiSuccess(result);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    return apiError(err);
   }
 }

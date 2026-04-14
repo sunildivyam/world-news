@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
@@ -28,8 +30,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Skip at build time while pre rendering, send every request to not_found
+  if (process.env.IS_BUILD_STEP) {
+    return <div>Skipping pre rendering during build...</div>;
+  }
+
   const userCtx = await getUserContext();
-  const tenantConfig = await getTenantConfig(userCtx.tenantId || "");
+  const tenantConfig = userCtx.tenantCtx?.tenant?.settings!;
 
   return (
     <html lang={userCtx.language}>
@@ -41,7 +48,7 @@ export default async function RootLayout({
           color: tenantConfig?.theme.mode === "dark" ? "#fff" : "#000",
         }}
       >
-        <AppContextProvider value={{ userCtx, tenantConfig }}>
+        <AppContextProvider value={{ userCtx }}>
           <Header />
           <div
             className={`max-w-full mx-auto px-0 ${tenantConfig?.navigation.style === "smart" ? "md:py-22 px-0 py-14" : ""}`}

@@ -25,7 +25,10 @@ export default async function EventPage({
     event: slug,
   };
 
-  const articlesRes = await fetchArticles(userContext, fetchOptions);
+  const articlesRes = await fetchArticles(userContext, fetchOptions).catch(
+    (err: AppError) => err,
+  );
+;
 
   // 5. Check for Fetch Errors
   if (AppError.isError(articlesRes)) {

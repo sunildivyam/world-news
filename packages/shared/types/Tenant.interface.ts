@@ -4,7 +4,7 @@ import type { TenantConfig } from "./TenantConfig.interface";
 
 export interface Tenant {
   // mendatory fields
-  id?: string;
+  _id?: string;
   tenantId: string;
   name: string;
   primaryLanguage: string;
@@ -23,4 +23,7 @@ export interface Tenant {
   settings: TenantConfig;
   subscriptionPlan?: string;
   customFields?: Record<string, any>;
+  country?: string[];
+  language?: string[];
+  category?: string[];
 }

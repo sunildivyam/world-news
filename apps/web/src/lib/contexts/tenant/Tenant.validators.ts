@@ -23,7 +23,10 @@ export async function findTenantByDomain(
 }
 
 export async function findTenantById(id: string): Promise<Tenant | null> {
-  return await fetchTenant(id);
+  return await fetchTenant(id).catch((err) => {
+    console.log(err.message);
+    return null;
+  });
 }
 
 export async function findTenantFromSegments(

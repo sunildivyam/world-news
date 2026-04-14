@@ -1,5 +1,6 @@
 export interface ArticleSource {
-  id: string;
+  _id?: string;
+  slug?: string;
   name: string;
   description?: string;
   url?: string;
@@ -9,4 +10,7 @@ export interface ArticleSource {
   language?: string[];
   country?: string[];
   priority?: number;
+  totalArticles?: number;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
 }

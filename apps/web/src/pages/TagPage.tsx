@@ -24,7 +24,10 @@ export default async function TagPage({
     tags: [slug],
   };
 
-  const articlesRes = await fetchArticles(userContext, fetchOptions);
+  const articlesRes = await fetchArticles(userContext, fetchOptions).catch(
+    (err: AppError) => err,
+  );
+;
 
   // 5. Check for Fetch Errors
   if (AppError.isError(articlesRes)) {

@@ -1,53 +1,89 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { City, Country } from "../../types";
-import { error, success } from "../response";
+import { AppError, City, Country } from "../../types";
 import { getCollections } from "../collections";
-import { InsertOneResult } from "mongodb";
+import { InsertOneResult, ObjectId } from "mongodb";
+import { toDbFormat, toNormalFormat } from "../mongo-utils";
 
-export async function createCountry(country: Country) {
-  if (!country?.code) return error("Can not create an empty country");
+const moduleError = new AppError("Countries Collection", "");
+
+function addLanguage(code: string, languages: string[]) {
+  return languages?.includes(code) ? [...languages] : [...languages, code];
+}
+
+export async function createCountry(country: Country): Promise<Country> {
+  if (!country?.code)
+    throw moduleError.set("Can not create an empty country", 400);
 
   try {
     const { countries } = await getCollections();
 
-    const result: InsertOneResult = await countries.insertOne(country);
+    const result: InsertOneResult = await countries.insertOne(
+      toDbFormat(country, true),
+    );
 
     if (!result.insertedId) {
-      return error("Failed to create country", 500);
+      throw moduleError.set("Failed to create country", 500);
     }
 
-    return success({ ...country, id: result.insertedId });
+    return toNormalFormat({ ...country, _id: result.insertedId });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
-export async function getAllCountries() {
+export async function getAllCountries(
+  codes?: string[],
+): Promise<Partial<Country>[]> {
   try {
     const { countries } = await getCollections();
+    let filter = {};
+    if (codes?.length) {
+      filter = { code: { $in: codes } };
+    }
+
     const result = await countries
-      .find({})
-      .project({ code: 1, name: 1, languages: 1 })
+      .find(filter)
+      // .project({ _id: 1, code: 1, name: 1, languages: 1 })
       .toArray();
 
-    return success(result);
+    return toNormalFormat(result);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
-export async function updateCountry(code: string, country: Partial<Country>) {
+export async function updateCountry(id: string, updates: Partial<Country>) {
   try {
     const { countries } = await getCollections();
-    const result = await countries.updateOne({ code }, { $set: country });
+    // Clean the object
+
+    const result = await countries.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: toDbFormat(updates, true) },
+    );
 
     if (result.matchedCount === 0) {
-      return error("Country not found", 404);
+      throw moduleError.set("Country not found", 404);
     }
 
-    return success({ code });
+    return toNormalFormat({ _id: id });
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
+  }
+}
+
+export async function deleteCountry(id: string) {
+  try {
+    const { countries } = await getCollections();
+    const result = await countries.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      throw moduleError.set("Country not found", 404);
+    }
+
+    return toNormalFormat({ _id: id });
+  } catch (err: any) {
+    throw moduleError.parse(err, 500);
   }
 }
 
@@ -156,27 +192,30 @@ export async function updateCountryByGeo(
 
     if (Object.keys(updateData).length === 0) {
       console.log("Nothing to update in geo.");
-      return error("Nothing to update in country.");
+      throw moduleError.set("Nothing to update in country.", 500);
     }
 
     return updateCountry(countryCode, updateData);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
-export async function deleteCountry(code: string) {
+export async function findCountryById(id: string) {
   try {
     const { countries } = await getCollections();
-    const result = await countries.deleteOne({ code });
 
-    if (result.deletedCount === 0) {
-      return error("Country not found", 404);
+    const q = { _id: new ObjectId(id) };
+
+    const country = await countries.findOne(q);
+
+    if (!country) {
+      throw moduleError.set("Country not found", 404);
     }
 
-    return success({ code });
+    return toNormalFormat(country);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
@@ -196,12 +235,12 @@ export async function findCountry(code: string, name?: string) {
     const country = await countries.findOne(q);
 
     if (!country) {
-      return error("Country not found", 404);
+      throw moduleError.set("Country not found", 404);
     }
 
-    return success(country);
+    return toNormalFormat(country);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
@@ -213,15 +252,37 @@ export async function findCountryByName(name: string) {
     });
 
     if (!country) {
-      return error("Country not found", 404);
+      throw moduleError.set("Country not found", 404);
     }
 
-    return success(country);
+    return toNormalFormat(country);
   } catch (err: any) {
-    return error(err?.message || err, 500);
+    throw moduleError.parse(err, 500);
   }
 }
 
-function addLanguage(code: string, languages: string[]) {
-  return languages?.includes(code) ? [...languages] : [...languages, code];
+export async function createCountries(countries: Country[]) {
+  if (!countries?.length)
+    throw moduleError.set("Empty countries array can not be created.", 400);
+
+  try {
+    const { countries: collection } = await getCollections();
+    countries = toDbFormat(countries, true);
+    const result = await collection.insertMany(toDbFormat(countries, true), {
+      ordered: false,
+    }); // ordered: false ignores duplicates
+
+    if (!result.insertedCount) {
+      throw moduleError.set("Failed to create countries", 500);
+    }
+
+    return toNormalFormat(
+      countries.map((country, index) => ({
+        ...country,
+        _id: result.insertedIds[index],
+      })),
+    );
+  } catch (err: any) {
+    throw moduleError.parse(err, 500);
+  }
 }

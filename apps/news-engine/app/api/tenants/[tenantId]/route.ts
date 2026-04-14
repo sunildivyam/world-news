@@ -4,7 +4,7 @@ import {
   deleteTenant,
   updateTenant,
 } from "@worldnews/shared/mongo/collections/tenants";
-import { error } from "@worldnews/shared/mongo/response";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
 export async function PUT(
   request: Request,
@@ -16,9 +16,9 @@ export async function PUT(
 
     const result = await updateTenant(tenantId.toLowerCase(), updates);
 
-    return result;
-  } catch (e: any) {
-    return error(e.message || e);
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }
 
@@ -29,8 +29,8 @@ export async function DELETE(
   try {
     const tenantId = (await params).tenantId;
     const result = await deleteTenant(tenantId.toLowerCase());
-    return result;
-  } catch (e: any) {
-    return error(e.message || e);
+    return apiSuccess(result);
+  } catch (err: any) {
+    return apiError(err);
   }
 }

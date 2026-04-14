@@ -39,14 +39,14 @@ export interface ArticleProvider {
   fetchArticles(
     context: UserContext,
     options?: ArticleQueryParams,
-  ): Promise<ArticleCollection | AppError>;
+  ): Promise<ArticleCollection>;
 
   /**
    * Fetch single article by id/slug
    * @param context
    * @param slug
    */
-  fetchArticle(context: UserContext, slug: string): Promise<Article | AppError>;
+  fetchArticle(context: UserContext, slug: string): Promise<Article>;
 
   /**
    * Fetch Articles based on query params
@@ -56,7 +56,7 @@ export interface ArticleProvider {
   fetchRelatedArticles(
     context: UserContext,
     article?: Article,
-  ): Promise<ArticleCollection | AppError>;
+  ): Promise<ArticleCollection>;
 
   setQueryParams(
     apiKey: string,

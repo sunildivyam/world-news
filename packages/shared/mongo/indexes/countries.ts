@@ -1,0 +1,21 @@
+import { IndexDescription } from "mongodb";
+
+export const countryIndexConfig: IndexDescription[] = [
+  {
+    // High-speed lookup for country codes (ISO)
+    key: { code: 1 },
+    name: "idx_unique_code",
+    unique: true,
+  },
+  {
+    // Standard index for alphabetical sorting and exact matching
+    key: { name: 1 },
+    name: "idx_name_sort",
+  },
+  {
+    // Full-text search capability for the country name
+    key: { name: "text" },
+    name: "idx_name_text",
+    language_override: "dummy_field", // Tells Mongo to ignore the 'language' array
+  },
+];

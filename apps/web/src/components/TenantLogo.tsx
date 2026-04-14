@@ -2,9 +2,10 @@ import { useContext } from "react";
 import { AppContext } from "./AppContext.Provider";
 
 export default function TenantLogo() {
-  const { userCtx, tenantConfig } = useContext(AppContext) ?? {};
+  const { userCtx } = useContext(AppContext) ?? {};
+  const tenantConfig = userCtx?.tenantCtx?.tenant?.settings!;
 
-  if (!userCtx || !tenantConfig) return null;
+  if (!tenantConfig) return null;
 
   return (
     <div

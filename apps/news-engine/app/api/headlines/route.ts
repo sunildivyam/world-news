@@ -1,62 +1,82 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { validateSubscription } from "@worldnews/shared/mongo/subscription";
-import { checkRateLimit } from "@worldnews/shared/mongo/rate-limit";
-import { success, error } from "@worldnews/shared/mongo/response";
-import { getHeadlines } from "@worldnews/shared/mongo/collections/headline";
-import { validateApiKey } from "@worldnews/shared/mongo/collections/apiKey";
-import { ApiKey, SuccessResponse } from "@worldnews/shared";
+import {
+  createHeadline,
+  createHeadlines,
+  findHeadline,
+  findHeadlineByTitle,
+  findHeadlines,
+  findHeadlinesByCategory,
+  findHeadlinesByProvider,
+  findHeadlinesBySource,
+  findHeadlinesByTenant,
+  findHeadlinesByCountryAndCategory,
+  findHeadlinesByContentGenerated,
+} from "@worldnews/shared/mongo/collections/headline";
+import { apiSuccess, apiError } from "@/lib/api-response";
 
-export async function GET(req: Request) {
+export async function GET(request: Request) {
   try {
-    const url = new URL(req.url);
+    const { searchParams } = new URL(request.url);
+    const slug = searchParams.get("slug");
+    const title = searchParams.get("title");
+    const tenantId = searchParams.get("tenantId");
+    const category = searchParams.get("category");
+    const sourceId = searchParams.get("sourceId");
+    const providerName = searchParams.get("providerName");
+    const contentGeneratedAt = searchParams.get("contentGeneratedAt");
+    const countries = searchParams.getAll("country");
+    const categories = searchParams.getAll("category");
+    const limit = searchParams.get("limit")
+      ? parseInt(searchParams.get("limit")!)
+      : undefined;
 
-    const apiKey =
-      url.searchParams.get("apiKey") || req.headers.get("x-api-key");
-    const category = url.searchParams.get("category") || undefined;
-    const region = url.searchParams.get("region") || undefined;
-    const limit = parseInt(url.searchParams.get("limit") || "10");
-    const page = parseInt(url.searchParams.get("page") || "1");
-
-    if (!apiKey) {
-      return error("API_KEY_REQUIRED", 401);
+    let result;
+    if (slug && title) {
+      result = await findHeadline(slug.toLowerCase(), title);
+    } else if (slug) {
+      result = await findHeadline(slug.toLowerCase());
+    } else if (title) {
+      result = await findHeadlineByTitle(title);
+    } else if (tenantId) {
+      result = await findHeadlinesByTenant(tenantId, limit);
+    } else if (category) {
+      result = await findHeadlinesByCategory(category, limit);
+    } else if (sourceId) {
+      result = await findHeadlinesBySource(sourceId, limit);
+    } else if (providerName) {
+      result = await findHeadlinesByProvider(providerName, limit);
+    } else if (countries.length > 0 || categories.length > 0) {
+      result = await findHeadlinesByCountryAndCategory(
+        countries,
+        categories,
+        limit,
+      );
+    } else if (contentGeneratedAt) {
+      result = await findHeadlinesByContentGenerated(contentGeneratedAt, limit);
+    } else {
+      result = await findHeadlines(limit);
     }
 
-    const keyRes: any = await validateApiKey(apiKey);
-
-    const sub = await validateSubscription(keyRes.data.tenantId);
-
-    const rateLimit = sub?.features?.rateLimitPerMinute || 60;
-
-    const allowed = checkRateLimit(apiKey, rateLimit);
-
-    if (!allowed) {
-      return error("RATE_LIMIT_EXCEEDED", 429);
-    }
-
-    const skip = (page - 1) * limit;
-
-    const data = await getHeadlines({
-      category,
-      region,
-      limit,
-      skip,
-    });
-
-    return success(data, {
-      page,
-      limit,
-      count: data.length,
-    });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return apiSuccess(result);
   } catch (err: any) {
-    if (err.message === "INVALID_API_KEY") {
-      return error("Invalid API key", 401);
-    }
+    return apiError(err);
+  }
+}
 
-    if (err.message === "NO_ACTIVE_SUBSCRIPTION") {
-      return error("Subscription required", 403);
-    }
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
 
-    return error("Internal Server Error", 500);
+    // Check if it's an array for bulk insert
+    if (Array.isArray(body)) {
+      const result = await createHeadlines(body);
+      return apiSuccess(result);
+    } else {
+      // Single headline insert
+      const result = await createHeadline(body);
+      return apiSuccess(result);
+    }
+  } catch (err: any) {
+    return apiError(err);
   }
 }

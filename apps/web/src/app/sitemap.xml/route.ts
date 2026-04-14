@@ -1,4 +1,5 @@
 // Global Home - sitemap.xml
+import { CACHE_1_HOUR } from "@worldnews/shared/seo";
 import { fetchTenants } from "@worldnews/shared/news-engine-apis";
 
 export const dynamic = "force-dynamic";
@@ -24,7 +25,7 @@ export async function GET() {
   return new Response(xml, {
     headers: {
       "Content-Type": "application/xml",
-      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=59",
+      "Cache-Control": `public, s-maxage=${CACHE_1_HOUR}, stale-while-revalidate=59`,
     },
   });
 }

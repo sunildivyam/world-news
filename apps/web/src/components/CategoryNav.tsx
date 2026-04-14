@@ -1,20 +1,36 @@
 "use client";
 
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import NoPrefetchLink from "@/components/NoPrefetchLink";
 import { usePathname } from "next/navigation";
-import { categories } from "@/app-constants/categories.constants";
 import { resolveUrl } from "@/lib/contexts/url/Url.Resolver";
-import { PageTypeEnum } from "@worldnews/shared/types";
+import { Category, PageTypeEnum, TenantConfig } from "@worldnews/shared/types";
 import { AppContext } from "./AppContext.Provider";
 import { SectionError } from "./SectionError";
 import { AppError } from "@worldnews/shared/types";
 import TenantLogo from "./TenantLogo";
+import { fetchTenantCategories } from "@worldnews/shared/news-engine-apis";
 
 export default function CategoryNav() {
-  const { userCtx, tenantConfig } = useContext(AppContext) || {};
+  const { userCtx } = useContext(AppContext) || {};
+  const [tenantConfig, setTenantConfig] = useState<TenantConfig | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
   const pathname = usePathname();
+
+  useEffect(() => {
+    setTenantConfig(userCtx?.tenantCtx?.tenant?.settings!);
+  }, [userCtx]);
+
+  useEffect(() => {
+    fetchTenantCategories(userCtx?.tenantId)
+      .then((cats: Category[] | null) => {
+        setCategories(cats || []);
+      })
+      .catch(() => {
+        setCategories([]);
+      });
+  }, []);
 
   const isActive = (value: string) => {
     return pathname?.includes(value);
@@ -39,14 +55,14 @@ export default function CategoryNav() {
               const catUrl = resolveUrl(
                 userCtx,
                 PageTypeEnum.category,
-                cat.value,
+                cat.name,
               );
               return (
                 <NoPrefetchLink
-                  key={cat.value}
+                  key={cat.name}
                   href={catUrl}
                   className={`text-sm font-medium transition ${
-                    isActive(cat.value)
+                    isActive(cat.name)
                       ? "text-blue-600 border-b-2 border-blue-600"
                       : "text-gray-600 hover:text-blue-600"
                   }`}
@@ -84,15 +100,15 @@ export default function CategoryNav() {
               const catUrl = resolveUrl(
                 userCtx,
                 PageTypeEnum.category,
-                cat.value,
+                cat.name,
               );
               return (
                 <NoPrefetchLink
-                  key={cat.value}
+                  key={cat.name}
                   href={catUrl}
                   onClick={() => setIsOpen(false)}
                   className={`text-sm font-medium ${
-                    isActive(cat.value) ? "text-blue-600" : "text-gray-700"
+                    isActive(cat.name) ? "text-blue-600" : "text-gray-700"
                   }`}
                 >
                   {cat.label}

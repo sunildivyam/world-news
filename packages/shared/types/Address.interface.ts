@@ -1,4 +1,5 @@
 export interface Address {
+  _id?: string;
   street?: string;
   city?: string;
   state?: string;
@@ -9,4 +10,6 @@ export interface Address {
   locality?: string;
   latitude?: number;
   longitude?: number;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }
