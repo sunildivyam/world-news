@@ -11,21 +11,25 @@ import { useContext } from "react";
 
 interface Props {
   article: Article;
+  className?: string;
 }
 
-export default function NewsCard({ article }: Props) {
+export default function NewsCard({ article, className }: Props) {
   const { userCtx } = useContext(AppContext) || {};
   const articleUrl = resolveUrlFromArticle(article, userCtx);
+  const cNames = `relative${className ? " " + className : ""}`;
+
+  if (!article) return null;
 
   return (
-    <div className="relative">
+    <div className={cNames}>
       <NoPrefetchLink href={articleUrl} className="group block pb-6">
         <div className="relative w-full h-56 overflow-hidden rounded-lg">
           {article.imageUrl && (
             <Image
               sizes="(max-width: 768px) 100vw, 33vw"
               src={article.imageUrl}
-              alt={article.title}
+              alt={article.title || article._id || "article"}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
             />

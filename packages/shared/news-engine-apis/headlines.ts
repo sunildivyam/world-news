@@ -93,7 +93,7 @@ export async function fetchHeadlinesByContentGenerated(
 
   try {
     const response = await fetch(url, {
-      next: { revalidate: 120 },
+      next: { revalidate: 0 },
     });
 
     if (!response.ok) {

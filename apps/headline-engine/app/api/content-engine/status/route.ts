@@ -1,7 +1,7 @@
 // app/api/content-engine/status/route.ts
 
-import { engineManager } from "@/lib/content-engine/ContentEngineManager";
+import { contentEngine } from "@worldnews/shared/server/content-engine/ContentEngine.class";
 
 export async function GET() {
-  return Response.json(engineManager.getStatus());
+  return Response.json(contentEngine.progress);
 }

@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { AppContext } from "./AppContext.Provider";
 import { SectionError } from "./SectionError";
 import { AppError, Category, TenantConfig } from "@worldnews/shared/types";
-import { resolveUrl } from "@/lib/contexts/url/Url.Resolver";
+import { resolveHomeUrl, resolveUrl } from "@/lib/contexts/url/Url.Resolver";
 import { PageTypeEnum } from "@worldnews/shared/types";
 import TenantLogo from "./TenantLogo";
 import { fetchTenantCategories } from "@worldnews/shared/news-engine-apis";
@@ -85,11 +85,12 @@ export default function CategoryNavSmart() {
         {/* Top Row */}
         <div className="flex items-center justify-between">
           {/* <div className="font-bold text-lg">WorldNews</div> */}
-          <TenantLogo
-            displayName={tenantConfig?.branding.displayName || ""}
-            logoUrl={tenantConfig?.branding.logoUrl || ""}
-          />
-
+          <NoPrefetchLink href={resolveHomeUrl(userCtx)}>
+            <TenantLogo
+              displayName={tenantConfig?.branding.displayName || ""}
+              logoUrl={tenantConfig?.branding.logoUrl || ""}
+            />
+          </NoPrefetchLink>
           <div className="hidden md:flex gap-4 flex-wrap mt-4 mb-4">
             {categories.map((cat) => {
               const catUrl = resolveUrl(

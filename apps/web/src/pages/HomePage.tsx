@@ -1,12 +1,11 @@
 import { fetchArticles } from "@/lib/news-service";
 import HeroArticle from "@/components/HeroArticle";
-import NewsGrid from "@/components/NewsGrid";
-import InfiniteScroll from "@/components/InfiniteScroll";
 import { SectionError } from "@/components/SectionError";
 import { AppError } from "@worldnews/shared/types";
 import type { ArticleCollection } from "@worldnews/shared/types";
 import type { UserContext } from "@worldnews/shared/types";
 import type { TenantConfig } from "@worldnews/shared/types";
+import PaginatedNewsGrid from "@/components/PaginatedNewsGrid";
 
 export default async function HomePage({
   userContext,
@@ -53,22 +52,20 @@ export default async function HomePage({
           }
         })} */}
 
-        {hero && <HeroArticle article={hero} />}
+        {hero && (
+          <div className="h-[70vh]">
+            <HeroArticle article={hero} />
+          </div>
+        )}
 
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          {rest.length > 0 && (
-            <NewsGrid
-              articles={rest}
-              className="md:grid-cols-2 lg:grid-cols-3"
-            />
-          )}
-
-          {/* Pass the server-fetched cursor to the client-side scroll component */}
-          {articleCollection.nextPage && (
-            <InfiniteScroll
-              initialCursor={articleCollection.nextPage as string}
-            />
-          )}
+        <div className="max-w-full mx-auto px-1 md:px-4 py-8">
+          <PaginatedNewsGrid
+            initialArticles={rest}
+            nextPage={articleCollection.nextPage as string}
+            maxAutoloadCount={2}
+            category={undefined}
+            className=""
+          />
         </div>
       </main>
     </>

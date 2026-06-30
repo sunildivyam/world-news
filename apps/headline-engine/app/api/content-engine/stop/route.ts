@@ -1,9 +1,9 @@
 // app/api/content-engine/stop/route.ts
 
-import { engineManager } from "@/lib/content-engine/ContentEngineManager";
+import { contentEngine } from "@worldnews/shared/server/content-engine/ContentEngine.class";
 
 export async function POST() {
-  engineManager.stop();
+  contentEngine.stop();
 
   return Response.json({ message: "Engine stopped" });
 }
