@@ -45,7 +45,7 @@ export async function generateMetadata() {
   const h = await headers();
   const host = h.get("host") || "";
   const pathname = h.get("x-pathname") || "";
-  console.log(host, " *** ", pathname);
+  
   const userCtx = await getUserContext();
   const tenantCtx = await resolveTenantContext(host, pathname);
 

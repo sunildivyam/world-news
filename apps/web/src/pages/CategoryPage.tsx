@@ -9,6 +9,7 @@ import { ArticleCollection } from "@worldnews/shared/types";
 import LocalisedTitle from "@/components/LocalisedTitle";
 import { UserContext } from "@worldnews/shared/types";
 import { fetchTenantCategories } from "@worldnews/shared/news-engine-apis";
+import PaginatedNewsGrid from "@/components/PaginatedNewsGrid";
 
 export default async function CategoryPage({
   userContext,
@@ -67,20 +68,14 @@ export default async function CategoryPage({
 
         {hero && <HeroArticle article={hero} />}
 
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          {rest.length > 0 && (
-            <NewsGrid
-              articles={rest}
-              className="md:grid-cols-2 lg:grid-cols-3"
-            />
-          )}
-
-          {articleCollection.nextPage && (
-            <InfiniteScroll
-              initialCursor={articleCollection.nextPage as string}
-              category={slug}
-            />
-          )}
+        <div className="max-w-full mx-auto px-1 md:px-4 py-8">
+          <PaginatedNewsGrid
+            initialArticles={rest}
+            nextPage={articleCollection.nextPage as string}
+            maxAutoloadCount={2}
+            category={slug}
+            className=""
+          />
         </div>
       </main>
     </>

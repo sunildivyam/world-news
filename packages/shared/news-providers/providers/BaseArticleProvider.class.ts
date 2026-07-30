@@ -157,7 +157,6 @@ export class BaseArticleProvider implements ArticleProvider {
   ): Promise<ArticleCollection> {
     const fnName = "fetchArticles()";
     const req = this.createRequest(context, options || {});
-    console.log(`${this.name} | ${fnName}}`, req.url);
 
     try {
       const res = await fetch(req, {
@@ -189,7 +188,6 @@ export class BaseArticleProvider implements ArticleProvider {
     });
 
     try {
-      console.log(`${this.name} | ${fnName}`, req.url);
       const res = await fetch(req, {
         next: { revalidate: 600 },
       });
@@ -216,12 +214,12 @@ export class BaseArticleProvider implements ArticleProvider {
   ): Promise<ArticleCollection> {
     const fnName = "fetchRelatedArticles()";
 
-    if (!article)
-      throw new AppError(
-        `${this.name} | ${fnName}`,
-        "Expected article for related articles",
-        400,
-      );
+    // if (!article)
+    //   throw new AppError(
+    //     `${this.name} | ${fnName}`,
+    //     "Expected article for related articles",
+    //     400,
+    //   );
 
     try {
       const req = this.createRequest(context, {
@@ -231,7 +229,6 @@ export class BaseArticleProvider implements ArticleProvider {
         // tags: article?.tags ?? undefined,
       });
 
-      console.log(`${this.name} | ${fnName}`, req.url);
       const res = await fetch(req, {
         next: { revalidate: 600 },
       });

@@ -34,3 +34,5 @@ export * from "./Category.interface";
 export * from "./NewsEvent.interface";
 export * from "./Tag.interface";
 export * from "./LatestArticlesQueryParams.interface";
+export * from "./ApiResponse.interface";
+export * from "./ExternalArticle.interface";

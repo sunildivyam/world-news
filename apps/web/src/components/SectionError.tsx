@@ -5,14 +5,27 @@ interface SectionErrorProps {
   error?: AppError;
   data?: any;
   onRetry?: () => void;
+  isSilent?: boolean;
 }
 
 export const SectionError: React.FC<SectionErrorProps> = ({
   error,
   data,
   onRetry,
+  isSilent = false,
 }) => {
-  if (!error) return null;
+  if (!error || isSilent) return null;
+  if (isSilent) {
+    return (
+      <div className="section-error">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="text-left text-red-600">
+            <p className="text-center">{error.message}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="section-error">

@@ -38,7 +38,7 @@ export default function PaginatedNewsGrid({
   async function loadMore() {
     if (!cursor || loading) return;
     setLoading(true);
-
+    setLoadError(null);
     const url = new URL("/api/news", window.location.origin);
 
     if (category) {
@@ -108,12 +108,13 @@ export default function PaginatedNewsGrid({
           );
         })}
       </div>
+
       {loading && (
         <div className="text-center py-8 text-gray-500">
           Loading more news...
         </div>
       )}
-      {loadError && <SectionError error={loadError} />}
+      {loadError && <SectionError error={loadError} isSilent={true} />}
       {autoLoadCount >= 2 && hasMore && !loading && (
         <div className="flex justify-center py-12">
           <button

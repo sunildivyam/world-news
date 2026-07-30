@@ -1,9 +1,10 @@
-import { PageTypeEnum, TenantConfig, UserContext } from "../types";
+import { Article, PageTypeEnum, TenantConfig, UserContext } from "../types";
 import { Metadata } from "next";
 import { fetchArticle } from "../news-engine-apis/articles";
 import { fetchCategory } from "../news-engine-apis/categories";
 import { fetchTag } from "../news-engine-apis/tags";
 import { fetchNewsEvent } from "../news-engine-apis/newsEvents";
+import { decodeIdToObject } from "../utils/encryptUrl";
 
 export async function generatePageMeta(
   userCtx: UserContext,
@@ -34,7 +35,18 @@ export async function generatePageMeta(
   try {
     switch (pageType) {
       case PageTypeEnum.article: {
-        const article = await fetchArticle(pageId);
+        let article: Article | null = null;
+
+        try {
+          article = await decodeIdToObject(pageId || "");
+        } catch (error) {
+          article = null;
+        }
+
+        if (!article) {
+          article = await fetchArticle(pageId);
+        }
+
         if (article) {
           return {
             title: `${article.title} - ${baseTitle}`,
