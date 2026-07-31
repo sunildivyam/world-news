@@ -1,4 +1,4 @@
-export * from "./sitemap";
+export * from "./sitemaps";
 export * from "./isInvalidPath";
 export * from "./seo.constants";
 export * from "./robots";

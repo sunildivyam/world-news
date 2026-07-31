@@ -5,9 +5,9 @@ import { setResponseHeadersWithUserContext } from "./lib/contexts/user/UserConte
 import {
   isInvalidPath,
   isDomainRobotsTxt,
-  isDomainSitemap,
   isDomainNotFoundPage,
 } from "@worldnews/shared/seo";
+import { isDomainSitemap } from "@worldnews/shared/seo/sitemaps";
 
 export async function proxy(request: NextRequest) {
   // const pathname = (request.nextUrl.pathname || "").toLowerCase();
@@ -55,6 +55,7 @@ export async function proxy(request: NextRequest) {
 
   if (sitemapUrl) {
     const url = new URL(sitemapUrl, request.url);
+
     const res = NextResponse.rewrite(url);
     return res;
   }

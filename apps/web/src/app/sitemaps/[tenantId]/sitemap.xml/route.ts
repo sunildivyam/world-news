@@ -1,14 +1,7 @@
 // Global Home - sitemap.xml
-import { Article, ArticleCollection, PageTypeEnum } from "@worldnews/shared";
-import {
-  fetchCategories,
-  fetchCountries,
-  fetchLatestArticles,
-  fetchTenant,
-} from "@worldnews/shared/news-engine-apis";
+import { formatSitemapResponse, generateTenantSitemapIndex, SITEMAP_CACHE } from "@worldnews/shared/seo/sitemaps";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 3600; // Cache for 1 hour to protect Db
+import { fetchTenant } from "@worldnews/shared/news-engine-apis";
 
 export async function GET(
   request: Request,
@@ -17,65 +10,14 @@ export async function GET(
   const tenantId = (await params).tenantId;
   const tenant = await fetchTenant(tenantId);
   const domain = tenant?.domain;
-  const countries = await fetchCountries(tenant?.country);
-  const cats = await fetchCategories(tenant?.category);
-  const articlesCollection: ArticleCollection | null =
-    await fetchLatestArticles({
-      tenantId: tenantId,
-      hours: 10 * 24,
-      limit: 1000,
-      page: 1,
-      fields: ["slug", "title", "description", "url"],
-    }).catch((err) => {
-      return null;
-    }); // 10 Days
 
-  let articles: Article[] = [];
-  if (articlesCollection) {
-    articles = articlesCollection.articles;
-  }
+  // TODO: fetchTotal Articles Count in the database
+  // const totalArticlesCount = await getTenantArticlesCount(tenantId);
+  const totalArticlesCount = 10000;
+  const sitemapIndexXml = generateTenantSitemapIndex(
+    domain!,
+    totalArticlesCount,
+  );
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    ${countries
-      .map((c) => {
-        let cSet = `
-      <url>
-        <loc>https://${domain}/${c.code}/${c.languages[0]}</loc>
-        <lastmod>${new Date().toISOString()}</lastmod>
-        <changefreq>daily</changefreq>
-        <priority>1</priority>
-      </url>
-    `;
-        cSet += cats
-          .map(
-            (cat) => `
-      <url>
-        <loc>https://${domain}/${c.code}/${c.languages[0]}/category/${cat.name}</loc>
-        <lastmod>${new Date().toISOString()}</lastmod>
-        <changefreq>daily</changefreq>
-        <priority>0.8</priority>
-      </url>
-    `,
-          )
-          .join("");
-        return cSet;
-      })
-      .join("")}
-      ${articles.map((a) => {
-        return `<url>
-        <loc>${a.url}</loc>
-        <lastmod>${a.updatedAt || new Date().toISOString()}</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-      </url>`;
-      })}
- </urlset>`;
-
-  return new Response(xml, {
-    headers: {
-      "Content-Type": "application/xml",
-      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=59",
-    },
-  });
+  return formatSitemapResponse(sitemapIndexXml, SITEMAP_CACHE.ROOT);
 }

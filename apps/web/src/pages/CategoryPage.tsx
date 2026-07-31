@@ -1,7 +1,5 @@
 import { fetchArticles } from "@/lib/news-service";
 import HeroArticle from "@/components/HeroArticle";
-import NewsGrid from "@/components/NewsGrid";
-import InfiniteScroll from "@/components/InfiniteScroll";
 import { SectionError } from "@/components/SectionError";
 import { AppError } from "@worldnews/shared/types";
 import { ArticleQueryParams } from "@worldnews/shared/types";
@@ -61,7 +59,7 @@ export default async function CategoryPage({
             <LocalisedTitle
               userContext={userContext}
               title={slug}
-              postfix="News"
+              postfix="News today"
             />
           </h1>
         </div>
