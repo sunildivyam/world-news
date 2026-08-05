@@ -1,4 +1,11 @@
-export const SITEMAP_FILE_NAME = "sitemap.xml";
+export const SITEMAP_FILE_NAMES = [
+  "sitemap.xml",
+  "news.xml",
+  "geo.xml",
+  "static.xml",
+];
+export const ARTICLES_SITEMAP_FILE_PREFIX = "articles-";
+
 export const ROBOTS_FILE_NAME = "robots.txt";
 export const NOT_FOUND_NAME = "not-found";
 export const CACHE_1_MINUTE = 60;

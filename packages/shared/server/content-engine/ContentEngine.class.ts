@@ -24,11 +24,13 @@ import { getPrompt } from "./ai-prompts";
 import { randomAuthor } from "./authors";
 import { convertToSlug } from "../../utils/slugs";
 import { ContentEngineProgress } from "./ContentEngineProgress.interface";
+import { Logger } from "../../logging";
 
 export class ContentEngine {
-  headline: Headline | null = null;
-  cancel: boolean = false;
-  private progress: ContentEngineProgress = {
+  private headline: Headline | null = null;
+  private _logger: Logger;
+  private _progress: ContentEngineProgress = {
+    isRunning: false,
     logs: [],
     headlines: [],
     articles: [],
@@ -38,13 +40,26 @@ export class ContentEngine {
 
   private static instance: ContentEngine;
 
-  constructor() {}
+  constructor() {
+    this._logger = new Logger({}, (logs: string[]) => {
+      this._progress.logs = logs;
+      this.onProgress?.(this._progress);
+    });
+  }
 
   static getInstance(): ContentEngine {
     if (!ContentEngine.instance) {
       ContentEngine.instance = new ContentEngine();
     }
     return ContentEngine.instance;
+  }
+
+  public get isRunning(): boolean {
+    return this._progress.isRunning;
+  }
+
+  public get progress(): ContentEngineProgress {
+    return this._progress;
   }
 
   private async readHeadline(): Promise<Headline | null> {
@@ -135,7 +150,9 @@ export class ContentEngine {
     try {
       const source = await fetchArticleSource(articleSource.slug).catch(
         (err: any) => {
-          this.log(`${articleSource.slug} does not exist, so creating it`);
+          this._logger.log(
+            `${articleSource.slug} does not exist, so creating it`,
+          );
           return null;
         },
       );
@@ -147,7 +164,7 @@ export class ContentEngine {
       const result = await createArticleSource(articleSource);
       return result._id!;
     } catch (error: any) {
-      this.log("Error Adding Source" + error?.message);
+      this._logger.log("Error Adding Source" + error?.message);
       return "";
     }
   }
@@ -191,13 +208,13 @@ export class ContentEngine {
 
       // Get Language Name
       const lang = await fetchLanguage(language).catch((err) => {
-        this.log(`${language} not found in DB`);
+        this._logger.log(`${language} not found in DB`);
         return null;
       });
       // call AI endpoint
       const prompt = getPrompt(headline, lang?.name || language);
-      // this.log(JSON.stringify(prompt, null, "\t"));
-      this.log(
+      // this._logger.log(JSON.stringify(prompt, null, "\t"));
+      this._logger.log(
         `Getting started Generating content for Prompt for :${language} | ${headline.title}`,
       );
       const aiContent: ArticleContent | null = await generateAIContent(prompt);
@@ -211,7 +228,7 @@ export class ContentEngine {
       console.log("AI content populated");
       return article;
     } catch (error: any) {
-      this.log("generateArticle() | " + error?.message);
+      this._logger.log("generateArticle() | " + error?.message);
       return null;
     }
   }
@@ -223,7 +240,7 @@ export class ContentEngine {
     tenantDomain: string,
   ) {
     for (const l of language) {
-      if (this.cancel) {
+      if (!this._progress.isRunning) {
         break;
       }
       const generatedArticle = await this.generateArticle(
@@ -234,13 +251,13 @@ export class ContentEngine {
       );
 
       if (!generatedArticle) {
-        this.log(
+        this._logger.log(
           `FAILED: Article Generation in language: ${l} and for headline: ${headline?.title}`,
         );
         continue;
       }
 
-      this.log(
+      this._logger.log(
         `Article Generated in language: ${l} and for headline: ${headline?.title}`,
       );
       // Save it to DB (Publish)
@@ -248,21 +265,23 @@ export class ContentEngine {
         ...generatedArticle,
         tenant: undefined,
       }).catch((err) => {
-        this.log(
+        this._logger.log(
           `Saving to DB failed, Article with id: ${generatedArticle.title}, ${err.message}`,
         );
         return null;
       });
       if (result) {
-        this.log(`Created and saved to DB, Article with id: ${result._id}`);
+        this._logger.log(
+          `Created and saved to DB, Article with id: ${result._id}`,
+        );
         // Update progress
-        this.progress.articles.push({
+        this._progress.articles.push({
           id: result._id || "",
           title: result.title,
           tenantId: result.tenantId,
           language: result.language,
         });
-        this.onProgress?.(this.progress);
+        this.onProgress?.(this._progress);
 
         // Mark Content generated for current tenant
         await this.updateHeadlineProgress(headline!, undefined, l);
@@ -292,40 +311,35 @@ export class ContentEngine {
     }
   }
 
-  private log(str: string) {
-    this.progress.logs.push(str);
-    this.onProgress?.(this.progress);
-  }
-
   public async start() {
-    this.cancel = false;
-    this.progress = {
+    this._progress = {
+      isRunning: true,
       logs: [],
       headlines: [],
       articles: [],
     };
-    this.log("Started");
+    this._logger.log("Started");
     let headline: Headline | null = await this.readHeadline();
-    this.log(`Headline fetched: ${headline?.title}`);
+    this._logger.log(`Headline fetched: ${headline?.title}`);
 
-    while (!this.cancel && headline) {
+    while (this._progress.isRunning && headline) {
       // Update progress
-      this.progress.headlines.push({
+      this._progress.headlines.push({
         id: headline._id || "",
         title: headline?.title,
       });
-      this.onProgress?.(this.progress);
+      this.onProgress?.(this._progress);
 
       // Get tenants eligible for this headline
       const { tenantIds } = headline;
       if (!tenantIds?.length) {
-        this.log(`No tenantIds exist for headline`);
+        this._logger.log(`No tenantIds exist for headline`);
       }
 
       for (const tId of tenantIds || []) {
         const tenant = await fetchTenant(tId);
         if (!this.isTenantElligible(tenant, headline)) {
-          this.log(`Tenant ${tId} not elligible`);
+          this._logger.log(`Tenant ${tId} not elligible`);
           continue;
         }
 
@@ -338,7 +352,7 @@ export class ContentEngine {
         );
         // Mark Content generated for current tenant
         await this.updateHeadlineProgress(headline!, tId);
-        if (this.cancel) {
+        if (!this._progress.isRunning) {
           break;
         }
       }
@@ -350,15 +364,20 @@ export class ContentEngine {
         contentGeneratedAt: new Date(),
       });
 
+      this._logger.log(`Finished - ${headline?.title}`);
       // Read next headline
+      this._logger.log(`Reading next headline`);
       headline = await this.readHeadline();
-      this.log(`Finished`);
     }
+
+    this.stop();
+    this._logger.log(`Finished all headlines`);
   }
 
   public stop() {
-    this.cancel = true;
-    this.onProgress?.(this.progress);
+    this._progress.isRunning = false;
+    this.onProgress?.(this._progress);
+    console.log("Stopped");
   }
 }
 

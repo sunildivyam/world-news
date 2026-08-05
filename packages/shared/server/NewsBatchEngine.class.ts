@@ -6,10 +6,20 @@ import {
   updateNewsBatch,
 } from "../news-engine-apis";
 import { executeWithFailover } from "../news-providers/provider-manager";
-import { Article, ArticleCollection, Headline, NewsBatch } from "../types";
+import {
+  AppError,
+  Article,
+  ArticleCollection,
+  Headline,
+  NewsBatch,
+} from "../types";
+import { deDuplicate } from "../utils/common";
+
+const MAX_HEADLINES_PER_CATEGORY = 1;
 
 export class NewsBatchEngine {
   newsBatches: NewsBatch[] = [];
+  error = new AppError("NewsBatchEngine", "", 400);
 
   private static instance: NewsBatchEngine;
 
@@ -37,7 +47,7 @@ export class NewsBatchEngine {
         providerName = provider.name;
         return await provider.fetchArticles(
           { geo: { country: country } },
-          { category: [category] },
+          { category: [category], pageSize: MAX_HEADLINES_PER_CATEGORY },
         );
       },
       headlineProviders,
@@ -77,7 +87,11 @@ export class NewsBatchEngine {
   }
 
   async deDuplicate(articles: Article[]): Promise<Article[]> {
-    return articles;
+    if (!Array.isArray(articles))
+      throw this.error.set("Input is not an array", 400);
+    if (!articles.length) return articles;
+
+    return deDuplicate(articles, "title");
   }
 
   async markNewsBatchFinished(id: string) {

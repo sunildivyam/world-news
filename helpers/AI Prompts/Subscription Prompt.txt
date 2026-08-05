@@ -1,0 +1,43 @@
+available languages GET endpoint: /api/languages (id, code, title)
+available categories GET endpoint: /api/categories (id, name, title, description)
+available subscription plan GET endpoint: /api/subscription/current (languages: [{code: en, fee: 0.5}], categories: [{name: sports, fee: 0.2}])
+
+I want the logged in tenant user to subscribe to languages and categories and number of articles per day to be auto generated.
+each language is associated with certain fee
+each category is associated with certain fee
+The article generation cost is calculated based on language and category.
+
+Example:
+Languages:
+en = Rs. 0.4
+hi = Rs. 0.3
+
+Categories:
+sports = Rs. 0.2
+entertainment = Rs. 0.1
+financial = Rs. 0.4
+
+So a sports article generated in English, will cost = 0.4 + 0.2 = Rs. 0.6
+While a sports article generated in Hindi, will cost = 0.3 + 0.2 = Rs. 0.5
+
+Also user can subscribe to number of articles per day for each of the selected categories of each of the selected language.
+Example:
+Language: English
+Categories:
+sports = 2 articles
+entertainment = 3 articles
+financial = 5 articles
+
+Language: Hindi
+Categories:
+sports = 1 articles
+entertainment = 2 articles
+financial = 6 articles
+So
+Total number of articles per day: English + Hindi = 10 + 9 = 19 articles.
+English = 2 + 3 + 5 = 10 articles
+Hindi = 1 + 2 + 6 = 9 articles.
+So the total cost per day = calculated based on language and category fee for each article.
+
+Help me to write complete tenant journey of subscription
+using Nextjs, Shadecn UI

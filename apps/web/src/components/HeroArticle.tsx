@@ -7,52 +7,76 @@ import NoPrefetchLink from "@/components/NoPrefetchLink";
 import ArticleSourceLink from "./ArticleSourceLink";
 import { AppContext } from "./AppContext.Provider";
 import { useContext } from "react";
+import { encodeObjectToId } from "@worldnews/shared/utils";
+import { StaggerContainer, StaggerItem } from "@worldnews/shared/motion";
 
 interface Props {
   article: Article;
+  className?: string;
 }
 
-export default function HeroArticle({ article }: Props) {
+export default function HeroArticle({ article, className }: Props) {
   const { userCtx } = useContext(AppContext) || {};
-  const url = resolveUrlFromArticle(article, userCtx);
+  // Encoding article to id (slug)
+  const updatedSlug = encodeObjectToId(article);
+
+  const url = resolveUrlFromArticle({ ...article, slug: updatedSlug }, userCtx);
+
+  const cNames = `relative w-full h-full overflow-hidden ${className || ""}`;
+
+  if (!article) return null;
 
   return (
-    <div className="block relative">
-      <NoPrefetchLink href={url} className="group block">
-        <div className="relative w-full h-[70vh] overflow-hidden">
+    <StaggerContainer as="article" className={cNames}>
+      <NoPrefetchLink href={url} className="group block w-full h-full">
+        <div className="relative w-full h-[80vh] min-h-min overflow-hidden">
           <Image
-            sizes="(max-width: 1200px) 100vw, 50vw"
+            sizes="100vw"
             src={article.imageUrl || ""}
-            alt={article.title}
+            alt={article.title || article._id || "article"}
             fill
             priority
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
 
+          {/* Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-          <div className="max-w-7xl mx-auto px-4 py-8">
-            <div className="absolute bottom-0 p-8 text-white max-w-4xl">
-              <p className="text-red-500 font-semibold uppercase tracking-wider flex gap-4">
-                Breaking News
-              </p>
 
-              <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mt-3">
-                {article.title}
-              </h1>
+          {/* Content */}
+          <div className="absolute inset-0 flex items-end">
+            <div className="w-full p-4 md:p-8 text-white">
+              <div className="max-w-4xl">
+                <StaggerItem
+                  as="p"
+                  className="text-red-500 font-semibold uppercase tracking-wider flex gap-4"
+                >
+                  Breaking News
+                </StaggerItem>
 
-              <p className="mt-4 text-lg text-gray-200 line-clamp-3">
-                {article.description}
-              </p>
+                <StaggerItem
+                  as="h1"
+                  className="mt-3 text-3xl md:text-5xl font-extrabold leading-tight"
+                >
+                  {article.title}
+                </StaggerItem>
+
+                {article.description && (
+                  <StaggerItem
+                    as="p"
+                    className="mt-4 text-base md:text-lg text-gray-200 line-clamp-3"
+                  >
+                    {article.description}
+                  </StaggerItem>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </NoPrefetchLink>
-      <div
-        className="block absolute pr-4"
-        style={{ bottom: "0", right: "50%" }}
-      >
+
+      <div className="absolute bottom-4 right-4 z-10">
         <ArticleSourceLink source={article.source} />
       </div>
-    </div>
+    </StaggerContainer>
   );
 }

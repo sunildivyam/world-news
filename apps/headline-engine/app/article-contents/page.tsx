@@ -78,11 +78,9 @@ export default function ContentDashboard() {
           <h2 className="font-semibold mb-2">Progress</h2>
 
           <div className="bg-gray-200 overflow-hidden flex flex-col gap-2 p-4 m-4">
-            <label>
-              Headlines Processed({status?.progress?.headlines?.length || 0})
-            </label>
+            <label>Headlines Processed({status?.headlines?.length || 0})</label>
             <ol style={{ listStyle: "auto" }} className="p-4">
-              {status?.progress?.headlines?.map((hl: any, index: number) => (
+              {status?.headlines?.map((hl: any, index: number) => (
                 <li
                   key={hl.id + index}
                   className="border-b border-solid border-indigo-400"
@@ -94,11 +92,9 @@ export default function ContentDashboard() {
           </div>
 
           <div className="bg-gray-200 overflow-hidden flex flex-col gap-2 p-4 m-4">
-            <label>
-              Articles Processed({status?.progress?.articles?.length || 0})
-            </label>
+            <label>Articles Processed({status?.articles?.length || 0})</label>
             <ol style={{ listStyle: "auto" }} className="p-4">
-              {status?.progress?.articles?.map((art: any, index: number) => (
+              {status?.articles?.map((art: any, index: number) => (
                 <li
                   key={art.id + index}
                   className="border-b border-solid border-indigo-400"
@@ -112,9 +108,9 @@ export default function ContentDashboard() {
             </ol>
           </div>
           <div className="bg-gray-200 overflow-hidden flex flex-col gap-2 p-4 m-4">
-            <label>Logs ({status?.progress?.logs?.length || 0})</label>
+            <label>Logs ({status?.logs?.length || 0})</label>
             <ol style={{ listStyle: "auto" }} className="p-4">
-              {status?.progress?.logs?.map((log: string, index: number) => (
+              {status?.logs?.map((log: string, index: number) => (
                 <li
                   key={index}
                   className="border-b border-solid border-indigo-400"

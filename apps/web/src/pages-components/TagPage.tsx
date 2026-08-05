@@ -9,8 +9,9 @@ import { ArticleQueryParams } from "@worldnews/shared/types";
 import { ArticleCollection } from "@worldnews/shared/types";
 import LocalisedTitle from "@/components/LocalisedTitle";
 import { UserContext } from "@worldnews/shared/types";
+import PaginatedNewsGrid from "@/components/PaginatedNewsGrid";
 
-export default async function EventPage({
+export default async function TagPage({
   userContext,
   slug,
 }: {
@@ -19,17 +20,14 @@ export default async function EventPage({
 }) {
   // 1. Await params (Required in Next.js 15)
 
-  // 2. Initial Setup
   // 4. Fetch Articles
   const fetchOptions: ArticleQueryParams = {
-    event: slug,
+    tags: [slug],
   };
 
   const articlesRes = await fetchArticles(userContext, fetchOptions).catch(
     (err: AppError) => err,
   );
-;
-
   // 5. Check for Fetch Errors
   if (AppError.isError(articlesRes)) {
     return <SectionError error={articlesRes as AppError} />;
@@ -55,20 +53,14 @@ export default async function EventPage({
 
         {hero && <HeroArticle article={hero} />}
 
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          {rest.length > 0 && (
-            <NewsGrid
-              articles={rest}
-              className="md:grid-cols-2 lg:grid-cols-3"
-            />
-          )}
-
-          {articleCollection.nextPage && (
-            <InfiniteScroll
-              initialCursor={articleCollection.nextPage as string}
-              category={slug}
-            />
-          )}
+        <div className="max-w-full mx-auto px-1 md:px-4 py-8">
+          <PaginatedNewsGrid
+            initialArticles={rest}
+            nextPage={articleCollection.nextPage as string}
+            maxAutoloadCount={2}
+            category={slug}
+            className=""
+          />
         </div>
       </main>
     </>

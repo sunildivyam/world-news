@@ -3,7 +3,7 @@
 import { useContext, useEffect, useState } from "react";
 import NoPrefetchLink from "@/components/NoPrefetchLink";
 import { usePathname } from "next/navigation";
-import { resolveUrl } from "@/lib/contexts/url/Url.Resolver";
+import { resolveHomeUrl, resolveUrl } from "@/lib/contexts/url/Url.Resolver";
 import { Category, PageTypeEnum, TenantConfig } from "@worldnews/shared/types";
 import { AppContext } from "./AppContext.Provider";
 import { SectionError } from "./SectionError";
@@ -48,10 +48,12 @@ export default function CategoryNav() {
       <div className="max-w-7xl mx-auto px-4 py-4">
         {/* Top Bar */}
         <div className="flex items-center justify-between">
-          <TenantLogo
-            displayName={tenantConfig?.branding.displayName || ""}
-            logoUrl={tenantConfig?.branding.logoUrl || ""}
-          />
+          <NoPrefetchLink href={resolveHomeUrl(userCtx)}>
+            <TenantLogo
+              displayName={tenantConfig?.branding.displayName || ""}
+              logoUrl={tenantConfig?.branding.logoUrl || ""}
+            />
+          </NoPrefetchLink>
           {/* Desktop Menu */}
           <div className="hidden md:flex gap-6 flex-wrap">
             {categories.map((cat) => {

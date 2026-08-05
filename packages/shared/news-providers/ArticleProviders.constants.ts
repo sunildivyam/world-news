@@ -12,4 +12,7 @@ export const headlineProviders: ArticleProvider[] = [
 
 export const articleProviders: ArticleProvider[] = [
   new NewsEngineApiProvider(),
+  new NewsdataProvider(),
+  new GNewsIOProvider(),
+  new NewsApiAOrgProvider(),
 ];

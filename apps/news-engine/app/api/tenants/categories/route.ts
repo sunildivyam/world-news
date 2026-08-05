@@ -6,7 +6,6 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const tenantId = searchParams.get("tenantId");
-
     const result = await findTenantCategories(tenantId?.toLowerCase() || "");
 
     return apiSuccess(result);

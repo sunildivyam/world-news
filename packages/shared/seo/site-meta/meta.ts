@@ -1,9 +1,12 @@
-import { PageTypeEnum, TenantConfig, UserContext } from "../types";
+import { Article, PageTypeEnum, TenantConfig, UserContext } from "../../types";
 import { Metadata } from "next";
-import { fetchArticle } from "../news-engine-apis/articles";
-import { fetchCategory } from "../news-engine-apis/categories";
-import { fetchTag } from "../news-engine-apis/tags";
-import { fetchNewsEvent } from "../news-engine-apis/newsEvents";
+import { fetchArticle } from "../../news-engine-apis/articles";
+import { fetchCategory } from "../../news-engine-apis/categories";
+import { fetchTag } from "../../news-engine-apis/tags";
+import { fetchNewsEvent } from "../../news-engine-apis/newsEvents";
+import { decodeIdToObject } from "../../utils/encryptUrl";
+import { generateStaticPageMeta } from "./staticMeta";
+import { generateDefaultPageMeta } from "./defaultMeta";
 
 export async function generatePageMeta(
   userCtx: UserContext,
@@ -12,36 +15,39 @@ export async function generatePageMeta(
   const { branding } = tenantCtx?.tenant?.settings as TenantConfig;
   const { displayName } = branding;
 
-  const baseTitle = `${displayName} - World News`;
+  const baseTitle = `${displayName}`;
   const baseDescription = `Stay updated with the latest news from ${displayName}. Get breaking news, world news, and local news coverage.`;
 
-  if (!pageType) {
-    if (pageId) {
-      // Static page - for now, use generic metadata
-      return {
-        title: `${pageId} - ${baseTitle}`,
-        description: baseDescription,
-      };
-    }
+  const isStaticPage = !pageType && pageId;
+  const isHomePage = !pageType && !pageId;
 
-    // Home page
-    return {
-      title: baseTitle,
-      description: baseDescription,
-    };
-  }
+  if (isHomePage) return await generateDefaultPageMeta(userCtx);
+  if (isStaticPage) return await generateStaticPageMeta(userCtx);
 
   try {
     switch (pageType) {
       case PageTypeEnum.article: {
-        const article = await fetchArticle(pageId);
+        let article: Article | null = null;
+        let canonical = "";
+
+        try {
+          article = await decodeIdToObject(pageId || "");
+          canonical = `https://${tenantCtx?.tenant?.domain}/${article?.geo.country}/${article?.language}/article/${pageId}`;
+        } catch (error) {
+          article = null;
+        }
+
+        if (!article) {
+          article = await fetchArticle(pageId);
+        }
+
         if (article) {
           return {
             title: `${article.title} - ${baseTitle}`,
             description: article.description || baseDescription,
             keywords: article.keywords?.join(", "),
             alternates: {
-              canonical: article.url,
+              canonical: canonical || article.url,
             },
             openGraph: {
               title: article.title,

@@ -29,3 +29,20 @@ export function isLocalHost(host: string): boolean {
     lowercaseHost.endsWith(".local")
   );
 }
+
+/**
+ * Deduplicates an array of objects based on a specific key.
+ * Keeps the first occurrence and discards subsequent duplicates.
+ */
+export function deDuplicate<T>(arr: T[], key: keyof T): T[] {
+  const map = new Map();
+
+  return arr.filter((item) => {
+    const identifier = item[key];
+    if (map.has(identifier)) {
+      return false;
+    }
+    map.set(identifier, true);
+    return true;
+  });
+}

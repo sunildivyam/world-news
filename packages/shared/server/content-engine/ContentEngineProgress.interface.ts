@@ -1,4 +1,5 @@
 export interface ContentEngineProgress {
+  isRunning: boolean;
   logs: string[];
   headlines: Array<{ id: string; title: string }>;
   articles: Array<{

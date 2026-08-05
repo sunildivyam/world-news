@@ -18,6 +18,8 @@ export default function ArticleSourceLink({ source }: ArticleSourceLinkProps) {
     }
   };
 
+  if (!source) return null;
+
   return (
     <NoPrefetchLink
       onClick={handleClick}
@@ -29,7 +31,7 @@ export default function ArticleSourceLink({ source }: ArticleSourceLinkProps) {
       {source.iconUrl && (
         <Image
           src={source.iconUrl}
-          alt={source.name}
+          alt={source.name || source._id || "article Source"}
           width={20}
           height={20}
           className="rounded"

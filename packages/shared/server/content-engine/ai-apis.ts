@@ -57,6 +57,7 @@ async function fetchAiContent(url: string, body: any) {
   }
 
   const res = await response.json();
+  console.log(res.response);
   const content: ArticleContent = JSON.parse(res.response);
   console.log(`Content generated- ${url}`);
   return content;
