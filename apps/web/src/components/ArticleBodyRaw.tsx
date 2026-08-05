@@ -31,7 +31,7 @@ export default async function ArticleBodyRaw({
 
   try {
     const externalArticleRes = await readNbuildExternalArticle(url);
-    htmlContent = externalArticleRes.data.content;
+    htmlContent = externalArticleRes?.data?.content || "";
   } catch (err) {
     error = err;
   }

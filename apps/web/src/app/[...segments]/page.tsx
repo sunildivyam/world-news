@@ -1,27 +1,27 @@
 import { getUserContext } from "@/lib/contexts/user/UserContext.service";
 import { PageTypeEnum } from "@worldnews/shared/types";
-import HomePage from "@/pages/HomePage";
-import CategoryPage from "@/pages/CategoryPage";
-import StaticPage from "@/pages/StaticPage";
-import EventPage from "@/pages/EventPage";
-import TagPage from "@/pages/TagPage";
-import ArticlePage from "@/pages/ArticlePage";
-import { generatePageMeta } from "@worldnews/shared/seo";
+import HomePage from "@/pages-components/HomePage";
+import CategoryPage from "@/pages-components/CategoryPage";
+import StaticPage from "@/pages-components/StaticPage";
+import EventPage from "@/pages-components/EventPage";
+import TagPage from "@/pages-components/TagPage";
+import ArticlePage from "@/pages-components/ArticlePage";
+import { generatePageMeta } from "@worldnews/shared/seo/site-meta/meta";
 import { resolveTenantContext } from "@/lib/contexts/tenant/Tenant.Resolver";
 import { headers } from "next/headers";
+
+export const dynamic = "force-dynamic";
 
 export default async function RouterPage() {
   const ctx = await getUserContext();
 
   if (!ctx) return null;
 
-  if (!ctx.pageType) {
-    if (ctx.pageId) {
-      return <StaticPage userContext={ctx} slug={ctx.pageId} />;
-    }
+  const isStaticPage = !ctx.pageType && ctx.pageId;
+  const isHomePage = !ctx.pageType && !ctx.pageId;
 
-    return <HomePage userContext={ctx} />;
-  }
+  if (isHomePage) return <HomePage userContext={ctx} />;
+  if (isStaticPage) return <StaticPage userContext={ctx} slug={ctx.pageId!} />;
 
   switch (ctx.pageType) {
     case PageTypeEnum.article:
@@ -45,7 +45,7 @@ export async function generateMetadata() {
   const h = await headers();
   const host = h.get("host") || "";
   const pathname = h.get("x-pathname") || "";
-  
+
   const userCtx = await getUserContext();
   const tenantCtx = await resolveTenantContext(host, pathname);
 

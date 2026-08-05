@@ -3,10 +3,11 @@
 import { motionConfig } from "./motion-config";
 import { motion } from "motion/react";
 import { ReactNode } from "react";
+import { MotionTag } from "./types/motion";
 
 export interface ScaleInProps {
   className?: string;
-  as?: string;
+  as?: MotionTag;
   children: ReactNode;
   delay?: number;
   once?: boolean;
@@ -14,12 +15,12 @@ export interface ScaleInProps {
 
 export function ScaleIn({
   className,
-  as,
+  as = "div",
   children,
   delay = motionConfig.delay,
   once = motionConfig.viewport.once,
 }: ScaleInProps) {
-   const Component = motion[as || "div"];
+  const Component = (motion[as] || motion.div) as typeof motion.div;
 
   return (
     <Component

@@ -1,4 +1,4 @@
-import { Article } from "@/types/Article.interface";
+import { Article } from "../types/Article.interface";
 import {
   compressToEncodedURIComponent,
   decompressFromEncodedURIComponent,

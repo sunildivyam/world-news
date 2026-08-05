@@ -1,4 +1,8 @@
-import { NewsSitemapEntry, SitemapIndexEntry, SitemapUrlEntry } from "@/types";
+import {
+  NewsSitemapEntry,
+  SitemapIndexEntry,
+  SitemapUrlEntry,
+} from "../../types";
 import {
   ARTICLES_SITEMAP_FILE_PREFIX,
   SITEMAP_FILE_NAMES,
@@ -22,10 +26,10 @@ export const isDomainSitemap = (
   if (segments.length > 3) return "";
 
   const sitemapFile = segments[segments.length - 1];
+  const isArticleSitemap = sitemapFile.includes(ARTICLES_SITEMAP_FILE_PREFIX);
 
   const sitemap =
-    SITEMAP_FILE_NAMES.includes(sitemapFile) ||
-    sitemapFile.startsWith(ARTICLES_SITEMAP_FILE_PREFIX)
+    SITEMAP_FILE_NAMES.includes(sitemapFile) || isArticleSitemap
       ? sitemapFile
       : "";
   if (!sitemap) return "";
@@ -35,7 +39,9 @@ export const isDomainSitemap = (
     (segments[1] === tenantId && segments[2] === sitemap);
 
   if (isRoot) {
-    const parts = ["sitemaps", tenantId, sitemap];
+    const parts = isArticleSitemap
+      ? ["sitemaps", tenantId, "articles", sitemap]
+      : ["sitemaps", tenantId, sitemap];
     return "/" + parts.join("/");
   }
 
@@ -103,7 +109,6 @@ ${urlElements}
  * Generates a standard XML sitemap index string from an array of sitemap entries.
  */
 export function generateSitemapIndexXml(sitemaps: SitemapIndexEntry[]): string {
-  console.log("Index: ", sitemaps);
   const sitemapElements = sitemaps
     .map((entry) => {
       let xml = "  <sitemap>\n";

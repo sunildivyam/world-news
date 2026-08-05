@@ -3,7 +3,7 @@ import {
   Category,
   Country,
   SitemapUrlEntry,
-} from "@/types";
+} from "../../types";
 import { buildHrefLang, generateSitemapXml } from "./sitemap";
 
 /**

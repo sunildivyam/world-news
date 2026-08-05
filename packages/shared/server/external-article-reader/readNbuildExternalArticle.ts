@@ -1,9 +1,9 @@
 "use server";
 
 import { Readability } from "@mozilla/readability";
-import { JSDOM, VirtualConsole } from "jsdom";
 import DOMPurify from "isomorphic-dompurify";
-import { ApiResponse, ExternalArticle } from "@/types";
+import { ApiResponse, ExternalArticle } from "../../types";
+import { parseHTML } from "linkedom";
 
 export async function readNbuildExternalArticle(
   targetUrl?: string | null,
@@ -45,24 +45,13 @@ export async function readNbuildExternalArticle(
 
     const html = await response.text();
 
-    // Suppress JSDOM CSS/CSSOM parsing errors in Node console logs
-    const virtualConsole = new VirtualConsole();
-    virtualConsole.on("error", (error) => {
-      if (error.message.includes("Could not parse CSS stylesheet")) {
-        return; // Ignore CSS parsing errors silently
-      }
-      console.error(error);
-    });
-
     // 3. Load HTML into Virtual DOM and parse with Readability
-    const dom = new JSDOM(html, {
-      url: targetUrl,
-      virtualConsole,
-      // Ensure JSDOM doesn't try to fetch or execute external subresources
-      resources: undefined,
-      runScripts: "outside-only",
-    });
-    const reader = new Readability(dom.window.document);
+    const { document } = parseHTML(html);
+    // Note: Linkedom does not fetch subresources or execute scripts by default.
+    // To handle relative image/hyperlink paths correctly like JSDOM's `url:` option,
+    // we manually assign the baseURI to the document.
+    Object.defineProperty(document, "baseURI", { value: targetUrl });
+    const reader = new Readability(document);
     const article = reader.parse();
 
     if (!article) {

@@ -13,6 +13,7 @@ import {
 } from "@worldnews/shared/seo/sitemaps";
 
 import {
+  fetchCountries,
   fetchLatestArticles,
   fetchTenant,
   fetchTenantCategories,
@@ -31,6 +32,7 @@ export async function GET(
   const domain = tenant?.domain;
   let articles: Article[] = [];
   if (!tenant) return formatSitemapResponse(sitemapXml, 0);
+  const countries = await fetchCountries(tenant?.country);
 
   if (EXTERNAL_ARTICLES_MODE) {
     articles = await getExternalNewsArticles(tenant);
@@ -41,7 +43,7 @@ export async function GET(
   sitemapXml = generateTenantNewsSitemap(
     domain!,
     tenant?.name || "",
-    tenant?.country && tenant?.country[0],
+    countries && countries[0],
     articles,
   );
 

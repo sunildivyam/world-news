@@ -3,10 +3,11 @@
 import { motionConfig } from "./motion-config";
 import { motion } from "motion/react";
 import { ReactNode } from "react";
+import { MotionTag } from "./types/motion";
 
 export interface StaggerContainerProps {
   className?: string;
-  as?: string;
+  as?: MotionTag;
   children: ReactNode;
   stagger?: number;
   delayChildren?: number;
@@ -15,13 +16,13 @@ export interface StaggerContainerProps {
 
 export function StaggerContainer({
   className,
-  as,
+  as = "div",
   children,
   stagger = motionConfig.stagger,
   delayChildren = motionConfig.delay,
   once = motionConfig.viewport.once,
 }: StaggerContainerProps) {
-  const Component = motion[as || "div"];
+  const Component = (motion[as] || motion.div) as typeof motion.div;
 
   return (
     <Component

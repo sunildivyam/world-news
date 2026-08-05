@@ -1,4 +1,4 @@
-import { Article, Country, SitemapUrlEntry } from "@/types";
+import { Article, Country, SitemapUrlEntry } from "../../types";
 import { generateSitemapXml } from "./sitemap";
 
 export function generateTenantArticlesSitemap(

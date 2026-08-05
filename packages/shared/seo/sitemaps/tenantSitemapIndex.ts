@@ -1,4 +1,4 @@
-import { SitemapIndexEntry } from "@/types";
+import { SitemapIndexEntry } from "../../types";
 import { generateSitemapIndexXml } from "./sitemap";
 import { ARTICLE_PAGE_LIMIT, SITEMAPS } from "./sitemap.constant";
 
@@ -13,7 +13,7 @@ export function generateTenantSitemapIndex(
   const articlesEntries = Array.from({ length: articleXmlFilesCount }).map(
     (_, i) =>
       ({
-        loc: `https://${domain}/articles/${i + 1}.xml`,
+        loc: `https://${domain}/articles-${i + 1}.xml`,
         lastmod: new Date(),
       }) as SitemapIndexEntry,
   );

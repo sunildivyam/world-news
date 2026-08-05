@@ -1,4 +1,4 @@
-import { Article, Country, NewsPublication, NewsSitemapEntry } from "@/types";
+import { Article, Country, NewsPublication, NewsSitemapEntry } from "../../types";
 import { generateNewsSitemapXml } from "./sitemap";
 
 export function generateTenantNewsSitemap(

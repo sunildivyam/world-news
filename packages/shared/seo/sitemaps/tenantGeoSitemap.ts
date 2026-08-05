@@ -1,4 +1,4 @@
-import { AlternateLanguageLink, Country, SitemapUrlEntry } from "@/types";
+import { AlternateLanguageLink, Country, SitemapUrlEntry } from "../../types";
 import { buildHrefLang, generateSitemapXml } from "./sitemap";
 
 export function generateTenantGeoSitemap(

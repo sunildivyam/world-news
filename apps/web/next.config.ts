@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
+  // Transpile these ESM/CJS hybrid dependencies
+  transpilePackages: ["html-react-parser", "html-dom-parser", "domhandler"],
   images: {
     unoptimized: true,
     remotePatterns: [

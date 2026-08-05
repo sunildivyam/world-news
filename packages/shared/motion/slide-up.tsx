@@ -3,10 +3,11 @@
 import { motionConfig } from "./motion-config";
 import { motion } from "motion/react";
 import { ReactNode } from "react";
+import { MotionTag } from "./types/motion";
 
 export interface SlideUpProps {
   className?: string;
-  as?: string;
+  as?: MotionTag;
   children: ReactNode;
   delay?: number;
   duration?: number;
@@ -16,15 +17,14 @@ export interface SlideUpProps {
 
 export function SlideUp({
   className,
-  as,
+  as = "div",
   children,
   delay = motionConfig.delay,
   duration = motionConfig.duration.normal,
   distance = 32,
   once = motionConfig.viewport.once,
 }: SlideUpProps) {
-  const Component = motion[as || "div"];
-
+  const Component = (motion[as] || motion.div) as typeof motion.div;
   return (
     <Component
       className={className}
