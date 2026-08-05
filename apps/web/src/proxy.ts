@@ -5,17 +5,16 @@ import { setResponseHeadersWithUserContext } from "./lib/contexts/user/UserConte
 import {
   isInvalidPath,
   isDomainRobotsTxt,
-  isDomainSitemap,
   isDomainNotFoundPage,
 } from "@worldnews/shared/seo";
+import { isDomainSitemap } from "@worldnews/shared/seo/sitemaps";
 
 export async function proxy(request: NextRequest) {
-  const pathname = (request.nextUrl.pathname || "").toLowerCase();
+  // const pathname = (request.nextUrl.pathname || "").toLowerCase();
+  const pathname = request.nextUrl.pathname || "";
   const host = (request.nextUrl.host || "").toLowerCase();
   const headers = request.headers;
   const cookies = request.cookies;
-
-  console.log("Cur:", pathname);
 
   // if a file with extension is requested, it should be rejected
   if (isInvalidPath(pathname, [".xml", ".txt"])) {
@@ -56,6 +55,7 @@ export async function proxy(request: NextRequest) {
 
   if (sitemapUrl) {
     const url = new URL(sitemapUrl, request.url);
+
     const res = NextResponse.rewrite(url);
     return res;
   }
@@ -75,17 +75,6 @@ export async function proxy(request: NextRequest) {
   }
 
   const canonical = buildCanonicalPath(userCtx);
-
-  console.log(
-    "Proxy - CustomD: ",
-    userCtx.domain,
-    " | T: ",
-    userCtx.tenantId,
-    " | C Url: ",
-    pathname,
-    " | Cano Url: ",
-    canonical,
-  );
 
   if (pathname !== canonical) {
     const url = new URL(canonical, request.url);

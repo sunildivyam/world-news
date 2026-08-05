@@ -8,6 +8,8 @@ import { resolveUrlFromArticle } from "@/lib/contexts/url/Url.Resolver";
 import ArticleSourceLink from "./ArticleSourceLink";
 import { AppContext } from "./AppContext.Provider";
 import { useContext } from "react";
+import { encodeObjectToId } from "@worldnews/shared/utils";
+import { StaggerContainer, StaggerItem } from "@worldnews/shared/motion";
 
 interface Props {
   article: Article;
@@ -16,15 +18,21 @@ interface Props {
 
 export default function NewsCard({ article, className }: Props) {
   const { userCtx } = useContext(AppContext) || {};
-  const articleUrl = resolveUrlFromArticle(article, userCtx);
+  // Encoding article to id (slug)
+  const updatedSlug = encodeObjectToId(article);
+
+  const articleUrl = resolveUrlFromArticle(
+    { ...article, slug: updatedSlug },
+    userCtx,
+  );
   const cNames = `relative${className ? " " + className : ""}`;
 
   if (!article) return null;
 
   return (
-    <div className={cNames}>
+    <StaggerContainer className={cNames}>
       <NoPrefetchLink href={articleUrl} className="group block pb-6">
-        <div className="relative w-full h-56 overflow-hidden rounded-lg">
+        <StaggerItem className="relative w-full h-56 overflow-hidden rounded-lg">
           {article.imageUrl && (
             <Image
               sizes="(max-width: 768px) 100vw, 33vw"
@@ -34,15 +42,21 @@ export default function NewsCard({ article, className }: Props) {
               className="object-cover group-hover:scale-105 transition-transform duration-300"
             />
           )}
-        </div>
+        </StaggerItem>
 
-        <h3 className="mt-4 text-xl font-bold group-hover:text-red-600 transition-colors">
+        <StaggerItem
+          as="h1"
+          className="mt-4 text-xl font-bold group-hover:text-red-600 transition-colors"
+        >
           {article.title}
-        </h3>
+        </StaggerItem>
 
-        <p className="mt-2 text-gray-600 dark:text-gray-400 line-clamp-2">
+        <StaggerItem
+          as="p"
+          className="mt-2 text-gray-600 dark:text-gray-400 line-clamp-2"
+        >
           {article.description}
-        </p>
+        </StaggerItem>
 
         <p className="mt-2 text-sm text-gray-500 flex gap-4">
           {article.publishedAt && (
@@ -57,6 +71,6 @@ export default function NewsCard({ article, className }: Props) {
       >
         <ArticleSourceLink source={article.source} />
       </div>
-    </div>
+    </StaggerContainer>
   );
 }

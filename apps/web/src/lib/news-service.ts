@@ -1,5 +1,8 @@
 import { executeWithFailover } from "@worldnews/shared/news-providers/provider-manager";
-import { articleProviders } from "@worldnews/shared/news-providers";
+import {
+  articleProviders,
+  headlineProviders,
+} from "@worldnews/shared/news-providers";
 import { ArticleCollection } from "@worldnews/shared/types";
 import { Article } from "@worldnews/shared/types";
 import { UserContext } from "@worldnews/shared/types";
@@ -12,7 +15,7 @@ export const fetchArticles = async (
 ): Promise<ArticleCollection> => {
   const data = await executeWithFailover((provider) => {
     return provider.fetchArticles(context, options);
-  }, articleProviders);
+  }, headlineProviders);
 
   return data;
 };
@@ -23,7 +26,7 @@ export const fetchRelatedArticles = async (
 ): Promise<ArticleCollection> => {
   const data = await executeWithFailover((provider) => {
     return provider.fetchRelatedArticles(context, article!);
-  }, articleProviders);
+  }, headlineProviders);
 
   return data;
 };

@@ -6,9 +6,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { getUserContext } from "@/lib/contexts/user/UserContext.service";
-import { getTenantConfig } from "@/lib/contexts/tenant/Tenant.validators";
 import Header from "@/components/Header";
 import { AppContextProvider } from "@/components/AppContext.Provider";
+import SiteFooter from "@/components/SiteFooter";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -56,6 +56,7 @@ export default async function RootLayout({
           >
             {children}
           </div>
+          <SiteFooter userCtx={userCtx} />
         </AppContextProvider>
         <Analytics />
         <SpeedInsights />

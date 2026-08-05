@@ -15,7 +15,7 @@ export default function TenantLogo({
 
   return (
     <div
-      className="flex items-center justify-between pr-8"
+      className="flex items-center justify-start pr-8"
       style={{ minWidth: "max-content" }}
     >
       <img src={logoUrl} alt="Logo" className="h-8 w-8 mr-2" />

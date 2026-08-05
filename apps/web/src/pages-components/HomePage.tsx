@@ -12,8 +12,6 @@ export default async function HomePage({
 }: {
   userContext: UserContext;
 }) {
-  const tenantConfig: TenantConfig = userContext?.tenantCtx?.tenant?.settings!;
-
   // 2. Perform the fetch directly
   const articlesRes = await fetchArticles(userContext, {}).catch(
     (err: AppError) => err,
