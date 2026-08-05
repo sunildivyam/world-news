@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     "html-react-parser",
     "html-dom-parser",
     "domhandler",
+    "html-encoding-sniffer",
   ],
   images: {
     unoptimized: true,
