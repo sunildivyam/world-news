@@ -13,6 +13,10 @@ import { visitChildren } from "./visitChildren";
 import { parseStrong } from "./strong";
 import { parseEm } from "./em";
 import { parseUnderline } from "./underline";
+import { parseCode } from "./code";
+import { parseSup } from "./sup";
+import { parseSub } from "./sub";
+import { parseBr } from "./br";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function visitElement($: CheerioAPI, node: Element): any {
@@ -56,6 +60,14 @@ export function visitElement($: CheerioAPI, node: Element): any {
       return parseEm($, node);
     case "u":
       return parseUnderline($, node);
+    case "code":
+      return parseCode($, node);
+    case "sup":
+      return parseSup($, node);
+    case "sub":
+      return parseSub($, node);
+    case "br":
+      return parseBr();
     /**
      * Ignore layout elements.
      * Just recurse into their children.

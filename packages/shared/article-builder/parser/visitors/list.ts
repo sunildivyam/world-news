@@ -1,26 +1,76 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CheerioAPI } from "cheerio";
-import { Element } from "domhandler";
+import type { Element } from "domhandler";
 
-import { ListNode, ListItemNode, BlockNode } from "../../types";
+import { ListNode, ListItemNode, BlockNode, ParagraphNode } from "../../types";
+
 import { visitChildren } from "./visitChildren";
 
 export function parseList($: CheerioAPI, node: Element): ListNode {
-  const ordered = node.tagName.toLowerCase() === "ol";
+  const ordered = node.tagName === "ol";
 
-  const children: ListItemNode[] = [];
+  const items: ListItemNode[] = [];
 
   $(node)
     .children("li")
     .each((_, li) => {
-      children.push({
+      const children = visitChildren($, li);
+
+      items.push({
         type: "list-item",
-        children: visitChildren($, li) as BlockNode[],
+
+        children: normalizeListItem(children),
       });
     });
 
   return {
     type: "list",
+
     ordered,
-    children,
+
+    children: items,
   };
+}
+
+function normalizeListItem(children: any[]): BlockNode[] {
+  const result: BlockNode[] = [];
+
+  let paragraphChildren: any[] = [];
+
+  for (const child of children) {
+    switch (child.type) {
+      case "text":
+        paragraphChildren.push(child);
+        break;
+
+      case "link":
+
+      case "image":
+        paragraphChildren.push(child);
+        break;
+
+      default:
+        if (paragraphChildren.length) {
+          result.push({
+            type: "paragraph",
+
+            children: paragraphChildren,
+          } as ParagraphNode);
+
+          paragraphChildren = [];
+        }
+
+        result.push(child);
+    }
+  }
+
+  if (paragraphChildren.length) {
+    result.push({
+      type: "paragraph",
+
+      children: paragraphChildren,
+    } as ParagraphNode);
+  }
+
+  return result;
 }
