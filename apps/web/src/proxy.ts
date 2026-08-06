@@ -2,12 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { resolveUserContext } from "./lib/contexts/user/UserContext.Resolver";
 import { buildCanonicalPath } from "./lib/contexts/route-segments/RouteSegments.Service";
 import { setResponseHeadersWithUserContext } from "./lib/contexts/user/UserContext.service";
-import {
-  isInvalidPath,
-  isDomainRobotsTxt,
-  isDomainNotFoundPage,
-} from "@worldnews/shared/seo";
-import { isDomainSitemap } from "@worldnews/shared/seo/sitemaps";
+import { isInvalidPath } from "@worldnews/shared/seo/isInvalidPath";
+import { isDomainRobotsTxt } from "@worldnews/shared/seo/robots";
+import { isDomainNotFoundPage } from "@worldnews/shared/seo/not-found";
+import { isDomainSitemap } from "@worldnews/shared/seo/sitemaps/sitemap";
 
 export async function proxy(request: NextRequest) {
   // const pathname = (request.nextUrl.pathname || "").toLowerCase();
