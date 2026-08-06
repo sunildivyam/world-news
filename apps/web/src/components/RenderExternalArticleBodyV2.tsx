@@ -1,6 +1,6 @@
-import { readNbuildExternalArticle } from "@worldnews/shared/server/external-article-reader/readNbuildExternalArticle";
 import { RenderArticleBody } from "@worldnews/shared/article-builder";
 import RenderRawHtml from "./RenderRawHtml";
+import { fetchExternalArticle } from "@worldnews/shared/news-engine-apis";
 
 interface RenderExternalArticleBodyV2Props {
   url: string;
@@ -16,9 +16,9 @@ export default async function RenderExternalArticleBodyV2({
   let htmlContent: string | null = null;
   let textContent: string = "";
   try {
-    const externalArticleRes = await readNbuildExternalArticle(url);
-    htmlContent = externalArticleRes?.data?.content || "";
-    textContent = externalArticleRes?.data?.textContent || "";
+    const externalArticle = await fetchExternalArticle(url);
+    htmlContent = externalArticle?.content || "";
+    textContent = externalArticle?.textContent || "";
   } catch (err) {
     error = err;
   }

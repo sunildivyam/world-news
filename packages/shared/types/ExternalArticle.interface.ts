@@ -1,3 +1,5 @@
+import { DocumentNode } from "../article-builder/types";
+
 export interface ExternalArticle {
   title: string;
   byline: string | null;
@@ -7,6 +9,7 @@ export interface ExternalArticle {
   siteName: string | null;
   content: string;
   textContent: string;
+  contentAst?: DocumentNode;
   length: number;
   sourceUrl: string;
   publishedAt?: string | null;
