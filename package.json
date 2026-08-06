@@ -40,5 +40,10 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
+  "pnpm": {
+    "overrides": {
+      "@exodus/bytes": "1.14.0"
+    }
+  },
   "packageManager": "pnpm@10.33.0"
 }

@@ -18,8 +18,8 @@ export async function GET(request: Request) {
     return apiSuccess(externalArticle);
   } catch (err: any) {
     const str = errorStage.join("=>");
-    console.log("Error: " + str + err.message);
-    err.message = str + err.message;
+    console.log(str + err.message);
+    err.message = "My Error: " + str + err.message;
     return apiError(err);
   }
 }
