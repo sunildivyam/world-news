@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     return apiSuccess(externalArticle);
   } catch (err: any) {
     const str = errorStage.join("=>");
-    console.log(str + err.message);
+    console.log("Error: " + str + err.message);
     err.message = str + err.message;
     return apiError(err);
   }
