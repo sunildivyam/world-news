@@ -4,13 +4,15 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
   // Transpile these ESM/CJS hybrid dependencies
-  // transpilePackages: [
-  //   "linkedom",
-  //   "html-react-parser",
-  //   "html-dom-parser",
-  //   "domhandler",
-  //   "html-encoding-sniffer",
-  // ],
+  transpilePackages: [
+    "jsdom",
+    "linkedom",
+    "html-encoding-sniffer",
+    "isomorphic-dompurify",
+    "@mozilla/readability",
+    "html-dom-parser",
+    "domhandler",
+  ],
   images: {
     unoptimized: true,
     remotePatterns: [
