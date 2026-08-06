@@ -10,48 +10,15 @@ import {
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { readNbuildExternalArticle } from "@worldnews/shared/server/external-article-reader/readNbuildExternalArticle";
 
-interface ArticleBodyRawProps {
-  url: string;
-  toComponents?: boolean;
+interface RenderHtmlToReactDomProps {
+  html: string;
 }
 
-export default async function ArticleBodyRaw({
-  url,
-  toComponents = false,
-}: ArticleBodyRawProps) {
-  if (!url) return null;
-  let error: any;
-  let htmlContent: string | null = null;
-
-  try {
-    const externalArticleRes = await readNbuildExternalArticle(url);
-    htmlContent = externalArticleRes?.data?.content || "";
-  } catch (err) {
-    error = err;
-  }
-  // Read article from external source
-
-  if (!htmlContent) return null;
-
-  if (error) {
-    return (
-      <div className="p-6 text-red-600 bg-red-50 rounded-lg border border-red-200">
-        <p className="font-semibold">Error Loading Article</p>
-        <p className="text-sm">{error}</p>
-      </div>
-    );
-  }
-
-  if (!toComponents) {
-    return (
-      <div
-        className="prose prose-lg max-w-none text-gray-800 leading-relaxed"
-        dangerouslySetInnerHTML={{ __html: htmlContent }}
-      />
-    );
-  }
+export default async function RenderHtmlToReactDom({
+  html,
+}: RenderHtmlToReactDomProps) {
+  if (!html) return null;
 
   const parseR = await import("html-react-parser");
   const Element = parseR.Element;
@@ -194,7 +161,7 @@ export default async function ArticleBodyRaw({
     },
   };
 
-  const component = parse(htmlContent, options);
+  const component = parse(html, options);
 
-  return <>{component}</>;
+  return <> {component}</>;
 }
