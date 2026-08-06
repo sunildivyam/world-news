@@ -9,9 +9,9 @@ import { UserContext } from "@worldnews/shared/types";
 import ArticleSourceLink from "@/components/ArticleSourceLink";
 import ArticleBody from "@/components/ArticleBody";
 import { decodeIdToObject } from "@worldnews/shared/utils";
-import ArticleBodyRaw from "@/components/ArticleBodyRaw";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import RenderExternalArticleBodyV2 from "@/components/RenderExternalArticleBodyV2";
 
 export default async function ArticlePage({
   userContext,
@@ -94,7 +94,10 @@ export default async function ArticlePage({
             <div className="max-w-4xl mx-auto prose prose-lg dark:prose-invert mt-10 text-gray-800 leading-relaxed px-2">
               {orginalArticle && (
                 <Suspense key={article.url} fallback={<ReaderSkeleton />}>
-                  <ArticleBodyRaw url={article.url || ""} toComponents={true} />
+                  <RenderExternalArticleBodyV2
+                    url={article.url || ""}
+                    toComponents={true}
+                  />
                 </Suspense>
               )}
 
