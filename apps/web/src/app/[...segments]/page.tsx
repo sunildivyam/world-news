@@ -1,3 +1,5 @@
+// export const dynamic = "force-dynamic";
+
 import { getUserContext } from "@/lib/contexts/user/UserContext.service";
 import { PageTypeEnum } from "@worldnews/shared/types";
 import HomePage from "@/pages-components/HomePage";
@@ -9,8 +11,6 @@ import ArticlePage from "@/pages-components/ArticlePage";
 import { generatePageMeta } from "@worldnews/shared/seo/site-meta/meta";
 import { resolveTenantContext } from "@/lib/contexts/tenant/Tenant.Resolver";
 import { headers } from "next/headers";
-
-export const dynamic = "force-dynamic";
 
 export default async function RouterPage() {
   const ctx = await getUserContext();
