@@ -1,4 +1,4 @@
-import { DocumentNode, ArticleNode, ParagraphNode } from "../types";
+import { DocumentNode, ArticleNode, ParagraphNode, BlockNode } from "../types";
 
 export function normalizeDocument(document: DocumentNode): DocumentNode {
   return {
@@ -35,13 +35,13 @@ function normalizeNode(node: ArticleNode): ArticleNode | ArticleNode[] | null {
       return node;
 
     case "quote":
-      node.children = normalizeNodes(node.children);
+      node.children = removeEmptyBlocks(normalizeNodes(node.children));
       return node;
 
     case "list":
       node.children = node.children.map((item) => ({
         ...item,
-        children: normalizeNodes(item.children),
+        children: removeEmptyBlocks(normalizeNodes(item.children)),
       }));
       return node;
 
@@ -50,7 +50,7 @@ function normalizeNode(node: ArticleNode): ArticleNode | ArticleNode[] | null {
         ...row,
         children: row.children.map((cell) => ({
           ...cell,
-          children: normalizeNodes(cell.children),
+          children: removeEmptyBlocks(normalizeNodes(cell.children)),
         })),
       }));
       return node;
@@ -76,6 +76,10 @@ function mergeAdjacentTextNodes(
   const result: ParagraphNode["children"] = [];
 
   for (const node of nodes) {
+    if (node.type === "text") {
+      node.text = node.text.replace(/\s+/g, " ");
+    }
+
     const previous = result[result.length - 1];
 
     if (
@@ -106,4 +110,28 @@ function isNotEmptyText(node: any): boolean {
   }
 
   return node.text.trim().length > 0;
+}
+
+function removeEmptyBlocks(nodes: BlockNode[]): BlockNode[] {
+  return nodes.filter((node) => {
+    switch (node.type) {
+      case "paragraph":
+        return node.children.length > 0;
+
+      case "heading":
+        return node.children.length > 0;
+
+      case "list":
+        return node.children.length > 0;
+
+      case "table":
+        return node.children.length > 0;
+
+      case "quote":
+        return node.children.length > 0;
+
+      default:
+        return true;
+    }
+  });
 }

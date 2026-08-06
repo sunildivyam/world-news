@@ -1,30 +1,33 @@
 import { RenderArticleBody } from "@worldnews/shared/article-builder";
 import RenderRawHtml from "./RenderRawHtml";
 import { fetchExternalArticle } from "@worldnews/shared/news-engine-apis";
+import { DocumentNode } from "@worldnews/shared/article-builder/types";
 
 interface RenderExternalArticleBodyV2Props {
   url: string;
   toComponents?: boolean;
+  isAst: boolean;
 }
 
 export default async function RenderExternalArticleBodyV2({
   url,
   toComponents = false,
+  isAst = false,
 }: RenderExternalArticleBodyV2Props) {
   if (!url) return null;
   let error: any;
-  let htmlContent: string | null = null;
-  let textContent: string = "";
+  let content: string | DocumentNode | null = null;
   try {
-    const externalArticle = await fetchExternalArticle(url);
-    htmlContent = externalArticle?.content || "";
-    textContent = externalArticle?.textContent || "";
+    const externalArticle = await fetchExternalArticle(url, isAst);
+    content = isAst
+      ? externalArticle?.contentAst || ""
+      : externalArticle?.content || "";
   } catch (err) {
     error = err;
   }
   // Read article from external source
 
-  if (!htmlContent) return null;
+  if (!content) return null;
 
   if (error) {
     return (
@@ -35,9 +38,9 @@ export default async function RenderExternalArticleBodyV2({
     );
   }
 
-  if (!toComponents) {
-    return <RenderRawHtml html={htmlContent} />;
+  if (!toComponents && !isAst) {
+    return <RenderRawHtml html={content as string} />;
   }
 
-  return <RenderArticleBody html={htmlContent} />;
+  return <RenderArticleBody html={content} isAst={isAst} />;
 }

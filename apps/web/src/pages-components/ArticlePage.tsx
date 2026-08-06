@@ -97,6 +97,7 @@ export default async function ArticlePage({
                   <RenderExternalArticleBodyV2
                     url={article.url || ""}
                     toComponents={true}
+                    isAst={true}
                   />
                 </Suspense>
               )}

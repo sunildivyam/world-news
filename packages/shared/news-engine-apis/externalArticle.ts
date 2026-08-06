@@ -3,8 +3,10 @@ import { newsEngineBaseApiUrl } from "./apiUrls";
 
 export async function fetchExternalArticle(
   externalUrl: string,
+  isAst: boolean,
 ): Promise<ExternalArticle | null> {
-  const query = `url=${externalUrl}`;
+  let query = `url=${externalUrl}`;
+  query += isAst ? `&ast=true` : "";
 
   const url = `${newsEngineBaseApiUrl}/api/external-article?${query}`;
 

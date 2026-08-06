@@ -110,7 +110,7 @@ function renderLink(node: LinkNode) {
       href={node.href}
       target="_blank"
       rel="noopener noreferrer"
-      className="mx-1 text-primary underline underline-offset-4 hover:no-underline"
+      className="px-1 text-primary underline underline-offset-4 hover:no-underline"
     >
       {node.children.map((child, i) => (
         <RenderNode key={i} node={child} />
