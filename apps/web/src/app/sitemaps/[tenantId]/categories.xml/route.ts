@@ -2,7 +2,6 @@
 import {
   formatSitemapResponse,
   generateTenantCategoriesSitemap,
-  generateTenantStaticSitemap,
   SITEMAP_CACHE,
 } from "@worldnews/shared/seo/sitemaps";
 
@@ -11,7 +10,6 @@ import {
   fetchTenant,
   fetchTenantCategories,
 } from "@worldnews/shared/news-engine-apis";
-import { staticPages } from "@/app-constants/staticPages.constant";
 
 export async function GET(
   request: Request,

@@ -3,6 +3,7 @@ export const SITEMAP_FILE_NAMES = [
   "news.xml",
   "geo.xml",
   "static.xml",
+  "categories.xml",
 ];
 export const ARTICLES_SITEMAP_FILE_PREFIX = "articles-";
 
