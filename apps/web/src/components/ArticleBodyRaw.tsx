@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { readNbuildExternalArticle } from "@worldnews/shared/server";
+import { readNbuildExternalArticle } from "@worldnews/shared/server/external-article-reader/readNbuildExternalArticle";
 
 interface ArticleBodyRawProps {
   url: string;
