@@ -19,7 +19,7 @@ export async function GET(request: Request) {
   } catch (err: any) {
     const str = errorStage.join("=>");
     console.log(str + err.message);
-    err.message = "My Error: " + str + err.message;
+    err.message = "Error: " + str + err.message;
     return apiError(err);
   }
 }

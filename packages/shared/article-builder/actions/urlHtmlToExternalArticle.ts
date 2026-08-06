@@ -46,7 +46,17 @@ export async function urlHtmlToExternalArticle(
       );
     }
 
+    const sanitizeHtml = await import("sanitize-html");
+
+    const cleanContent = sanitizeHtml.default(article.content || "", {
+      // allowedTags: ["b", "i", "em", "strong", "a", "p", "ul", "ol", "li", "br"],
+      // allowedAttributes: {
+      //   a: ["href", "target"],
+      // },
+    });
+
     // Dynamic Import
+    /*
     errorStage.push("isomorphic-dompurify");
     const DOMPurify = await import("isomorphic-dompurify");
     errorStage.push("isomorphic-dompurify imported");
@@ -56,6 +66,8 @@ export async function urlHtmlToExternalArticle(
       USE_PROFILES: { html: true },
     });
     errorStage.push("isomorphic-dompurify sanitized");
+    */
+
     // const contentAst = parseHtmlAct(cleanContent);
 
     // 5. Return Structured Plain JS Object
