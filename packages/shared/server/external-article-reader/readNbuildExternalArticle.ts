@@ -1,9 +1,5 @@
 "use server";
-
-import { Readability } from "@mozilla/readability";
-import DOMPurify from "isomorphic-dompurify";
 import { ApiResponse, ExternalArticle } from "../../types";
-import { parseHTML } from "linkedom";
 
 export async function readNbuildExternalArticle(
   targetUrl?: string | null,
@@ -45,12 +41,18 @@ export async function readNbuildExternalArticle(
 
     const html = await response.text();
 
+    // Dynamic Import
+    const { parseHTML } = await import("linkedom");
+
     // 3. Load HTML into Virtual DOM and parse with Readability
     const { document } = parseHTML(html);
     // Note: Linkedom does not fetch subresources or execute scripts by default.
     // To handle relative image/hyperlink paths correctly like JSDOM's `url:` option,
     // we manually assign the baseURI to the document.
     Object.defineProperty(document, "baseURI", { value: targetUrl });
+
+    // Dynamic Import
+    const { Readability } = await import("@mozilla/readability");
     const reader = new Readability(document);
     const article = reader.parse();
 
@@ -61,6 +63,8 @@ export async function readNbuildExternalArticle(
       };
     }
 
+    // Dynamic Import
+    const DOMPurify = await import("isomorphic-dompurify");
     // 4. Sanitize HTML output to remove scripts, iframes, and dangerous attributes
     const cleanContent = DOMPurify.sanitize(article.content || "", {
       USE_PROFILES: { html: true },

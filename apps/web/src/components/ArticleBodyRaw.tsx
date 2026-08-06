@@ -1,8 +1,4 @@
-import parse, {
-  HTMLReactParserOptions,
-  Element,
-  domToReact,
-} from "html-react-parser";
+import type { HTMLReactParserOptions } from "html-react-parser";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -14,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { readNbuildExternalArticle } from "@worldnews/shared/server";
+import { readNbuildExternalArticle } from "@worldnews/shared/server/external-article-reader/readNbuildExternalArticle";
 
 interface ArticleBodyRawProps {
   url: string;
@@ -56,6 +52,11 @@ export default async function ArticleBodyRaw({
       />
     );
   }
+
+  const parseR = await import("html-react-parser");
+  const Element = parseR.Element;
+  const domToReact = parseR.domToReact;
+  const parse = parseR.default;
 
   const options: HTMLReactParserOptions = {
     replace: (domNode) => {
