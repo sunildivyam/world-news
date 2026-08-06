@@ -21,9 +21,7 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    console.log("Invalid Path Check");
     const userCtx = await resolveUserContext(host, pathname, headers, cookies);
-    console.log("User Context resolved");
 
     // If tenantId is missing, redirect to global error page
     if (!userCtx.tenantId && pathname !== "/not-found") {
@@ -31,7 +29,6 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    console.log("Tenant Id Check done");
     // If not-found page is requested
     const domainNotFoundPage = isDomainNotFoundPage(
       userCtx.tenantId || "",
@@ -46,8 +43,6 @@ export async function proxy(request: NextRequest) {
       setResponseHeadersWithUserContext(res, userCtx);
       return res;
     }
-
-    console.log("Not Found Page Checked");
 
     // If sitemap.xml is requested
     const sitemapUrl = isDomainSitemap(
@@ -64,7 +59,6 @@ export async function proxy(request: NextRequest) {
       return res;
     }
 
-    console.log("isDomainSitemap() done");
     // If robots.txt is requested
     const robotsTxtUrl = isDomainRobotsTxt(
       userCtx.tenantId || "",
@@ -79,8 +73,6 @@ export async function proxy(request: NextRequest) {
       return res;
     }
 
-    console.log("isDomainRobotsTxt() done");
-
     const canonical = buildCanonicalPath(userCtx);
 
     if (pathname !== canonical) {
@@ -88,15 +80,11 @@ export async function proxy(request: NextRequest) {
 
       return NextResponse.redirect(url);
     }
-    console.log("Canonical done");
     const res = NextResponse.next();
     setResponseHeadersWithUserContext(res, userCtx, pathname);
-    console.log("Header Setting done");
 
     return res;
   } catch (error) {
-    console.log("PROXY ERROR");
-    console.log(error);
     const url = new URL("/not-founds/annuadvent", request.url);
     return NextResponse.redirect(url);
   }
