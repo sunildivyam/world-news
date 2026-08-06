@@ -1,4 +1,4 @@
-import { DocumentNode } from "@/article-builder/types";
+import { DocumentNode } from "../article-builder/types";
 
 export interface ExternalArticle {
   title: string;
