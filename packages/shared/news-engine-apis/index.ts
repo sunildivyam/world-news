@@ -9,3 +9,4 @@ export * from "./newsBatches";
 export * from "./newsEvents";
 export * from "./tags";
 export * from "./tenants";
+export * from "./externalArticle";
