@@ -39,7 +39,12 @@ export default async function RootLayout({
 
   return (
     <html lang={userCtx.language}>
-      <head></head>
+      <head>
+        {/* searchadvisor.naver.com varification */}
+        <meta name="naver-site-verification" content="" />
+        {/* Bing Verification */}
+        <meta name="msvalidate.01" content="B87BEBE8ADA6D0D22072BE3554D378EE" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased mt-30-md`}
         style={{
