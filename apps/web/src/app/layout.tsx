@@ -41,7 +41,10 @@ export default async function RootLayout({
     <html lang={userCtx.language}>
       <head>
         {/* searchadvisor.naver.com varification */}
-        <meta name="naver-site-verification" content="" />
+        <meta
+          name="naver-site-verification"
+          content="9598f97929740b183fab3938bcb78b2d5fa8031f"
+        />
         {/* Bing Verification */}
         <meta name="msvalidate.01" content="B87BEBE8ADA6D0D22072BE3554D378EE" />
       </head>
