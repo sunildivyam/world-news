@@ -7,7 +7,7 @@ interface ArticleRendererProps {
 
 export function ArticleRenderer({ document }: ArticleRendererProps) {
   return (
-    <article className="mx-auto max-w-4xl">
+    <article className="mx-auto max-w-4xl text-lg">
       {document.children.map((node, index) => (
         <RenderNode key={node.id ?? index} node={node} />
       ))}
