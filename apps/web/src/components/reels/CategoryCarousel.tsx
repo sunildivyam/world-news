@@ -14,6 +14,12 @@ interface Props {
   onSelect(category: Category): void;
 }
 
+type CardState = "previous" | "current" | "next";
+
+function mod(value: number, length: number): number {
+  return ((value % length) + length) % length;
+}
+
 export default function CategoryCarousel({ categories, activeCategory, onSelect }: Props) {
   const initialIndex = useMemo(() => {
     const index = categories.findIndex((category) => category.name === activeCategory);
@@ -39,29 +45,55 @@ export default function CategoryCarousel({ categories, activeCategory, onSelect 
     return null;
   }
 
-  const getIndex = (offset: number): number => {
-    const length = categories.length;
-
-    return (currentIndex + offset + length) % length;
+  const getCategoryIndex = (offset: number) => {
+    return mod(currentIndex + offset, categories.length);
   };
 
-  const visibleItems = [
-    {
-      category: categories[getIndex(-1)],
-      position: "previous",
-      offset: -1,
-    },
-    {
-      category: categories[getIndex(0)],
-      position: "current",
-      offset: 0,
-    },
-    {
-      category: categories[getIndex(1)],
-      position: "next",
-      offset: 1,
-    },
-  ];
+  const previousIndex = getCategoryIndex(-1);
+
+  const nextIndex = getCategoryIndex(1);
+
+  const getCardState = (index: number): CardState => {
+    if (index === currentIndex) {
+      return "current";
+    }
+
+    if (index === previousIndex) {
+      return "previous";
+    }
+
+    return "next";
+  };
+
+  const getCardAnimation = (state: CardState) => {
+    switch (state) {
+      case "previous":
+        return {
+          x: "-88%",
+          scale: 0.72,
+          opacity: 0.58,
+          zIndex: 10,
+        };
+
+      case "current":
+        return {
+          x: "0%",
+          scale: 1,
+          opacity: 1,
+          zIndex: 20,
+        };
+
+      case "next":
+        return {
+          x: "88%",
+          scale: 0.72,
+          opacity: 0.58,
+          zIndex: 10,
+        };
+    }
+  };
+
+  const visibleIndexes = [previousIndex, currentIndex, nextIndex].filter((index, position, array) => array.indexOf(index) === position);
 
   return (
     <div className="relative">
@@ -79,34 +111,37 @@ export default function CategoryCarousel({ categories, activeCategory, onSelect 
         onDragEnd={onDragEnd}
         className="relative flex h-40 w-full touch-pan-y items-center justify-center overflow-visible select-none sm:h-44"
       >
-        {visibleItems.map(({ category, position, offset }) => {
-          const isCurrent = position === "current";
+        {visibleIndexes.map((index) => {
+          const category = categories[index];
 
-          const isPrevious = position === "previous";
+          const state = getCardState(index);
+
+          const animation = getCardAnimation(state);
+
+          const isCurrent = state === "current";
 
           return (
             <motion.div
-              key={`${category.name}-${position}`}
+              key={category._id ?? category.name}
               initial={false}
-              animate={{
-                x: isCurrent ? 0 : isPrevious ? "-88%" : "88%",
-                scale: isCurrent ? 1 : 0.72,
-                opacity: isCurrent ? 1 : 0.62,
-                zIndex: isCurrent ? 20 : 10,
-              }}
+              animate={animation}
               transition={{
-                ...SPRING,
-                scale: {
-                  type: "spring",
-                  stiffness: 360,
-                  damping: 30,
-                  mass: 0.8,
-                },
                 x: {
                   type: "spring",
-                  stiffness: 320,
+                  stiffness: 260,
                   damping: 28,
+                  mass: 0.9,
+                },
+                scale: {
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 26,
                   mass: 0.85,
+                },
+                opacity: {
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 30,
                 },
               }}
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -120,7 +155,7 @@ export default function CategoryCarousel({ categories, activeCategory, onSelect 
                     return;
                   }
 
-                  setCurrentIndex(getIndex(offset));
+                  setCurrentIndex(index);
                 }}
               />
             </motion.div>
