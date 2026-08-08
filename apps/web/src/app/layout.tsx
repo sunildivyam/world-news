@@ -7,6 +7,8 @@ import { getUserContext } from "@/lib/contexts/user/UserContext.service";
 import Header from "@/components/Header";
 import { AppContextProvider } from "@/components/AppContext.Provider";
 import SiteFooter from "@/components/SiteFooter";
+import { PageTypeEnum } from "@worldnews/shared";
+import { STATIC_PAGES } from "@/app-constants/staticPages.constant";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +39,9 @@ export default async function RootLayout({
 
   const tenantConfig = userCtx.tenantCtx?.tenant?.settings!;
 
+  const isNewsReelsMode =
+    !userCtx.pageType && userCtx.pageId === STATIC_PAGES.NEWSREELS;
+
   return (
     <html lang={userCtx.language}>
       <head>
@@ -56,13 +61,18 @@ export default async function RootLayout({
         }}
       >
         <AppContextProvider value={{ userCtx }}>
-          <Header />
-          <div
-            className={`max-w-full mx-auto px-0 ${tenantConfig?.navigation.style === "smart" ? "md:py-22 px-0 py-14" : ""}`}
-          >
-            {children}
-          </div>
-          <SiteFooter userCtx={userCtx} />
+          {!isNewsReelsMode && (
+            <>
+              <Header />
+              <div
+                className={`max-w-full mx-auto px-0 ${tenantConfig?.navigation.style === "smart" ? "md:py-22 px-0 py-14" : ""}`}
+              >
+                {children}
+              </div>
+              <SiteFooter userCtx={userCtx} />
+            </>
+          )}
+          {isNewsReelsMode && <>{children}</>}
         </AppContextProvider>
         <Analytics />
         <SpeedInsights />
