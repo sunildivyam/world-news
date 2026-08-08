@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { motion } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
 import ReelsSlide from "./ReelsSlide";
 import { useReels } from "./context/ReelsContext";
@@ -20,18 +20,31 @@ export default function ReelsTrack({ feed }: Props) {
   const hydrated = useHydrated();
   const viewport = useViewportSize();
 
-  const width = hydrated ? viewport.width : 0;
-  const height = hydrated ? viewport.height : 0;
+  const width = viewport.width;
+  const height = viewport.height;
 
   const { currentIndex, setCurrentIndex, orientation, axis } = useReels();
 
   const { articles } = feed;
 
+  const vertical = orientation === "portrait";
+
+  const controls = useAnimationControls();
+
+  const { indexes } = useVirtualSlides({
+    currentIndex,
+    total: articles.length,
+  });
+
+  /*
+   * Keep currentIndex valid when the feed changes.
+   */
   useEffect(() => {
     if (articles.length === 0) {
       if (currentIndex !== 0) {
         setCurrentIndex(0);
       }
+
       return;
     }
 
@@ -40,20 +53,64 @@ export default function ReelsTrack({ feed }: Props) {
     }
   }, [articles.length, currentIndex, setCurrentIndex]);
 
+  /*
+   * Preload the next page before reaching
+   * the end of the current batch.
+   */
   useEffect(() => {
-    const shouldPreload = articles.length > 0 && feed.nextPage !== undefined && feed.nextPage !== null && feed.nextPage !== "" && !feed.loading && currentIndex >= articles.length - PRELOAD_THRESHOLD;
+    const hasNextPage = feed.nextPage !== undefined && feed.nextPage !== null && feed.nextPage !== "";
+
+    const shouldPreload = articles.length > 0 && hasNextPage && !feed.loading && currentIndex >= articles.length - PRELOAD_THRESHOLD;
 
     if (shouldPreload) {
       void feed.loadNextPage();
     }
   }, [articles.length, currentIndex, feed.loading, feed.nextPage, feed.loadNextPage]);
 
-  const vertical = orientation === "portrait";
+  /*
+   * The logical position of the track.
+   */
+  const getTrackPosition = (index: number) => {
+    if (vertical) {
+      return {
+        x: 0,
+        y: -(index * height),
+      };
+    }
 
-  const { indexes } = useVirtualSlides({
-    currentIndex,
-    total: articles.length,
-  });
+    return {
+      x: -(index * width),
+      y: 0,
+    };
+  };
+
+  /*
+   * Keep Motion's internal drag transform
+   * synchronized with the logical slide.
+   */
+  useEffect(() => {
+    if (!hydrated || width <= 0 || height <= 0) {
+      return;
+    }
+
+    void controls.set(getTrackPosition(currentIndex));
+  }, [currentIndex, width, height, vertical, hydrated, controls]);
+
+  /*
+   * After resize, immediately snap the track
+   * to the current logical slide.
+   */
+  useEffect(() => {
+    if (!viewport.isResizing) {
+      return;
+    }
+
+    if (width <= 0 || height <= 0) {
+      return;
+    }
+
+    void controls.set(getTrackPosition(currentIndex));
+  }, [viewport.isResizing, width, height, currentIndex, vertical, controls]);
 
   const { onDragEnd } = useGesture({
     currentIndex,
@@ -62,40 +119,51 @@ export default function ReelsTrack({ feed }: Props) {
     onIndexChange: setCurrentIndex,
   });
 
-  if (!hydrated || articles.length === 0) {
+  if (!hydrated || width <= 0 || height <= 0 || articles.length === 0) {
     return null;
   }
 
-  const translate = vertical ? { y: -(currentIndex * height) } : { x: -(currentIndex * width) };
+  /*
+   * IMPORTANT:
+   *
+   * The track has the dimensions of the complete
+   * feed. The viewport remains stationary.
+   */
+  const trackWidth = vertical ? width : width * articles.length;
+
+  const trackHeight = vertical ? height * articles.length : height;
+
+  const position = getTrackPosition(currentIndex);
 
   return (
-    <motion.div
-      drag={axis}
-      dragMomentum={false}
-      dragElastic={DRAG_ELASTIC}
-      dragConstraints={{
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-      }}
-      onDragEnd={onDragEnd}
-      animate={translate}
-      transition={SPRING}
-      style={{
-        width: vertical ? width : width * articles.length,
-        height: vertical ? height * articles.length : height,
-        touchAction: vertical ? "pan-x" : "pan-y",
-      }}
-      className={["relative flex overflow-hidden", "will-change-transform select-none", vertical ? "flex-col" : "flex-row"].join(" ")}
-    >
-      {indexes.map((index) => {
-        const article = articles[index];
+    <div className="absolute inset-0 overflow-hidden">
+      <motion.div
+        drag={viewport.isResizing ? false : axis}
+        dragMomentum={false}
+        dragElastic={DRAG_ELASTIC}
+        dragConstraints={false}
+        dragDirectionLock
+        onDragEnd={onDragEnd}
+        initial={false}
+        animate={position}
+        transition={viewport.isResizing ? { duration: 0 } : SPRING}
+        style={{
+          width: trackWidth,
+          height: trackHeight,
+          touchAction: viewport.isResizing ? "none" : vertical ? "pan-x" : "pan-y",
+        }}
+        className="absolute top-0 left-0 overflow-hidden will-change-transform select-none"
+      >
+        {indexes.map((index) => {
+          const article = articles[index];
 
-        if (!article) return null;
+          if (!article) {
+            return null;
+          }
 
-        return <ReelsSlide key={(article._id || article.slug || article.title) + index} article={article} index={index} width={width} height={height} />;
-      })}
-    </motion.div>
+          return <ReelsSlide key={(article._id || article.slug || article.title) + index} article={article} index={index} width={width} height={height} />;
+        })}
+      </motion.div>
+    </div>
   );
 }

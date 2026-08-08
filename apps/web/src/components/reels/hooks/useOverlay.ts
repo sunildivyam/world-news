@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-
 import { OVERLAY_VISIBLE_MS } from "../constants";
 
 interface Props {
@@ -18,6 +17,8 @@ export default function useOverlay({ trigger, hoverZonePx = 72 }: Props) {
 
   const headerHoverRef = useRef(false);
   const footerHoverRef = useRef(false);
+
+  const headerLockedRef = useRef(false);
 
   const clearHeaderTimer = useCallback(() => {
     if (headerTimerRef.current !== null) {
@@ -46,12 +47,15 @@ export default function useOverlay({ trigger, hoverZonePx = 72 }: Props) {
   const scheduleHeaderHide = useCallback(() => {
     clearHeaderTimer();
 
-    if (headerHoverRef.current) return;
+    if (headerHoverRef.current || headerLockedRef.current) {
+      return;
+    }
 
     headerTimerRef.current = window.setTimeout(() => {
-      if (!headerHoverRef.current) {
+      if (!headerHoverRef.current && !headerLockedRef.current) {
         setHeaderVisible(false);
       }
+
       headerTimerRef.current = null;
     }, OVERLAY_VISIBLE_MS);
   }, [clearHeaderTimer]);
@@ -65,6 +69,7 @@ export default function useOverlay({ trigger, hoverZonePx = 72 }: Props) {
       if (!footerHoverRef.current) {
         setFooterVisible(false);
       }
+
       footerTimerRef.current = null;
     }, OVERLAY_VISIBLE_MS);
   }, [clearFooterTimer]);
@@ -95,11 +100,30 @@ export default function useOverlay({ trigger, hoverZonePx = 72 }: Props) {
     [showFooter, scheduleFooterHide],
   );
 
+  const setHeaderLocked = useCallback(
+    (locked: boolean) => {
+      headerLockedRef.current = locked;
+
+      if (locked) {
+        showHeader();
+      } else {
+        scheduleHeaderHide();
+      }
+    },
+    [showHeader, scheduleHeaderHide],
+  );
+
   useEffect(() => {
     showHeader();
     showFooter();
-    scheduleHeaderHide();
-    scheduleFooterHide();
+
+    if (!headerLockedRef.current) {
+      scheduleHeaderHide();
+    }
+
+    if (!footerHoverRef.current) {
+      scheduleFooterHide();
+    }
 
     return () => {
       clearHeaderTimer();
@@ -107,10 +131,6 @@ export default function useOverlay({ trigger, hoverZonePx = 72 }: Props) {
     };
   }, [trigger, showHeader, showFooter, scheduleHeaderHide, scheduleFooterHide, clearHeaderTimer, clearFooterTimer]);
 
-  /*
-   * Mouse proximity is handled globally so the hover zones
-   * never block reel dragging at the top or bottom edges.
-   */
   useEffect(() => {
     const onMouseMove = (event: MouseEvent) => {
       const y = event.clientY;
@@ -122,7 +142,7 @@ export default function useOverlay({ trigger, hoverZonePx = 72 }: Props) {
       if (inTopZone) {
         headerHoverRef.current = true;
         showHeader();
-      } else if (headerHoverRef.current) {
+      } else if (headerHoverRef.current && !headerLockedRef.current) {
         headerHoverRef.current = false;
         scheduleHeaderHide();
       }
@@ -152,5 +172,6 @@ export default function useOverlay({ trigger, hoverZonePx = 72 }: Props) {
     scheduleFooterHide,
     setHeaderHover,
     setFooterHover,
+    setHeaderLocked,
   };
 }

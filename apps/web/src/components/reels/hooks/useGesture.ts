@@ -13,9 +13,7 @@ export interface UseGestureProps {
 
 export default function useGesture({ currentIndex, itemCount, orientation, loop = false, onIndexChange }: UseGestureProps) {
   const previousIndex = useCallback(() => {
-    if (itemCount <= 0) {
-      return 0;
-    }
+    if (itemCount <= 0) return 0;
 
     if (loop) {
       return currentIndex === 0 ? itemCount - 1 : currentIndex - 1;
@@ -25,9 +23,7 @@ export default function useGesture({ currentIndex, itemCount, orientation, loop 
   }, [currentIndex, itemCount, loop]);
 
   const nextIndex = useCallback(() => {
-    if (itemCount <= 0) {
-      return 0;
-    }
+    if (itemCount <= 0) return 0;
 
     if (loop) {
       return currentIndex === itemCount - 1 ? 0 : currentIndex + 1;
@@ -38,25 +34,18 @@ export default function useGesture({ currentIndex, itemCount, orientation, loop 
 
   const onDragEnd = useCallback(
     (_event: unknown, info: { offset: { x: number; y: number } }) => {
-      if (itemCount <= 0) {
-        return;
-      }
+      if (itemCount <= 0) return;
 
       const distance = orientation === "vertical" ? info.offset.y : info.offset.x;
 
       if (distance < -SWIPE_THRESHOLD) {
         onIndexChange(nextIndex());
-        return;
-      }
-
-      if (distance > SWIPE_THRESHOLD) {
+      } else if (distance > SWIPE_THRESHOLD) {
         onIndexChange(previousIndex());
       }
     },
     [orientation, itemCount, onIndexChange, nextIndex, previousIndex],
   );
 
-  return {
-    onDragEnd,
-  };
+  return { onDragEnd };
 }

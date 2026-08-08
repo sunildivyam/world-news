@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Orientation } from "../types";
+import type { Orientation } from "../types";
 
 function getOrientation(): Orientation {
   if (typeof window === "undefined") {
@@ -12,19 +12,34 @@ function getOrientation(): Orientation {
 }
 
 export default function useOrientation() {
-  const [orientation, setOrientation] = useState<Orientation>(getOrientation);
+  const [orientation, setOrientation] = useState<Orientation>("portrait");
 
   useEffect(() => {
-    const onResize = () => {
-      setOrientation(getOrientation());
+    let timer: number | null = null;
+
+    const update = () => {
+      if (timer !== null) {
+        window.clearTimeout(timer);
+      }
+
+      timer = window.setTimeout(() => {
+        setOrientation(getOrientation());
+        timer = null;
+      }, 120);
     };
 
-    window.addEventListener("resize", onResize);
-    window.addEventListener("orientationchange", onResize);
+    setOrientation(getOrientation());
+
+    window.addEventListener("resize", update, { passive: true });
+    window.addEventListener("orientationchange", update, { passive: true });
 
     return () => {
-      window.removeEventListener("resize", onResize);
-      window.removeEventListener("orientationchange", onResize);
+      window.removeEventListener("resize", update);
+      window.removeEventListener("orientationchange", update);
+
+      if (timer !== null) {
+        window.clearTimeout(timer);
+      }
     };
   }, []);
 

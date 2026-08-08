@@ -43,7 +43,7 @@ export default function FeedContent({ logo, categories, initialArticles, nextPag
 
   return (
     <main className="fixed inset-0 overflow-hidden">
-      <HeaderOverlay visible={overlay.headerVisible} logo={logo} categories={categories} activeCategory={category?.name} onCategorySelect={onCategorySelect} onMouseEnter={() => overlay.setHeaderHover(true)} onMouseLeave={() => overlay.setHeaderHover(false)} />
+      <HeaderOverlay visible={overlay.headerVisible} logo={logo} categories={categories} activeCategory={category?.name} onCategorySelect={onCategorySelect} onCategoryOverlayChange={overlay.setHeaderLocked} onMouseEnter={() => overlay.setHeaderHover(true)} onMouseLeave={() => overlay.setHeaderHover(false)} />
 
       <ReelsViewport feed={feed} />
 
