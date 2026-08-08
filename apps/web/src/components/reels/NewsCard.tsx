@@ -34,9 +34,31 @@ export default function NewsCard({ article, className, priority = false }: Props
 
   return (
     <StaggerContainer className={cNames}>
-      <div className="group relative block h-full w-full overflow-hidden">
+      <div
+        className="group relative block h-full w-full overflow-hidden select-none"
+        onDragStart={(event) => {
+          event.preventDefault();
+        }}
+      >
         {/* Background image */}
-        <div className="bg-muted absolute inset-0 overflow-hidden">{article.imageUrl ? <Image src={article.imageUrl} alt={imageAlt} fill priority={priority} sizes="100vw" className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.04]" /> : <div className="from-muted to-background absolute inset-0 bg-gradient-to-br" />}</div>
+        <div className="bg-muted absolute inset-0 overflow-hidden">
+          {article.imageUrl ? (
+            <Image
+              src={article.imageUrl}
+              alt={imageAlt}
+              fill
+              priority={priority}
+              sizes="100vw"
+              draggable={false}
+              onDragStart={(event) => {
+                event.preventDefault();
+              }}
+              className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+            />
+          ) : (
+            <div className="from-muted to-background absolute inset-0 bg-gradient-to-br" />
+          )}
+        </div>
 
         {/* Overall image treatment */}
         <div className="pointer-events-none absolute inset-0 bg-black/10" />

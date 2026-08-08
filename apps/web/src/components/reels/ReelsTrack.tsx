@@ -278,9 +278,19 @@ export default function ReelsTrack({ feed }: Props) {
         nextIndex = Math.max(currentIndex - 1, 0);
       }
 
+      /*
+       * When the swipe hits a boundary, currentIndex does not
+       * change, so the index synchronization effect does not run.
+       * Explicitly animate back to the current slide.
+       */
+      if (nextIndex === currentIndex) {
+        animateToIndex(currentIndex);
+        return;
+      }
+
       setCurrentIndex(nextIndex);
     },
-    [articles.length, currentIndex, setCurrentIndex, vertical],
+    [articles.length, currentIndex, animateToIndex, setCurrentIndex, vertical],
   );
 
   const handlePointerCancel = useCallback(
