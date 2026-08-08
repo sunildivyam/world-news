@@ -18,7 +18,7 @@ export default function CategoryItem({ category, selected, onClick }: Props) {
       type="button"
       onClick={onClick}
       whileTap={{ scale: selected ? 0.97 : 0.94 }}
-      whileHover={{ scale: selected ? 1.03 : 0.98 }}
+      whileHover={{ y: selected ? -2 : 0 }}
       transition={{
         type: "spring",
         stiffness: 420,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 
 import CategoryItem from "./CategoryItem";
 import useGesture from "./hooks/useGesture";
@@ -39,75 +39,95 @@ export default function CategoryCarousel({ categories, activeCategory, onSelect 
     return null;
   }
 
-  const previousIndex = currentIndex === 0 ? categories.length - 1 : currentIndex - 1;
+  const getIndex = (offset: number): number => {
+    const length = categories.length;
 
-  const nextIndex = currentIndex === categories.length - 1 ? 0 : currentIndex + 1;
+    return (currentIndex + offset + length) % length;
+  };
+
+  const visibleItems = [
+    {
+      category: categories[getIndex(-1)],
+      position: "previous",
+      offset: -1,
+    },
+    {
+      category: categories[getIndex(0)],
+      position: "current",
+      offset: 0,
+    },
+    {
+      category: categories[getIndex(1)],
+      position: "next",
+      offset: 1,
+    },
+  ];
 
   return (
     <div className="relative">
-      {/* Decorative glow */}
       <div className="bg-primary/10 pointer-events-none absolute top-1/2 left-1/2 h-48 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl" />
 
-      <motion.div drag="x" dragElastic={DRAG_ELASTIC} dragMomentum={false} dragConstraints={{ left: 0, right: 0 }} onDragEnd={onDragEnd} className="relative flex h-36 w-[min(92vw,760px)] touch-pan-y items-center justify-center overflow-visible select-none sm:h-40">
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.div key={currentIndex} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={SPRING} className="absolute inset-0">
-            {/* Previous */}
-            <motion.div
-              initial={{
-                opacity: 0,
-                x: -20,
-              }}
-              animate={{
-                opacity: 0.62,
-                x: 0,
-              }}
-              transition={SPRING}
-              className="absolute top-1/2 left-0 -translate-y-1/2"
-            >
-              <CategoryItem category={categories[previousIndex]} selected={false} onClick={() => setCurrentIndex(previousIndex)} />
-            </motion.div>
+      <motion.div
+        drag="x"
+        dragElastic={DRAG_ELASTIC}
+        dragMomentum={false}
+        dragConstraints={{
+          left: 0,
+          right: 0,
+        }}
+        dragDirectionLock
+        onDragEnd={onDragEnd}
+        className="relative flex h-40 w-full touch-pan-y items-center justify-center overflow-visible select-none sm:h-44"
+      >
+        {visibleItems.map(({ category, position, offset }) => {
+          const isCurrent = position === "current";
 
-            {/* Current */}
+          const isPrevious = position === "previous";
+
+          return (
             <motion.div
-              initial={{
-                opacity: 0,
-                scale: 0.92,
-                x: 0,
-              }}
+              key={`${category.name}-${position}`}
+              initial={false}
               animate={{
-                opacity: 1,
-                scale: 1,
-                x: 0,
+                x: isCurrent ? 0 : isPrevious ? "-88%" : "88%",
+                scale: isCurrent ? 1 : 0.72,
+                opacity: isCurrent ? 1 : 0.62,
+                zIndex: isCurrent ? 20 : 10,
               }}
               transition={{
                 ...SPRING,
-                delay: 0.03,
+                scale: {
+                  type: "spring",
+                  stiffness: 360,
+                  damping: 30,
+                  mass: 0.8,
+                },
+                x: {
+                  type: "spring",
+                  stiffness: 320,
+                  damping: 28,
+                  mass: 0.85,
+                },
               }}
-              className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
             >
-              <CategoryItem category={categories[currentIndex]} selected onClick={() => onSelect(categories[currentIndex])} />
-            </motion.div>
+              <CategoryItem
+                category={category}
+                selected={isCurrent}
+                onClick={() => {
+                  if (isCurrent) {
+                    onSelect(category);
+                    return;
+                  }
 
-            {/* Next */}
-            <motion.div
-              initial={{
-                opacity: 0,
-                x: 20,
-              }}
-              animate={{
-                opacity: 0.62,
-                x: 0,
-              }}
-              transition={SPRING}
-              className="absolute top-1/2 right-0 -translate-y-1/2"
-            >
-              <CategoryItem category={categories[nextIndex]} selected={false} onClick={() => setCurrentIndex(nextIndex)} />
+                  setCurrentIndex(getIndex(offset));
+                }}
+              />
             </motion.div>
-          </motion.div>
-        </AnimatePresence>
+          );
+        })}
       </motion.div>
 
-      {/* Swipe indicator */}
       <div className="text-muted-foreground/60 pointer-events-none mt-5 flex items-center justify-center gap-3">
         <span className="bg-border/60 h-px w-8" />
 
