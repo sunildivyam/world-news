@@ -55,7 +55,7 @@ export default function ReelsSlide({ article, index, width, height }: Props) {
         }}
         className="h-full w-full"
       >
-        <NewsCard article={article} className="h-full w-full rounded-none border-0" />
+        <NewsCard article={article} priority={isActive} className="h-full w-full rounded-none border-0" />
       </motion.div>
     </article>
   );

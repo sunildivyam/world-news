@@ -20,14 +20,30 @@ function readViewport(): Pick<ViewportSize, "width" | "height"> {
 }
 
 export default function useViewportSize(): ViewportSize {
-  const [viewport, setViewport] = useState<ViewportSize>(() => ({
-    ...readViewport(),
+  const [viewport, setViewport] = useState<ViewportSize>({
+    width: 0,
+    height: 0,
     isResizing: false,
-  }));
+  });
 
   useEffect(() => {
-    let timer: number | null = null;
     let frame: number | null = null;
+    let timer: number | null = null;
+
+    const apply = (isResizing: boolean) => {
+      const next = readViewport();
+
+      setViewport((current) => {
+        if (current.width === next.width && current.height === next.height && current.isResizing === isResizing) {
+          return current;
+        }
+
+        return {
+          ...next,
+          isResizing,
+        };
+      });
+    };
 
     const update = () => {
       if (frame !== null) {
@@ -35,10 +51,7 @@ export default function useViewportSize(): ViewportSize {
       }
 
       frame = window.requestAnimationFrame(() => {
-        setViewport({
-          ...readViewport(),
-          isResizing: true,
-        });
+        apply(true);
         frame = null;
       });
 
@@ -47,17 +60,17 @@ export default function useViewportSize(): ViewportSize {
       }
 
       timer = window.setTimeout(() => {
-        setViewport((current) => ({
-          ...current,
-          ...readViewport(),
-          isResizing: false,
-        }));
+        apply(false);
         timer = null;
-      }, 120);
+      }, 160);
     };
 
+    apply(false);
+
     window.addEventListener("resize", update, { passive: true });
-    window.addEventListener("orientationchange", update, { passive: true });
+    window.addEventListener("orientationchange", update, {
+      passive: true,
+    });
 
     return () => {
       window.removeEventListener("resize", update);

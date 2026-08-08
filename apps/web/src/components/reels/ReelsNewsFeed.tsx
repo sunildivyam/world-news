@@ -5,9 +5,8 @@ import type { Article, Category } from "@worldnews/shared/types";
 
 import FeedContent from "./FeedContent";
 import { ReelsProvider } from "./context/ReelsContext";
-import useHydrated from "./hooks/useHydrated";
-import useOrientation from "./hooks/useOrientation";
-import type { ReelNextPage } from "./types";
+import useViewportSize from "./hooks/useViewportSize";
+import type { Orientation, ReelNextPage } from "./types";
 
 interface Props {
   logo: React.ReactNode;
@@ -19,18 +18,22 @@ interface Props {
 export default function ReelsNewsFeed({ logo, categories, initialArticles, nextPage }: Props) {
   const [selectedCategory, setSelectedCategory] = useState<Category | undefined>(undefined);
 
-  const orientation = useOrientation();
-  const hydrated = useHydrated();
+  const viewport = useViewportSize();
 
-  // Keep SSR and the first client render identical.
-  const effectiveOrientation = hydrated ? orientation : "portrait";
+  const viewportReady = viewport.width > 0 && viewport.height > 0;
+
+  const orientation: Orientation = viewport.width >= viewport.height ? "landscape" : "portrait";
 
   const handleCategorySelect = useCallback((category: Category) => {
     setSelectedCategory(category);
   }, []);
 
+  if (!viewportReady) {
+    return <main className="bg-background fixed inset-0 overflow-hidden" />;
+  }
+
   return (
-    <ReelsProvider orientation={effectiveOrientation} categoryKey={selectedCategory?.name}>
+    <ReelsProvider orientation={orientation} categoryKey={selectedCategory?.name}>
       <FeedContent logo={logo} categories={categories} initialArticles={initialArticles} nextPage={nextPage} category={selectedCategory} onCategorySelect={handleCategorySelect} />
     </ReelsProvider>
   );
