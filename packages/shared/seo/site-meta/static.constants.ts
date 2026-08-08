@@ -82,4 +82,19 @@ export const STATIC_PAGE_META = {
       "breaking news streams",
     ],
   },
+  "news-reels": {
+    title: "News Reels",
+    description:
+      "Learn about {{siteName}}'s mission to organize, index, and deliver real-time news feeds from thousands of global publishers with zero clutter and 100% direct attribution.",
+    keywords: [
+      "about {{siteName}}",
+      "News Reels",
+      "News feeds as Reels",
+      "news aggregator engine",
+      "real-time news indexing",
+      "publisher attribution",
+      "curated news portal",
+      "{{siteName}} mission",
+    ],
+  },
 };

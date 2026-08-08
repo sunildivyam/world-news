@@ -6,6 +6,7 @@ import PrivacyPage from "./static-pages/PrivacyPage";
 import AboutUsPage from "./static-pages/AboutUsPage";
 import ContactUsPage from "./static-pages/ContactUsPage";
 import FeedsPage from "./static-pages/FeedsPage";
+import NewsReelsPage from "./static-pages/NewsReelsPage";
 
 export default async function StaticPage({
   userContext,
@@ -19,30 +20,46 @@ export default async function StaticPage({
     userContext.tenantCtx?.tenant?.contactEmail || `legal@mycompany.com`;
   return (
     <>
-      <main className="max-w-full mx-auto px-0 py-0">
-        {slug === STATIC_PAGES.TERMS && (
-          <TermsPage companyName={companyName} contactEmail={contactEmail} />
-        )}
-        {slug === STATIC_PAGES.PRIVACY && (
-          <PrivacyPage companyName={companyName} contactEmail={contactEmail} />
-        )}
-        {slug === STATIC_PAGES.ABOUT && (
-          <AboutUsPage
-            userCtx={userContext}
-            companyName={companyName}
-            contactEmail={contactEmail}
-          />
-        )}
-        {slug === STATIC_PAGES.CONTACT && (
-          <ContactUsPage
-            companyName={companyName}
-            contactEmail={contactEmail}
-          />
-        )}
-        {slug === STATIC_PAGES.FEEDS && (
-          <FeedsPage companyName={companyName} contactEmail={contactEmail} />
-        )}
-      </main>
+      {slug === STATIC_PAGES.NEWSREELS && (
+        <NewsReelsPage userContext={userContext} />
+      )}
+      {slug !== STATIC_PAGES.NEWSREELS && (
+        <>
+          <main className="max-w-full mx-auto px-0 py-0">
+            {slug === STATIC_PAGES.TERMS && (
+              <TermsPage
+                companyName={companyName}
+                contactEmail={contactEmail}
+              />
+            )}
+            {slug === STATIC_PAGES.PRIVACY && (
+              <PrivacyPage
+                companyName={companyName}
+                contactEmail={contactEmail}
+              />
+            )}
+            {slug === STATIC_PAGES.ABOUT && (
+              <AboutUsPage
+                userCtx={userContext}
+                companyName={companyName}
+                contactEmail={contactEmail}
+              />
+            )}
+            {slug === STATIC_PAGES.CONTACT && (
+              <ContactUsPage
+                companyName={companyName}
+                contactEmail={contactEmail}
+              />
+            )}
+            {slug === STATIC_PAGES.FEEDS && (
+              <FeedsPage
+                companyName={companyName}
+                contactEmail={contactEmail}
+              />
+            )}
+          </main>
+        </>
+      )}{" "}
     </>
   );
 }

@@ -7,7 +7,6 @@ import { ArticleCollection } from "@worldnews/shared/types";
 import { Article } from "@worldnews/shared/types";
 import { UserContext } from "@worldnews/shared/types";
 import { ArticleQueryParams } from "@worldnews/shared/types";
-import { AppError } from "@worldnews/shared/types";
 
 export const fetchArticles = async (
   context: UserContext,
