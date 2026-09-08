@@ -7,7 +7,8 @@ function hasRateLimitReached(res: any): boolean {
     AppError.isError(res) &&
     (res.status === 429 ||
       res.status === 403 ||
-      res.status === "ApiLimitExceeded")
+      res.status === "ApiLimitExceeded" ||
+      res.status === "RateLimitExceeded")
   ) {
     return true;
   }
